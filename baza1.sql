@@ -1,7 +1,8 @@
-IF OBJECT_ID('Avatars','U') IS NOT NULL
-	DROP TABLE AVATARS;
 IF OBJECT_ID('USERS', 'U') IS NOT NULL
 	drop table USERS;
+IF OBJECT_ID('Avatars','U') IS NOT NULL
+	DROP TABLE AVATARS;
+
 
 ----------------------------------------------------
 
