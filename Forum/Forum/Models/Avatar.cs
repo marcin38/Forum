@@ -14,7 +14,14 @@ namespace Forum.Models
     
     public partial class Avatar
     {
+        public Avatar()
+        {
+            this.Users = new HashSet<User>();
+        }
+    
         public int Id { get; set; }
         public byte[] Image { get; set; }
+    
+        public virtual ICollection<User> Users { get; set; }
     }
 }

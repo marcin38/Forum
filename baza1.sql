@@ -19,7 +19,7 @@ CREATE TABLE [dbo].[Users](
 	[RegistrationDate] [datetime] NOT NULL,
 	[RemovalDate] [datetime] NULL,
 	[Location] [nvarchar](50) NULL,
-	[AvatarId] [int] NOT NULL
+	[AvatarId] [int] NULL
 
 	CONSTRAINT [FK_AvatarId_Avatars] FOREIGN KEY ([AvatarId]) REFERENCES [Avatars]([Id])
 );

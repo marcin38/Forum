@@ -21,6 +21,8 @@ namespace Forum.Models
         public System.DateTime RegistrationDate { get; set; }
         public Nullable<System.DateTime> RemovalDate { get; set; }
         public string Location { get; set; }
-        public int AvatarId { get; set; }
+        public Nullable<int> AvatarId { get; set; }
+    
+        public virtual Avatar Avatar { get; set; }
     }
 }

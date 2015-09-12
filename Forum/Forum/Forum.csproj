@@ -135,42 +135,29 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Avatar.cs">
-      <DependentUpon>AvatarModel.tt</DependentUpon>
+      <DependentUpon>ForumModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\AvatarModel.Context.cs">
+    <Compile Include="Models\ForumDBContext.cs" />
+    <Compile Include="Models\ForumModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>AvatarModel.Context.tt</DependentUpon>
+      <DependentUpon>ForumModel.Context.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\AvatarModel.cs">
+    <Compile Include="Models\ForumModel.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>AvatarModel.tt</DependentUpon>
+      <DependentUpon>ForumModel.tt</DependentUpon>
     </Compile>
-    <Compile Include="Models\AvatarModel.Designer.cs">
+    <Compile Include="Models\ForumModel.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
-      <DependentUpon>AvatarModel.edmx</DependentUpon>
+      <DependentUpon>ForumModel.edmx</DependentUpon>
     </Compile>
+    <Compile Include="Models\IForumDBContext.cs" />
     <Compile Include="Models\User.cs">
-      <DependentUpon>UserModel.tt</DependentUpon>
+      <DependentUpon>ForumModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserMetaData.cs" />
-    <Compile Include="Models\UserModel.Context.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>UserModel.Context.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\UserModel.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>UserModel.tt</DependentUpon>
-    </Compile>
-    <Compile Include="Models\UserModel.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>UserModel.edmx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -183,39 +170,22 @@
     <Content Include="Content\Site.css" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
-    <EntityDeploy Include="Models\AvatarModel.edmx">
+    <EntityDeploy Include="Models\ForumModel.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>AvatarModel.Designer.cs</LastGenOutput>
+      <LastGenOutput>ForumModel.Designer.cs</LastGenOutput>
     </EntityDeploy>
-    <Content Include="Models\AvatarModel.Context.tt">
+    <Content Include="Models\ForumModel.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>AvatarModel.edmx</DependentUpon>
-      <LastGenOutput>AvatarModel.Context.cs</LastGenOutput>
+      <DependentUpon>ForumModel.edmx</DependentUpon>
+      <LastGenOutput>ForumModel.Context.cs</LastGenOutput>
     </Content>
-    <Content Include="Models\AvatarModel.edmx.diagram">
-      <DependentUpon>AvatarModel.edmx</DependentUpon>
+    <Content Include="Models\ForumModel.edmx.diagram">
+      <DependentUpon>ForumModel.edmx</DependentUpon>
     </Content>
-    <Content Include="Models\AvatarModel.tt">
+    <Content Include="Models\ForumModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>AvatarModel.edmx</DependentUpon>
-      <LastGenOutput>AvatarModel.cs</LastGenOutput>
-    </Content>
-    <EntityDeploy Include="Models\UserModel.edmx">
-      <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>UserModel.Designer.cs</LastGenOutput>
-    </EntityDeploy>
-    <Content Include="Models\UserModel.Context.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>UserModel.edmx</DependentUpon>
-      <LastGenOutput>UserModel.Context.cs</LastGenOutput>
-    </Content>
-    <Content Include="Models\UserModel.edmx.diagram">
-      <DependentUpon>UserModel.edmx</DependentUpon>
-    </Content>
-    <Content Include="Models\UserModel.tt">
-      <Generator>TextTemplatingFileGenerator</Generator>
-      <DependentUpon>UserModel.edmx</DependentUpon>
-      <LastGenOutput>UserModel.cs</LastGenOutput>
+      <DependentUpon>ForumModel.edmx</DependentUpon>
+      <LastGenOutput>ForumModel.cs</LastGenOutput>
     </Content>
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.10.2.js" />
@@ -229,7 +199,9 @@
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
     <Content Include="Scripts\_references.js" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </Content>

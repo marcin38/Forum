@@ -9,10 +9,17 @@ namespace Forum.Controllers
 {
     public class UserController : Controller
     {
+        private IForumDBContext db = new ForumDBContext();
+
+        public UserController(IForumDBContext db)
+        {
+            this.db = db;
+        }
+
         // GET: User
         public ActionResult Index()
         {
-            return View();
+            return View(db.Users.OrderBy(m => m.Name).ToList());
         }
 
         public ActionResult RegisterUser()
@@ -25,8 +32,13 @@ namespace Forum.Controllers
         {
             if (ModelState.IsValid)
             {
-                
+                db.Users.Add(user);
+                user.Hash = System.Text.Encoding.UTF8.GetBytes(user.Password);
+                user.RegistrationDate = System.DateTime.Now;
+                db.SaveChanges();
             }
+
+            
 
             return View(user);
         }
