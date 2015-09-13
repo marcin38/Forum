@@ -130,6 +130,8 @@
     <Compile Include="App_Start\IdentityConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\Interfaces\IUserController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
@@ -154,6 +156,7 @@
       <DependentUpon>ForumModel.edmx</DependentUpon>
     </Compile>
     <Compile Include="Models\IForumDBContext.cs" />
+    <Compile Include="Models\AccountCredentials.cs" />
     <Compile Include="Models\User.cs">
       <DependentUpon>ForumModel.tt</DependentUpon>
     </Compile>
@@ -218,6 +221,8 @@
     <Content Include="Views\User\Index.cshtml" />
     <Content Include="Views\User\RegisterUser.cshtml" />
     <Content Include="Views\Shared\_MyLayout.cshtml" />
+    <Content Include="Views\User\Login.cshtml" />
+    <Content Include="Views\Home\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

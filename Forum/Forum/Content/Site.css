@@ -24,7 +24,8 @@ textarea {
 }
 
 .input-validation-error,
-.field-validation-error
+.field-validation-error,
+.validation-summary-errors
 { 
     color: red; font-weight: bold;
 }
