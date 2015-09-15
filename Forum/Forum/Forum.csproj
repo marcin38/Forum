@@ -131,12 +131,17 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\Interfaces\IHomeController.cs" />
     <Compile Include="Controllers\Interfaces\IUserController.cs" />
+    <Compile Include="Controllers\ThreadController.cs" />
     <Compile Include="Controllers\UserController.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\Avatar.cs">
+      <DependentUpon>ForumModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Category.cs">
       <DependentUpon>ForumModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\ForumDBContext.cs" />
@@ -157,10 +162,22 @@
     </Compile>
     <Compile Include="Models\IForumDBContext.cs" />
     <Compile Include="Models\AccountCredentials.cs" />
+    <Compile Include="Models\Post.cs">
+      <DependentUpon>ForumModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Thread.cs">
+      <DependentUpon>ForumModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\User.cs">
       <DependentUpon>ForumModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\UserMetaData.cs" />
+    <Compile Include="Models\V_Categories.cs">
+      <DependentUpon>ForumModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\V_Threads.cs">
+      <DependentUpon>ForumModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
@@ -223,6 +240,7 @@
     <Content Include="Views\Shared\_MyLayout.cshtml" />
     <Content Include="Views\User\Login.cshtml" />
     <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Thread\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

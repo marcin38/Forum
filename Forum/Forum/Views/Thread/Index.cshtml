@@ -1,12 +1,13 @@
-﻿@model IEnumerable<Forum.Models.V_Categories>
+﻿@model IEnumerable<Forum.Models.V_Threads>
+
 
 <table style="border:1px solid black;">
     <tr>
         <td class="td1">
-            Category name
+            Thread name
         </td>
         <td class="td1">
-            Threads
+            Started @*Zmienić to, pokazuję dane ostatniego postu: albo pobierać poprawne dane, albo zmienić opis*@ 
         </td>
         <td class="td1">
             Posts
@@ -19,18 +20,17 @@
     {
         <tr>
             <td class="td1">
-                @Html.ActionLink(item.Name, "Index", "Thread", new { id = item.Id}, null)
-                <br />
-                @Html.DisplayFor(m => item.Description)
+                <b> @Html.DisplayFor(m => item.Title) </b>
+ 
             </td>
             <td class="td1">
-                @Html.DisplayFor(m => item.ThreadsNumber)
+                @Html.DisplayFor(m => item.Started)
             </td>
             <td class="td1">
                 @Html.DisplayFor(m => item.PostsNumber)
             </td>
             <td class="td1">
-                @Html.DisplayFor(m => item.Started)
+                @Html.DisplayFor(m => item.LastPost)
             </td>
         </tr>
     }

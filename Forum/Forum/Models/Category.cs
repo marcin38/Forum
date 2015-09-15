@@ -12,25 +12,17 @@ namespace Forum.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class User
+    public partial class Category
     {
-        public User()
+        public Category()
         {
-            this.Posts = new HashSet<Post>();
             this.Threads = new HashSet<Thread>();
         }
     
         public int Id { get; set; }
         public string Name { get; set; }
-        public string Email { get; set; }
-        public byte[] Hash { get; set; }
-        public System.DateTime RegistrationDate { get; set; }
-        public Nullable<System.DateTime> RemovalDate { get; set; }
-        public string Location { get; set; }
-        public Nullable<int> AvatarId { get; set; }
+        public string Description { get; set; }
     
-        public virtual Avatar Avatar { get; set; }
-        public virtual ICollection<Post> Posts { get; set; }
         public virtual ICollection<Thread> Threads { get; set; }
     }
 }

@@ -11,6 +11,11 @@ namespace Forum.Models
     {
         IDbSet<Avatar> Avatars { get; set; }
         IDbSet<User> Users { get; set; }
+        IDbSet<Category> Categories { get; set; }
+        IDbSet<Post> Posts { get; set; }
+        IDbSet<Thread> Threads { get; set; }
+        IDbSet<V_Categories> V_Categories { get; set; }
+        IDbSet<V_Threads> V_Threads { get; set; }
         int SaveChanges();
     }
 }

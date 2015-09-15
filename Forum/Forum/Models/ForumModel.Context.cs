@@ -27,5 +27,10 @@ namespace Forum.Models
     
         //public virtual DbSet<Avatar> Avatars { get; set; }
         //public virtual DbSet<User> Users { get; set; }
+        //public virtual DbSet<Category> Categories { get; set; }
+        //public virtual DbSet<Post> Posts { get; set; }
+        //public virtual DbSet<Thread> Threads { get; set; }
+        //public virtual DbSet<V_Categories> V_Categories { get; set; }
+        //public virtual DbSet<V_Threads> V_Threads { get; set; }
     }
 }

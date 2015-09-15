@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Forum.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -8,8 +9,25 @@ namespace Forum.Controllers
 {
     public class HomeController : Controller
     {
-        // GET: Home
+        private IForumDBContext db;
+
+        public HomeController()
+        {
+            db = new ForumDBContext();
+        }
+
+        public HomeController(IForumDBContext db)
+        {
+            this.db = db;
+        }
+
         public ActionResult Index()
+        {
+            List<V_Categories> categories = db.V_Categories.ToList();
+            return View(categories);
+        }
+
+        public ActionResult Index2()
         {
             return View();
         }

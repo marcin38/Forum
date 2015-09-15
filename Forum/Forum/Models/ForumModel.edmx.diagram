@@ -8,7 +8,16 @@
         <EntityTypeShape EntityType="ForumModel.Avatar" Width="1.5" PointX="0.75" PointY="1.5" IsExpanded="true" />
         <EntityTypeShape EntityType="ForumModel.User" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
         <AssociationConnector Association="ForumModel.FK_AvatarId_Avatars" ManuallyRouted="false" />
-      </Diagram>
+        <EntityTypeShape EntityType="ForumModel.Category" Width="1.5" PointX="6" PointY="5.625" />
+        <EntityTypeShape EntityType="ForumModel.Post" Width="1.5" PointX="5.25" PointY="1.375" />
+        <EntityTypeShape EntityType="ForumModel.Thread" Width="1.5" PointX="8.25" PointY="1.375" />
+        <AssociationConnector Association="ForumModel.FK_Threads_CategoryId" />
+        <AssociationConnector Association="ForumModel.FK_Posts_AuthorId" />
+        <AssociationConnector Association="ForumModel.FK_Posts_ThreadId" />
+        <AssociationConnector Association="ForumModel.FK_Threads_AuthorId" />
+        <EntityTypeShape EntityType="ForumModel.V_Categories" Width="1.5" PointX="0.75" PointY="5.75" />
+        <EntityTypeShape EntityType="ForumModel.V_Threads" Width="1.5" PointX="2.75" PointY="5.75" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>
