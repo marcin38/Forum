@@ -8,12 +8,18 @@ using System.Security.Cryptography;
 using System.Text;
 using Forum.Controllers.Interfaces;
 using System.IO;
+using Microsoft.Owin.Security;
+using Microsoft.AspNet.Identity;
+using System.Security.Claims;
+using Microsoft.AspNet.Identity.EntityFramework;
+using System.Threading.Tasks;
 
 namespace Forum.Controllers
 {
-    public class UserController : Controller, IUserController
+    public class UserController : BaseController, IUserController
     {
         private IForumDBContext db;
+        //public UserManager<ApplicationUser> UserManager { get; private set; }
 
         public UserController()
         {
@@ -25,7 +31,6 @@ namespace Forum.Controllers
             this.db = db;
         }
 
-        // GET: User
         public ActionResult Index()
         {
             return View(db.Users.OrderBy(m => m.Name).ToList());
@@ -41,9 +46,9 @@ namespace Forum.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Users.Add(user);
                 user.Hash = ComputeHash(user.Password, user.Name);
                 user.RegistrationDate = System.DateTime.Now;
+                db.Users.Add(user);                
                 db.SaveChanges();
                 return RedirectToAction("Login");
             }
@@ -76,12 +81,43 @@ namespace Forum.Controllers
                 }
                 else
                 {
+                    User user = users.ElementAt(0);
+                    user.Password = credentials.Password;
+                    SaveCookie(user);
+                    //var u = new ApplicationUser() { UserName = user.Name};
+                    //var result = await UserManager.CreateAsync(u, credentials.Password);
+                    //await SignIn(u, false);
                     return RedirectToAction("Index", "Home");
                 }
+
             }
 
             return View(credentials);
         }
+
+//        public ActionResult LogOff()
+//        {
+//            AuthenticationManager.SignOut();
+//            return RedirectToAction("Index", "Home");
+//        }
+
+//        private async Task SignIn(ApplicationUser user, bool isPersistent)
+//        {
+            
+////            AuthenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
+//            var identity = await UserManager.CreateIdentityAsync(user, DefaultAuthenticationTypes.ApplicationCookie);
+//            AuthenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
+
+////            HttpContext.User = new ClaimsPrincipal(AuthenticationManager.AuthenticationResponseGrant.Principal);
+//        }
+
+//        private IAuthenticationManager AuthenticationManager
+//        {
+//            get
+//            {
+//                return HttpContext.GetOwinContext().Authentication;
+//            }
+//        }
 
         private byte[] ComputeHash(string data, string salt)
         {
@@ -96,5 +132,15 @@ namespace Forum.Controllers
             byte[] hash = sha.ComputeHash(Encoding.ASCII.GetBytes(String.Format("{0}{1}",data,salt)));
             return hash;
         }
+
+        private void SaveCookie(User user)
+        {
+            HttpCookie cookie = new HttpCookie("f_user");
+            cookie.Values["Name"] = user.Name;
+            cookie.Values["Password"] = user.Password;
+            HttpContext.Response.Cookies.Add(cookie);
+        }
+
+        
     }
 }

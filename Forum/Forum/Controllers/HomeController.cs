@@ -1,4 +1,5 @@
-﻿using Forum.Models;
+﻿using Forum.Controllers.Interfaces;
+using Forum.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,7 @@ using System.Web.Mvc;
 
 namespace Forum.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController, IHomeController
     {
         private IForumDBContext db;
 

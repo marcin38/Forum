@@ -1,39 +1,24 @@
-﻿@model IEnumerable<Forum.Models.V_Threads>
+﻿@model IEnumerable<Forum.Models.Post>
 
-
-<table style="border:1px solid black;">
-    <tr>
-        <td class="td1">
-            Thread name
-        </td>
-        <td class="td1">
-            Started @*Zmienić to, pokazuję dane ostatniego postu: albo pobierać poprawne dane, albo zmienić opis*@ 
-        </td>
-        <td class="td1">
-            Posts
-        </td>
-        <td class="td1">
-            Last post
-        </td>
-    </tr>
+<div class="thread-container">
     @foreach (var item in Model)
     {
-        <tr>
-            <td class="td1">
-                <b> @Html.DisplayFor(m => item.Title) </b>
- 
-            </td>
-            <td class="td1">
-                @Html.DisplayFor(m => item.Started)
-            </td>
-            <td class="td1">
-                @Html.DisplayFor(m => item.PostsNumber)
-            </td>
-            <td class="td1">
-                @Html.DisplayFor(m => item.LastPost)
-            </td>
-        </tr>
+        <div class="post-container">
+            <div class="post-head">
+                <div class="thread-title"> @Html.DisplayFor(m => item.Thread.Title)</div>
+                @Html.DisplayFor(m => item.User.Name)
+                @Html.DisplayFor(m => item.CreationDate)
+            </div>
+            <div class="post-content">
+                @Html.DisplayFor(m => item.PostContent)
+            @if (item.AuthorId == ViewBag.UserId)
+            {
+                <button class="btn btn-success edit-button" type="button" onclick="location.href='@Url.Action("EditPost", "Post", new { id = item.Id})'">Edit</button>
+            }
+            </div>
+        </div>
     }
-
-</table>
-
+</div>
+<div class="col-md-10 form-group">
+    <button class="btn btn-success" type="button" onclick="location.href='@Url.Action("AddPost", "Post", new { threadId = ViewContext.RouteData.Values["id"] })'">Reply</button>
+</div>

@@ -1,39 +1,43 @@
-﻿@model IEnumerable<Forum.Models.V_Categories>
+﻿@{
+    ViewBag.Title = "Category/Index";
+}
+
+@model IEnumerable<Forum.Models.V_Threads>
+
 
 <table style="border:1px solid black;">
     <tr>
         <td class="td1">
-            Category name
+            Thread name
         </td>
         <td class="td1">
-            Threads
-        </td>
-        <td class="td1">
-            Posts
+            Author and date of last post
         </td>
         <td class="td1">
             Last post
+        </td>
+        <td class="td1">
+            Posts
         </td>
     </tr>
     @foreach (var item in Model)
     {
         <tr>
             <td class="td1">
-                @Html.ActionLink(item.Name, "Index", "Category", new { id = item.Id}, null)
-                <br />
-                @Html.DisplayFor(m => item.Description)
+                @Html.ActionLink(item.Title, "Index", "Thread", new {id = item.Id }, null)
             </td>
             <td class="td1">
-                @Html.DisplayFor(m => item.ThreadsNumber)
-            </td>
-            <td class="td1">
-                @Html.DisplayFor(m => item.PostsNumber)
+                @Html.DisplayFor(m => item.WhoAddedPost)
             </td>
             <td class="td1">
                 @Html.DisplayFor(m => item.LastPost)
+            </td>
+            <td class="td1">
+                @Html.DisplayFor(m => item.PostsNumber)
             </td>
         </tr>
     }
 
 </table>
+
 

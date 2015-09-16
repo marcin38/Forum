@@ -8,25 +8,25 @@ using System.Web.Mvc;
 
 namespace Forum.Controllers
 {
-    public class ThreadController : BaseController, IThreadController
+
+    public class CategoryController : BaseController, ICategoryController
     {
         private IForumDBContext db;
 
-        public ThreadController()
+        public CategoryController()
         {
             db = new ForumDBContext();
         }
 
-        public ThreadController(IForumDBContext db)
+        public CategoryController(IForumDBContext db)
         {
             this.db = db;
         }
 
         public ActionResult Index(int id)
         {
-            ViewBag.UserId = GetUserId();
-            List<Post> posts = db.Posts.Where(m => m.ThreadId == id).ToList();
-            return View(posts);
+            List<V_Threads> threads = db.V_Threads.Where(m => m.CategoryId == id).ToList();
+            return View(threads);
         }
     }
 }

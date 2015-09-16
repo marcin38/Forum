@@ -16,9 +16,9 @@ namespace Forum.Models
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public string Started { get; set; }
+        public int CategoryId { get; set; }
+        public string WhoAddedPost { get; set; }
         public Nullable<int> PostsNumber { get; set; }
         public string LastPost { get; set; }
-        public int CategoryId { get; set; }
     }
 }

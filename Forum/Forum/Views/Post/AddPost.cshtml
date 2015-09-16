@@ -1,0 +1,30 @@
+﻿@model Forum.Models.Post
+
+@{
+    if (Model == null)
+    { 
+        ViewBag.Title = "Add post";
+    }
+    else
+    {
+        ViewBag.Title = "Edit post";
+    }   
+        
+}
+
+@using (Html.BeginForm())
+{
+    @Html.ValidationSummary()
+    <div class="col-md-12">
+        @Html.TextAreaFor(m => m.PostContent, new { @class = "col-md-12 disable-max-width-setting", rows = "20" })
+    </div>
+    <div class="col-md-3">
+        <input type="submit" class="btn btn-block btn-success" value="Submit" />
+    </div>
+    <div>
+        @Html.ActionLink("Cancel", "Index", "Thread", new { id = ViewBag.ThreadId }, null)
+    </div>
+    @Html.HiddenFor(m => m.ThreadId, new { @Value = ViewBag.ThreadId })
+}
+
+

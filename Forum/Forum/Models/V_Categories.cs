@@ -19,6 +19,6 @@ namespace Forum.Models
         public string Description { get; set; }
         public Nullable<int> ThreadsNumber { get; set; }
         public Nullable<int> PostsNumber { get; set; }
-        public string Started { get; set; }
+        public string LastPost { get; set; }
     }
 }
