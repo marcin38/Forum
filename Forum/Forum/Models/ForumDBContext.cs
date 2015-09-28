@@ -25,10 +25,15 @@ namespace Forum.Models
         public virtual IDbSet<Thread> Threads { get; set; }
         public virtual IDbSet<V_Categories> V_Categories { get; set; }
         public virtual IDbSet<V_Threads> V_Threads { get; set; }
+        public IDbSet<Message> Messages { get; set; }
+        public IDbSet<Warning> Warnings { get; set; }
+
         public virtual void SetModified(object entity)
         {
             Entry(entity).State = EntityState.Modified;
         }
+
+
     }
 
     

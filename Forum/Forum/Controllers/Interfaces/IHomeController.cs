@@ -10,5 +10,7 @@ namespace Forum.Controllers.Interfaces
     interface IHomeController
     {
         ActionResult Index();
+        ActionResult About();
+        ActionResult Contact();
     }
 }

@@ -14,6 +14,11 @@ namespace Forum.Models
     
     public partial class Post
     {
+        public Post()
+        {
+            this.Warnings = new HashSet<Warning>();
+        }
+    
         public int Id { get; set; }
         public int AuthorId { get; set; }
         public string PostContent { get; set; }
@@ -22,5 +27,6 @@ namespace Forum.Models
     
         public virtual User User { get; set; }
         public virtual Thread Thread { get; set; }
+        public virtual ICollection<Warning> Warnings { get; set; }
     }
 }

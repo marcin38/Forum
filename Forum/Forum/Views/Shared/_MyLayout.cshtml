@@ -1,4 +1,8 @@
 ﻿<!DOCTYPE html>
+@{
+    ViewBag.Title = "Forum";
+}
+
 <html>
 <head>
     <meta charset="utf-8" />
@@ -10,7 +14,55 @@
 </head>
 <body>
     
-    <div class="container body-content">
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li>@Html.ActionLink("About", "About", "Home")</li>
+                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                </ul>
+
+                @if (!((Forum.Controllers.BaseController)this.ViewContext.Controller).CheckIfUserIsAuthenticated())
+                {
+                    <ul class="nav navbar-nav navbar-right">
+                        <li> @Html.ActionLink("Login", "Login", "User") </li>
+                        <li> @Html.ActionLink("Register", "Register", "User") </li>
+                    </ul>
+                }
+                else
+                {
+                    <ul class="nav navbar-nav navbar-right">
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Witaj @Html.Action("GetUserName").ToString()!<b class="caret"></b></a>
+                            <ul class="dropdown-menu">
+                                <li> @Html.ActionLink("Log off", "Logoff", "User") </li>
+                                <li> @Html.ActionLink("My profile", "ShowProfile", "User") </li>
+                                <li> @Html.ActionLink("Inbox", "Index", "Message", new {type = Forum.Controllers.MessageController.MailboxType.Inbox }, null)</li>
+                                <li> @Html.ActionLink("Sent", "Index", "Message", new { type = Forum.Controllers.MessageController.MailboxType.Sent }, null)</li>
+                                @if (((Forum.Controllers.BaseController)this.ViewContext.Controller).CheckIfUserIsAdministrator())
+                                {
+                                    <li> @Html.ActionLink("Administer categories", "Administercategories", "User")</li>
+                                    <li> @Html.ActionLink("Administer users", "Index", "User")</li>
+                                }
+                            </ul>
+                        </li>
+                    </ul>
+                }
+
+            </div>
+        </div>
+    </div>
+
+    <div class="container body-content margin-top">
         @RenderBody()
     </div>
 
@@ -22,8 +74,11 @@
     </div>
 
     @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/ajax")
     @Scripts.Render("~/bundles/bootstrap")
+
     @RenderSection("scripts", required: false)
+    
+
 </body>
 </html>

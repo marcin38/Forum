@@ -8,8 +8,7 @@
     else
     {
         ViewBag.Title = "Edit post";
-    }   
-        
+    }           
 }
 
 @using (Html.BeginForm())
@@ -24,7 +23,8 @@
     <div>
         @Html.ActionLink("Cancel", "Index", "Thread", new { id = ViewBag.ThreadId }, null)
     </div>
-    @Html.HiddenFor(m => m.ThreadId, new { @Value = ViewBag.ThreadId })
+    @*@Html.HiddenFor(m => m.Id)*@
+    @*@Html.HiddenFor(m => m.ThreadId)*@
 }
 
 

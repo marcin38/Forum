@@ -1,0 +1,40 @@
+﻿@model Forum.Models.Message
+
+<h3>Are you sure you want to delete this? It is irreversible.</h3>
+<div>
+    <h4>Category</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(m => m.User1.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(m => m.User1.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(m => m.Subject)
+        </dt>
+        <dd>
+            @Html.DisplayFor(m => m.Subject)
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(m => m.Body)
+        </dt>
+        <dd>
+            @Html.TextAreaFor(m => m.Body, new { @class = "col-md-12 disable-max-width-setting", disabled = "disabled", rows = "20" })
+        </dd>
+
+
+    </dl>
+
+    @using (Html.BeginForm())
+    {
+        @Html.AntiForgeryToken()
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-danger" />
+            @Html.ActionLink("Cancel", "Index", new { type = Forum.Controllers.MessageController.MailboxType.Inbox })
+        </div>
+    }
+</div>

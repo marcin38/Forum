@@ -1,0 +1,37 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@model IPagedList<Forum.Models.Post>
+
+<div class="thread-container">
+    @foreach (var item in Model)
+    {
+        bool isAuthenticated = ((Forum.Controllers.BaseController)this.ViewContext.Controller).CheckIfUserIsAuthenticated();
+        <div class="post-container">
+            <div class="post-head">
+                <div class="thread-title"> @Html.DisplayFor(m => item.Thread.Title)</div>
+
+                @Html.DisplayFor(m => item.CreationDate)
+            </div>
+            <div class="post-content">
+                @Html.DisplayFor(m => item.PostContent)
+                                @if (isAuthenticated)
+                                {
+                                    <div class="btn-toolbar">
+                                        <button class="btn btn-success edit-button" type="button" onclick="location.href='@Url.Action("EditPost", "Post", new { id = item.Id})'">Edit</button>
+                                        <button class="btn btn-success thread-button" type="button" onclick="location.href='@Url.Action("Index", "Thread", new { id = item.ThreadId})'">To thread</button>
+                                    </div>
+                                }
+            </div>
+        </div>
+    }
+</div>
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
+new PagedListRenderOptions()
+{
+    Display = PagedListDisplayMode.IfNeeded,
+    LinkToFirstPageFormat = "First",
+    LinkToLastPageFormat = "Last"
+})
+@Html.ActionLink("Back to profile", "ShowProfile")

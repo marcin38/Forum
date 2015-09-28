@@ -1,0 +1,41 @@
+﻿@model Forum.Models.Warning
+
+<h3>Are you sure you want to warn this user?</h3>
+<div>
+    <hr />
+        @Html.Partial("ShowProfile", Model.User);
+
+    <div class="login-wrap form-horizontal">
+        @using (Html.BeginForm("Warn", "Warning", new { postId = Model.PostId }, FormMethod.Post))
+        {
+            @Html.ValidationSummary();
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.PostId)
+            @Html.HiddenFor(m => m.UserId)
+            <hr />
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Reason, new { @class = "col-md-3" })
+                <div class="col-md-10">
+                    @Html.TextBoxFor(m => m.Reason, new { @class = "form-control" })
+                    @Html.ValidationMessageFor(m => m.Reason)
+                </div>
+            </div>
+
+
+            
+
+            <div class="form-group">
+                <div class="col-md-10">
+                    <input type="submit" value="Warn" class="btn btn-block btn-danger" />
+                </div>
+            </div>
+
+    <div class="form-group">
+        <div class="col-md-10">
+            @Html.ActionLink("Inbox", "Index", "Message", new { type = Forum.Controllers.MessageController.MailboxType.Inbox }, null)
+        </div>
+    </div>
+        }
+        </div>
+    </div>

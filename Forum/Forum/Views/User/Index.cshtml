@@ -1,7 +1,77 @@
-﻿
-@{
-    ViewBag.Title = "Index";
-}
+﻿@using PagedList;
+@using PagedList.Mvc;
 
-<h2>Index</h2>
+@model IPagedList<Forum.Models.User>
 
+<table class="my-table">
+    <tr>
+        <td class="td1">
+            Id
+        </td>
+        <td class="td1">
+            User name
+        </td>
+        <td class="td1">
+            E-mail
+        </td>
+        <td class="td1">
+            Location
+        </td>
+        <td class="td1">
+            Registration date
+        </td>
+        <td class="td1">
+            Administrator
+        </td>
+        <td class="td1">
+            Warnings
+        </td>
+        <td class="td1">
+            Banned
+        </td>
+        <td class ="td1">
+            Action
+        </td>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td class="td1">
+                @Html.DisplayFor(m => item.Id)
+            </td>
+            <td class="td1">
+                @Html.ActionLink(item.Name, "ShowProfile", new { id = item.Id })
+            </td>
+            <td class="td1">
+                @Html.DisplayFor(m => item.Email)
+            </td>
+            <td class="td1">
+                @Html.DisplayFor(m => item.Location)
+            </td>
+            <td class="td1">
+                @Html.DisplayFor(m => item.RegistrationDate)
+            </td>
+            <td class="td1 text-center">
+                @Html.CheckBoxFor(m => item.IsAdministrator, new { @disabled = "disabled" })
+            </td>
+            <td class="td1 text-center">
+                @Html.DisplayFor(m => item.NumberOfWarnings, new { @disabled = "disabled" })
+            </td>
+            <td class="td1 text-center">
+                @Html.CheckBoxFor(m => item.IsBanned, new { @disabled = "disabled" })
+            </td>
+            <td class="td1">
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id}) |
+                @Html.ActionLink("Ban", "Ban", new { id = item.Id }) |
+                @Html.ActionLink("Unban", "Unban", new { id = item.Id }) |
+                @Html.ActionLink("Show warnings", "Index", "Warning", new { id = item.Id }, null)
+            </td>
+
+        </tr>
+    }
+
+</table>
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
+new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
+@*@Html.ActionLink("Back to administer page", "AdministerCategories")*@

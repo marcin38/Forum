@@ -1,0 +1,65 @@
+﻿@model Forum.ViewModels.UserEditProfileViewModel
+
+@{
+    ViewBag.Title = "Edit profile";
+}
+
+<h2>Edit profile</h2>
+
+<div class="login-wrap form-horizontal">
+    @using (Html.BeginForm("EditProfile", "User", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    {
+        //@Html.ValidationSummary()
+        @Html.HiddenFor(m => m.Id)
+        
+        <div class="form-group">
+            @Html.LabelFor(m => m.Name, new { @class = "col-md-3"})
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Name, new { @class = "form-control", disabled = "disabled", @Value = ViewBag.Name  })
+                @Html.ValidationMessageFor(m => m.Name)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Email, new { @class = "col-md-3" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Email, new { @class = "form-control", disabled = "disabled" })
+                @Html.ValidationMessageFor(m => m.Email)
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.Location, new { @class = "col-md-3" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(m => m.Location, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Location)
+            </div>
+        </div>
+
+        if (Model.AvatarId != null)
+        {
+            <div class="form-group">
+                @Html.Label("Current avatar", new { @class = "col-md-3" })
+                <div class="col-md-10">
+                    <img src='@Url.Action("RenderPhoto", "User", new { id = @Model.AvatarId })' alt="avatar">
+                </div>
+            </div>
+        }
+        
+        <div class="form-group">
+            @Html.Label("Avatar", new { @class = "col-md-3" })
+            <div class="col-md-10">
+                <input type="file" id="Avatar" name="upload" />
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-10">
+                <input type="submit" class="btn btn-block btn-success" value="Submit" />
+            </div>
+        </div>
+    }
+</div>
+
+
+

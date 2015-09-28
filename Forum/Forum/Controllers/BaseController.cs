@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Forum.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -6,24 +7,64 @@ using System.Web.Mvc;
 
 namespace Forum.Controllers
 {
+    //[RequireHttps]
     public class BaseController : Controller
     {
-        
+        protected int ItemsPerPage() 
+        { 
+            return 10;
+        }
 
-        protected bool CheckIfUserIsAuthenticated()
+        public bool CheckIfUserIsAuthenticated()
         {
             HttpCookie cookie = Request.Cookies["f_user"];
-            string s = cookie.Values["Name"];
             if (cookie == null)
                 return false;
-            else
-                return true;
+            else 
+            {
+                int id = int.Parse(cookie.Values["Id"]);
+                string token = cookie.Values["Token"];
+                if (!MvcApplication.tokenDictionary.ContainsKey(id) || !String.Equals(token, MvcApplication.tokenDictionary[id]))
+                    return false;
+                else
+                {
+                    return true;
+                }
+            }
             
         }
 
-        protected int GetUserId()
+        public bool CheckIfUserIsAdministrator()
         {
-            return 1002;
+            if (!this.CheckIfUserIsAuthenticated())
+            {    
+                return false;
+            }
+            else
+            {
+                int id = GetUserId();
+                User user = (new ForumDBContext()).Users.SingleOrDefault(m => m.Id == id);
+                return user.IsAdministrator;
+            }
         }
+
+        public string GetUserName()
+        {
+            HttpCookie cookie = Request.Cookies["f_user"];
+            if (cookie == null)
+                return String.Empty;
+            else
+                return cookie.Values["Name"];
+        }
+
+        public int GetUserId()
+        {
+            HttpCookie cookie = Request.Cookies["f_user"];
+            if (cookie == null)
+                return -1;
+            else
+                return int.Parse(cookie.Values["Id"]);
+        }
+
     }
 }

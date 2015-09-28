@@ -1,0 +1,30 @@
+﻿@model Forum.Models.Post
+
+@{
+        bool isAdministrator = ((Forum.Controllers.BaseController)this.ViewContext.Controller).CheckIfUserIsAuthenticated();
+<div class="post-container">
+    <div class="post-head">
+        <div class="thread-title"> @Html.DisplayFor(m => m.Thread.Title)</div>
+
+        @if (isAdministrator)
+        {
+            @Html.ActionLink(Model.User.Name, "ShowProfile", "User", new { id = Model.AuthorId }, null)
+        }
+        else
+        {
+            @Html.DisplayFor(m => Model.User.Name)
+        }
+        @Html.DisplayFor(m => Model.CreationDate)
+    </div>
+    <div class="post-content">
+        @Html.DisplayFor(m => Model.PostContent)
+    </div>
+    @if (isAdministrator)
+    {
+            <div class="form-actions no-color">
+                @Html.ActionLink("Warn", "Warn", "Warning", new { postId = Model.Id }, null)
+                @Html.ActionLink("Inbox", "Index", "Message", new {type = Forum.Controllers.MessageController.MailboxType.Inbox }, null)
+            </div>
+    }
+</div>
+}

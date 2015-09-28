@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<Forum.Models.V_Categories>
 
-<table style="border:1px solid black;">
+<table class="my-table">
     <tr>
         <td class="td1">
             Category name
@@ -19,7 +19,7 @@
     {
         <tr>
             <td class="td1">
-                @Html.ActionLink(item.Name, "Index", "Category", new { id = item.Id}, null)
+                @Html.ActionLink(item.Name, "Index", "Category", new { id = item.Id }, null)
                 <br />
                 @Html.DisplayFor(m => item.Description)
             </td>

@@ -23,6 +23,7 @@ namespace Forum.Models
         public string Title { get; set; }
         public int AuthorId { get; set; }
         public int CategoryId { get; set; }
+        public Nullable<int> LastPost { get; set; }
     
         public virtual Category Category { get; set; }
         public virtual ICollection<Post> Posts { get; set; }

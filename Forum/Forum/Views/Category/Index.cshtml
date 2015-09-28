@@ -1,11 +1,14 @@
-﻿@{
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@{
     ViewBag.Title = "Category/Index";
 }
 
-@model IEnumerable<Forum.Models.V_Threads>
+@model IPagedList<Forum.Models.V_Threads>
 
 
-<table style="border:1px solid black;">
+<table class="my-table">
     <tr>
         <td class="td1">
             Thread name
@@ -27,7 +30,7 @@
                 @Html.ActionLink(item.Title, "Index", "Thread", new {id = item.Id }, null)
             </td>
             <td class="td1">
-                @Html.DisplayFor(m => item.WhoAddedPost)
+                @Html.DisplayFor(m => item.WhenAddedLastPost) by @Html.DisplayFor(m => item.WhoAddedLastPost)
             </td>
             <td class="td1">
                 @Html.DisplayFor(m => item.LastPost)
@@ -40,4 +43,13 @@
 
 </table>
 
+@if (((Forum.Controllers.BaseController)this.ViewContext.Controller).CheckIfUserIsAuthenticated())
+{ 
+    <div class="col-md-10 form-group">
+        <button class="btn btn-success" type="button" onclick="location.href='@Url.Action("AddThread", "Thread", new { categoryId = ViewContext.RouteData.Values["id"] })'">Add new thread</button>
+    </div>
+}
 
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
+new PagedListRenderOptions() {Display = PagedListDisplayMode.IfNeeded })
+@Html.ActionLink("Back to categories", "Index", "Home")

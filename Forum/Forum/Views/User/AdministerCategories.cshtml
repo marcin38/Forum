@@ -1,0 +1,37 @@
+﻿@model IEnumerable<Forum.Models.Category>
+
+<p>
+    @Html.ActionLink("Create New", "Create", "Category")
+</p>
+
+<table class="my-table">
+    <tr>
+        <td class="td1">
+            Category name
+        </td>
+        <td class="td1">
+            Description
+        </td>
+        <td class="td1">
+            Action
+        </td>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td class="td1">
+                @Html.DisplayFor(m => item.Name)
+            </td>
+            <td class="td1">
+                @Html.DisplayFor(m => item.Description)
+            </td>
+            <td class="td1">
+                
+                @Html.ActionLink("Edit", "Edit", "Category",new { id = item.Id }, null)
+                @Html.ActionLink("Delete", "Delete", "Category", new { id = item.Id }, null)
+            </td>
+        </tr>
+    }
+
+</table>
+

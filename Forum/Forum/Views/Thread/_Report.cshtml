@@ -1,0 +1,32 @@
+﻿@model Forum.Models.Message
+
+@*<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/jquery-ui-1.11.4.min.js"></script>
+<link href="~/Content/jquery-ui.css" rel="stylesheet" />*@
+
+<button id="modal-opener" class="btn" data-toggle="modal" data-target="@("#dialog-modal" + ViewData["postId"])" type="button">Report</button>
+
+<div id="@("dialog-modal" + ViewData["postId"])" class="modal fade" >
+    @using (Html.BeginForm("Send", "Message"))
+    {
+        <div class="modal-dialog my-modal-dialog">
+            
+                @Html.Label("What is wrong with that post?")
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+            
+            
+            <div class="col-md-12">
+                @Html.TextAreaFor(m => m.Body, new { @class = "form-control" })
+                @Html.ValidationMessageFor(m => m.Body) <br />
+            </div>
+            @Html.HiddenFor(m => m.Subject)
+
+            <div class="margin-top">
+                <input type="button" class="btn btn-block btn-warning" value="Cancel" data-dismiss="modal" />
+                <input type="submit" class="btn btn-block btn-success" value="Send" />
+            </div>
+
+        </div>
+
+    }
+</div>

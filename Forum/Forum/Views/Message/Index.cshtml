@@ -1,0 +1,94 @@
+﻿@model IPagedList<Forum.Models.Message>
+
+@using PagedList;
+@using PagedList.Mvc;
+
+<script type="text/javascript" language="javascript">
+    function Clear()
+    {
+        $("#idBody").empty();
+    }
+</script>
+
+@{
+    ViewBag.Title = "Sent messages";
+}
+
+@Html.ActionLink("New message", "Send")
+
+<table class="my-table">
+    <tr>
+        @if (ViewBag.Type == Forum.Controllers.MessageController.MailboxType.Inbox.ToString())
+        {
+            <td class="td1">
+                Sender
+            </td>
+        }
+        else
+        {
+            <td class="td1">
+                Recipient
+            </td>
+        }
+        <td class="td1">
+            Subject
+        </td>
+        <td class="td1">
+            Sent date
+        </td>
+        <td class="td1">
+            Action
+        </td>
+    </tr>
+    @foreach (var item in Model)
+    {
+        bool isInbox = ViewBag.Type == Forum.Controllers.MessageController.MailboxType.Inbox.ToString();
+        string messageClass = "message-unread-header";
+        if (!isInbox || item.IsRead) 
+        {
+           messageClass = "message-header";        
+        }
+        <tr>
+        @if (isInbox)
+        {
+            <td class="td1 @messageClass">
+                @Html.DisplayFor(m => item.User.Name)
+            </td>
+        }
+        else
+        {
+            <td class="td1 @messageClass">
+                @Html.DisplayFor(m => item.User1.Name)
+            </td>
+        }
+            <td class="td1 @messageClass">
+                @Html.Raw(item.Subject)
+            </td>
+            <td class="td1 @messageClass">
+                @Html.DisplayFor(m => item.SentDate)
+            </td>
+            <td class="td1">
+                @Ajax.ActionLink("Read", "Show", new { id = item.Id }, new AjaxOptions()
+           {
+               HttpMethod = "GET",
+               UpdateTargetId = "idBody",
+               InsertionMode = InsertionMode.Replace,
+               //LoadingElementId = "idLoading",
+               //LoadingElementDuration = 1000,
+               //OnBegin = "Clear",
+           })
+                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+            </td>
+        </tr>
+    }
+
+</table>
+
+<div id="idBody">
+</div>
+<div id="idLoading" style="display:none">
+    <img src="~/Images/spinner.gif" />
+</div>
+
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
+new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })

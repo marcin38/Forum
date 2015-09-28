@@ -5,18 +5,24 @@
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
       <Diagram DiagramId="cc880776735e4fc2aded0b20353e14ce" Name="Diagram1">
-        <EntityTypeShape EntityType="ForumModel.Avatar" Width="1.5" PointX="0.75" PointY="1.5" IsExpanded="true" />
-        <EntityTypeShape EntityType="ForumModel.User" Width="1.5" PointX="3" PointY="1" IsExpanded="true" />
+        <EntityTypeShape EntityType="ForumModel.Avatar" Width="1.5" PointX="0.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="ForumModel.User" Width="1.5" PointX="3" PointY="3" IsExpanded="true" />
         <AssociationConnector Association="ForumModel.FK_AvatarId_Avatars" ManuallyRouted="false" />
-        <EntityTypeShape EntityType="ForumModel.Category" Width="1.5" PointX="6" PointY="5.625" />
-        <EntityTypeShape EntityType="ForumModel.Post" Width="1.5" PointX="5.25" PointY="1.375" />
-        <EntityTypeShape EntityType="ForumModel.Thread" Width="1.5" PointX="8.25" PointY="1.375" />
+        <EntityTypeShape EntityType="ForumModel.Category" Width="1.5" PointX="6" PointY="0.75" />
+        <EntityTypeShape EntityType="ForumModel.Post" Width="1.5" PointX="5.25" PointY="3.5" />
+        <EntityTypeShape EntityType="ForumModel.Thread" Width="1.5" PointX="8.25" PointY="3.375" />
         <AssociationConnector Association="ForumModel.FK_Threads_CategoryId" />
         <AssociationConnector Association="ForumModel.FK_Posts_AuthorId" />
         <AssociationConnector Association="ForumModel.FK_Posts_ThreadId" />
         <AssociationConnector Association="ForumModel.FK_Threads_AuthorId" />
-        <EntityTypeShape EntityType="ForumModel.V_Categories" Width="1.5" PointX="0.75" PointY="5.75" />
-        <EntityTypeShape EntityType="ForumModel.V_Threads" Width="1.5" PointX="2.75" PointY="5.75" />
+        <EntityTypeShape EntityType="ForumModel.V_Categories" Width="1.5" PointX="0.75" PointY="7.5" />
+        <EntityTypeShape EntityType="ForumModel.V_Threads" Width="1.5" PointX="2.75" PointY="7.5" />
+        <EntityTypeShape EntityType="ForumModel.Message" Width="1.5" PointX="5.25" PointY="7.25" />
+        <AssociationConnector Association="ForumModel.FK_Message_From" />
+        <AssociationConnector Association="ForumModel.FK_Message_To" />
+        <EntityTypeShape EntityType="ForumModel.Warning" Width="1.5" PointX="7.5" PointY="7.125" />
+        <AssociationConnector Association="ForumModel.FK_Warnings_PostId" />
+        <AssociationConnector Association="ForumModel.FK_Warnings_UserId" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

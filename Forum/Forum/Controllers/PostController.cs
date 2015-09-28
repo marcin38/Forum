@@ -55,6 +55,10 @@ namespace Forum.Controllers
                     post.CreationDate = DateTime.Now;
                     db.Posts.Add(post);
                     db.SaveChanges();
+
+/*                    Thread thread = db.Threads.SingleOrDefault(m => m.Id == post.ThreadId);
+                    db.SetModified(thread);
+                    db.SaveChanges();*/
                     return RedirectToAction("Index", "Thread", new { id = post.ThreadId });
                 }
                 else
@@ -89,7 +93,7 @@ namespace Forum.Controllers
                 {
                     db.SetModified(p);
                     db.SaveChanges();
-                    return RedirectToAction("Index", "Thread", new { id = post.ThreadId });
+                    return RedirectToAction("Index", "Thread", new { id = p.ThreadId });
                 }
                 else
                 {
@@ -100,6 +104,12 @@ namespace Forum.Controllers
             {
                 return RedirectToAction("Login", "User");
             }
+        }
+
+        public ActionResult ShowPost(int id)
+        {
+            Post post = db.Posts.Where(m => m.Id == id).Single();
+            return View(post);
         }
 
     }

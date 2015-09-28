@@ -10,6 +10,7 @@ namespace Forum
 {
     public class MvcApplication : System.Web.HttpApplication
     {
+        public static Dictionary<int, string> tokenDictionary = new Dictionary<int, string>();
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();

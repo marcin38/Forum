@@ -1,0 +1,25 @@
+﻿@model IEnumerable<Forum.Models.Warning>
+
+<table class="my-table">
+    <tr>
+        <td class="td1">
+            Reason for warning
+        </td>
+        <td class="td1">
+            Post for warning
+        </td>
+    </tr>
+    @foreach (var item in Model)
+    {
+        <tr>
+            <td class="td1">
+                @Html.DisplayFor(m => item.Reason)
+            </td>
+            <td class="td1">
+                @Html.DisplayFor(m => item.Post.PostContent)
+            </td>
+        </tr>
+    }
+
+</table>
+

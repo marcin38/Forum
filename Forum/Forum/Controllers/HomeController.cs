@@ -28,7 +28,12 @@ namespace Forum.Controllers
             return View(categories);
         }
 
-        public ActionResult Index2()
+        public ActionResult About()
+        {
+            return View();
+        }
+
+        public ActionResult Contact()
         {
             return View();
         }

@@ -16,6 +16,9 @@ namespace Forum.Models
         IDbSet<Thread> Threads { get; set; }
         IDbSet<V_Categories> V_Categories { get; set; }
         IDbSet<V_Threads> V_Threads { get; set; }
+        IDbSet<Message> Messages { get; set; }
+        IDbSet<Warning> Warnings { get; set; }
+
         int SaveChanges();
         void SetModified(object entity);
     }

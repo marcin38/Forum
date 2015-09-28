@@ -19,13 +19,15 @@
 /* Set width on the form input elements since they're 100% wide by default */
 input,
 select,
-textarea {
+textarea,
+.modal-dialog {
     max-width: 280px;
 }
 
 .input-validation-error,
 .field-validation-error,
-.validation-summary-errors
+.validation-summary-errors,
+.ban
 { 
     color: red; font-weight: bold;
 }
@@ -93,9 +95,43 @@ textarea {
     max-width: 100%
 }
 
-.edit-button
+.edit-button, 
+.report-button,
+.thread-button
 {
     float: right;
     padding: 0px 0px;
     margin-right: 4px
+}
+
+.my-table
+{
+    border: 1px solid black;
+    margin-bottom: 10px;
+}
+
+.margin-bottom
+{
+    margin-bottom: 10px
+}
+
+.margin-top
+{
+    margin-top: 10px
+}
+
+.message-header {
+    font-weight:normal
+}
+
+.message-unread-header
+{
+    font-weight:bold
+}
+
+.my-modal-dialog
+{
+    background-color: #D6DBE7; 
+    padding-bottom: 10px; 
+    padding-top: 10px
 }
