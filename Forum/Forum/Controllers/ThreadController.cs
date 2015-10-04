@@ -64,6 +64,7 @@ namespace Forum.Controllers
                     post.ThreadId = thread.Id;
                     db.Posts.Add(post);
                     db.SaveChanges();
+
                     return RedirectToAction("Index", "Category", new { id = pt.CategoryId });
                 }
                 return View(pt);

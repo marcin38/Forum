@@ -1,0 +1,45 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@model IPagedList<Forum.Models.Post>
+
+@{
+    ViewBag.Title = "Search";
+}
+
+@using (Html.BeginForm("Search", "Home", FormMethod.Get))
+{
+<h2>Search by:</h2>
+@Html.RadioButton("searchBy", Forum.Controllers.HomeController.SearchBy.User, true) <text> Author </text>
+@Html.RadioButton("searchBy", Forum.Controllers.HomeController.SearchBy.ThreadTitle) <text> Thread title</text>
+    @Html.RadioButton("searchBy", Forum.Controllers.HomeController.SearchBy.PostContent) <text> Post content</text>
+    <br>
+@Html.TextBox("search")
+<input type="submit" value="Search" />
+}
+
+<div class="thread-container">
+    @foreach (var item in Model)
+    {
+        <div class="post-container">
+            <div class="post-head">
+                <div class="thread-title"> 
+                @Html.ActionLink(item.Thread.Title, "Index", "Thread", new { id = item.ThreadId }, null)
+                </div>
+            </div>
+            <div class="post-content">
+                @Html.DisplayFor(m => item.PostContent)
+            </div>
+        </div>
+        
+        
+    }
+</div>
+
+@Html.PagedListPager(Model, page => Url.Action("Search", new { page, searchBy = Request.QueryString["searchBy"], search = Request.QueryString["search"] }),
+new PagedListRenderOptions()
+{
+    Display = PagedListDisplayMode.IfNeeded,
+    LinkToFirstPageFormat = "First",
+    LinkToLastPageFormat = "Last"
+}) 

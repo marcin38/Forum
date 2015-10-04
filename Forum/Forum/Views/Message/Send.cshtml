@@ -6,6 +6,15 @@
     ViewBag.Title = "New message";
 }
 
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#messageTo').autocomplete(
+            {
+                source: '@Url.Action("FindUser")'
+            });
+    })
+</script>
+
 <h2>New message</h2>
 
 <div class="login-wrap form-horizontal">

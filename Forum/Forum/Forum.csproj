@@ -181,6 +181,7 @@
     <Compile Include="Models\Category.cs">
       <DependentUpon>ForumModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\CategoryMetaData.cs" />
     <Compile Include="Models\ForumDBContext.cs" />
     <Compile Include="Models\ForumModel.Context.cs">
       <AutoGen>True</AutoGen>
@@ -203,9 +204,11 @@
       <DependentUpon>ForumModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\MessageMetaData.cs" />
+    <Compile Include="Models\PostMetaData.cs" />
     <Compile Include="Models\Warning.cs">
       <DependentUpon>ForumModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\WarningMetaData.cs" />
     <Compile Include="ViewModels\MessageSendViewModel.cs" />
     <Compile Include="ViewModels\UserRegisterViewModel.cs" />
     <Compile Include="Models\Post.cs">
@@ -350,6 +353,7 @@
     <Content Include="Views\Warning\Warn.cshtml" />
     <Content Include="Views\Warning\Index.cshtml" />
     <Content Include="Views\User\MyPosts.cshtml" />
+    <Content Include="Views\Home\Search.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

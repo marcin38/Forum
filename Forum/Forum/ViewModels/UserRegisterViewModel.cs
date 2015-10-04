@@ -9,10 +9,13 @@ namespace Forum.ViewModels
 {
     public class UserRegisterViewModelMetaData 
     {
+        [System.Web.Mvc.Remote("IsUserNameAvailable", "User", ErrorMessage = "Ta nazwa użytkownika jest zajęta")]
         [Required]
         [StringLength(50, MinimumLength = 3)]
         public string Name { get; set; }
 
+        [Required]
+        public string Email { get; set; }
     }
 
     [MetadataType(typeof(UserRegisterViewModelMetaData))]

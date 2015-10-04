@@ -257,6 +257,21 @@ namespace Forum.Controllers
             return View(posts);
         }
 
+        public JsonResult IsUserNameAvailable(string Name)
+        {
+            bool result = false;
+            try
+            {
+                User user = db.Users.Where(m => m.Name == Name.ToLower()).Single();
+                result = true;
+            }
+            catch
+            {
+                result = false;
+            }
+            return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
         private byte[] ComputeHash(string data, string salt)
         {            
             SHA256 sha = new SHA256CryptoServiceProvider();

@@ -9,9 +9,11 @@ namespace Forum.Models
 {
     public class MessageMetaData
     {
+        [Required]
         [AllowHtml]
         public string Subject { get; set; }
 
+        [Required]
         [AllowHtml]
         public string Body { get; set; }
     }

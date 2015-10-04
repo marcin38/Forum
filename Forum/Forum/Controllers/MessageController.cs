@@ -114,12 +114,21 @@ namespace Forum.Controllers
         public ActionResult DeleteConfirmed(int id)
         {
             Message message = db.Messages.Where(m => m.Id == id).SingleOrDefault();
-            message.DeletedBySender = true;
+
+            if (message.From == GetUserId())
+            {
+                message.DeletedBySender = true;
+            }
+            else
+            {
+                message.DeletedByRecipient = true;
+            }
             db.SetModified(message);
             db.SaveChanges();
 
             return RedirectToAction("Index", new { type = Forum.Controllers.MessageController.MailboxType.Inbox });
         }
+             
 
     }
 }
