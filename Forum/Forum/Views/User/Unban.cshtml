@@ -1,16 +1,18 @@
-﻿@model Forum.Models.User
+﻿@model Domain.Models.User
 
 <h3>Are you sure you want to unban this user? His posts and threads will remain intact.</h3>
 <div>
     <hr />
-    @Html.Partial("ShowProfile")
+    @Html.Partial(MVC.Shared.Views.ShowProfile)
 
     @using (Html.BeginForm())
     {
+        @Html.ValidationSummary(true)
         @Html.AntiForgeryToken()
+        
         <div class="form-actions no-color">
             <input type="submit" value="Unban" class="btn btn-danger" />
-            @Html.ActionLink("Cancel", "Index")
+            @Html.ActionLink("Cancel", MVC.User.Unban())
         </div>
     }
 </div>

@@ -1,4 +1,4 @@
-﻿@model Forum.Models.Category
+﻿@model Domain.Models.Category
 
 <h3>Are you sure you want to delete this? It will delete all threads and posts in that category.</h3>
 <div>
@@ -23,10 +23,12 @@
 
     @using (Html.BeginForm())
     {
+        @Html.ValidationSummary(true)
         @Html.AntiForgeryToken()
+        
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-danger" /> 
-            @Html.ActionLink("Cancel", "AdministerCategories", "User")
+            @Html.ActionLink("Cancel", MVC.User.AdministerCategories())
         </div>
     }
 </div>

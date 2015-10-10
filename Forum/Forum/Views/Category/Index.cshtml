@@ -5,7 +5,7 @@
     ViewBag.Title = "Category/Index";
 }
 
-@model IPagedList<Forum.Models.V_Threads>
+@model IPagedList<Domain.Models.V_Threads>
 
 
 <table class="my-table">
@@ -27,7 +27,7 @@
     {
         <tr>
             <td class="td1">
-                @Html.ActionLink(item.Title, "Index", "Thread", new {id = item.Id }, null)
+                @Html.ActionLink(item.Title, MVC.Thread.Index(item.Id, null), null)
             </td>
             <td class="td1">
                 @Html.DisplayFor(m => item.WhenAddedLastPost) by @Html.DisplayFor(m => item.WhoAddedLastPost)
@@ -43,13 +43,14 @@
 
 </table>
 
-@if (((Forum.Controllers.BaseController)this.ViewContext.Controller).CheckIfUserIsAuthenticated())
+@if (User != null && User.Identity.IsAuthenticated)
 { 
     <div class="col-md-10 form-group">
-        <button class="btn btn-success" type="button" onclick="location.href='@Url.Action("AddThread", "Thread", new { categoryId = ViewContext.RouteData.Values["id"] })'">Add new thread</button>
+        <button class="btn btn-success" type="button" onclick="location.href='@Url.Action(MVC.Thread.AddThread(int.Parse(ViewContext.RouteData.Values["id"].ToString())))'">Add new thread</button>
     </div>
 }
 
-@Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
+
+@Html.PagedListPager(Model, page => Url.Action(MVC.Category.Index(int.Parse(ViewContext.RouteData.Values["id"].ToString()), page )),
 new PagedListRenderOptions() {Display = PagedListDisplayMode.IfNeeded })
-@Html.ActionLink("Back to categories", "Index", "Home")
+@Html.ActionLink("Back to categories", MVC.Home.Index())

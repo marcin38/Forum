@@ -1,70 +1,45 @@
-﻿using Forum.Models;
+﻿using Elmah;
+using Forum.Authorization;
+using Forum.Controllers.Interfaces;
+using Forum.Exceptions;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
 namespace Forum.Controllers
 {
-    //[RequireHttps]
-    public class BaseController : Controller
+    
+    public partial class BaseController : Controller, IBaseController
     {
         protected int ItemsPerPage() 
         { 
             return 10;
         }
 
-        public bool CheckIfUserIsAuthenticated()
+        protected virtual new CustomPrincipal User
         {
-            HttpCookie cookie = Request.Cookies["f_user"];
-            if (cookie == null)
-                return false;
-            else 
-            {
-                int id = int.Parse(cookie.Values["Id"]);
-                string token = cookie.Values["Token"];
-                if (!MvcApplication.tokenDictionary.ContainsKey(id) || !String.Equals(token, MvcApplication.tokenDictionary[id]))
-                    return false;
-                else
-                {
-                    return true;
-                }
-            }
-            
+            get { return HttpContext.User as CustomPrincipal; }
         }
 
-        public bool CheckIfUserIsAdministrator()
+        protected ActionResult HandleException(Exception ex)
         {
-            if (!this.CheckIfUserIsAuthenticated())
-            {    
-                return false;
+            int statusCode;
+
+            if (ex.GetType() == typeof(HttpException))
+            {
+                statusCode = ((HttpException)ex).GetHttpCode();
+            }
+            else if (ex.GetType() == typeof(MyException))
+            {
+                statusCode = ((MyException)ex).status;
             }
             else
             {
-                int id = GetUserId();
-                User user = (new ForumDBContext()).Users.SingleOrDefault(m => m.Id == id);
-                return user.IsAdministrator;
+                statusCode = 500;
             }
-        }
+            ErrorSignal.FromCurrentContext().Raise(ex);
 
-        public string GetUserName()
-        {
-            HttpCookie cookie = Request.Cookies["f_user"];
-            if (cookie == null)
-                return String.Empty;
-            else
-                return cookie.Values["Name"];
+            return RedirectToAction(MVC.Error.Index(statusCode, ex));
         }
-
-        public int GetUserId()
-        {
-            HttpCookie cookie = Request.Cookies["f_user"];
-            if (cookie == null)
-                return -1;
-            else
-                return int.Parse(cookie.Values["Id"]);
-        }
-
     }
 }

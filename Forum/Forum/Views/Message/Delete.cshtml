@@ -1,4 +1,4 @@
-﻿@model Forum.Models.Message
+﻿@model Domain.Models.Message
 
 <h3>Are you sure you want to delete this? It is irreversible.</h3>
 <div>
@@ -31,10 +31,12 @@
 
     @using (Html.BeginForm())
     {
+        @Html.ValidationSummary(true)
         @Html.AntiForgeryToken()
+        
         <div class="form-actions no-color">
             <input type="submit" value="Delete" class="btn btn-danger" />
-            @Html.ActionLink("Cancel", "Index", new { type = Forum.Controllers.MessageController.MailboxType.Inbox })
+            @Html.ActionLink("Cancel", MVC.Message.Index(Forum.Controllers.MessageController.MailboxType.Inbox.ToString(), null)) 
         </div>
     }
 </div>

@@ -1,19 +1,12 @@
-﻿@model Forum.Models.Post
+﻿@model Domain.Models.Post
 
 @{
-        bool isAdministrator = ((Forum.Controllers.BaseController)this.ViewContext.Controller).CheckIfUserIsAuthenticated();
+    bool isAdministrator = User != null && User.IsInRole("Administrator");
 <div class="post-container">
     <div class="post-head">
         <div class="thread-title"> @Html.DisplayFor(m => m.Thread.Title)</div>
 
-        @if (isAdministrator)
-        {
-            @Html.ActionLink(Model.User.Name, "ShowProfile", "User", new { id = Model.AuthorId }, null)
-        }
-        else
-        {
-            @Html.DisplayFor(m => Model.User.Name)
-        }
+        @Html.ActionLink(Model.User.Name, MVC.User.ShowProfile(Model.AuthorId))
         @Html.DisplayFor(m => Model.CreationDate)
     </div>
     <div class="post-content">
@@ -22,8 +15,8 @@
     @if (isAdministrator)
     {
             <div class="form-actions no-color">
-                @Html.ActionLink("Warn", "Warn", "Warning", new { postId = Model.Id }, null)
-                @Html.ActionLink("Inbox", "Index", "Message", new {type = Forum.Controllers.MessageController.MailboxType.Inbox }, null)
+                @Html.ActionLink("Warn", MVC.Warning.Warn(Model.Id))
+                @Html.ActionLink("Inbox", MVC.Message.Index(Forum.Controllers.MessageController.MailboxType.Inbox.ToString(), null))
             </div>
     }
 </div>

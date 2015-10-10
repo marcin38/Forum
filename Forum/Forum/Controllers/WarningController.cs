@@ -1,30 +1,40 @@
-﻿using Forum.Controllers.Interfaces;
-using Forum.Models;
-using System;
+﻿using Domain.Models;
+using Forum.Controllers.Interfaces;
+using Forum.Exceptions;
+using Repositories.Repositories.Interfaces;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
 namespace Forum.Controllers
 {
-    public class WarningController : BaseController, IWarningController
+    [Authorize(Roles = "Administrator")]
+    public partial class WarningController : BaseController, IWarningController
     {
-        private IForumDBContext db;
+        private IWarningRepository warningRepository;
+        private IPostRepository postRepository;
+        private IUserRepository userRepository;
 
-        public WarningController()
+        public WarningController(){}
+
+        public WarningController(IWarningRepository warningRepository, IPostRepository postRepository, IUserRepository userRepository)
         {
-            db = new ForumDBContext();
+            this.warningRepository = warningRepository;
+            this.postRepository = postRepository;
+            this.userRepository = userRepository;
         }
 
-        public WarningController(IForumDBContext db)
+        public virtual ActionResult Index(int id)
         {
-            this.db = db;
+            List<Warning> warnings = warningRepository.Get(m => m.UserId == id).ToList();
+            return View(warnings);
         }
 
-        public ActionResult Warn(int postId)
+        public virtual ActionResult Warn(int postId)
         {
-            Post post = db.Posts.Where(m => m.Id == postId).Single();
+            Post post = postRepository.Get(m => m.Id == postId).Single();
+            if (post == null)
+                return RedirectToAction(MVC.Error.Index(-1, new MyException(-1)));
             User user = post.User;
 
             Warning warning = new Warning() { PostId = post.Id, UserId = user.Id, User = user };
@@ -32,32 +42,28 @@ namespace Forum.Controllers
         }
 
         [HttpPost]
-        public ActionResult Warn(Warning warning)
+        [ValidateAntiForgeryToken]
+        public virtual ActionResult Warn(Warning warning)
         {
             if (ModelState.IsValid)
             {
                 int userId = warning.UserId;
-                User user = db.Users.Where(m => m.Id == userId).Single();
+                User user = userRepository.Get(m => m.Id == userId).Single();
                 user.NumberOfWarnings++;
 
-                db.SetModified(user);
-                db.Warnings.Add(warning);
-                db.SaveChanges();
+                userRepository.Update(user);
+                warningRepository.Insert(warning);
+                warningRepository.Save();
 
 
-                return RedirectToAction("Index", "Message", new { type = Forum.Controllers.MessageController.MailboxType.Inbox });
+                return RedirectToAction(MVC.Message.Index(Forum.Controllers.MessageController.MailboxType.Inbox.ToString(),null));
             }
             int postId = warning.PostId;
-            User u = db.Posts.Where(m => m.Id == postId).Single().User;
+            User u = postRepository.Get(m => m.Id == postId).Single().User;
             warning.User = u;
             return View(warning);
         }
 
-        public ActionResult Index(int id)
-        {
-            List<Warning> warnings = db.Warnings.Where(m => m.UserId == id).ToList();
-            return View(warnings);
-        }
-
+        
     }
 }

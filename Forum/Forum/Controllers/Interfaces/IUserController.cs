@@ -1,10 +1,4 @@
-﻿using Forum.Models;
-using Forum.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Forum.ViewModels;
 using System.Web;
 using System.Web.Mvc;
 
@@ -12,14 +6,24 @@ namespace Forum.Controllers.Interfaces
 {
     interface IUserController
     {
+        ActionResult Index(int? page);
         ActionResult Register();
         ActionResult Register(UserRegisterViewModel user, HttpPostedFileBase upload);
-        ActionResult Login();
-        ActionResult Login(AccountCredentials credentials);
+        ActionResult Login(string returnUrl);
+        ActionResult Login(UserLoginViewModel credentials, string returnUrl);
         ActionResult LogOff();
         ActionResult ShowProfile(int? id);
+        ActionResult RenderPhoto(int id);
         ActionResult EditProfile(int id);
         ActionResult EditProfile(UserEditProfileViewModel user, HttpPostedFileBase upload);
         ActionResult AdministerCategories();
+        ActionResult Delete(int id);
+        ActionResult DeleteConfirmed(int id);
+        ActionResult Ban(int id);
+        ActionResult BanConfirmed(int id);
+        ActionResult Unban(int id);
+        ActionResult UnbanConfirmed(int id);
+        ActionResult MyPosts(int? page);
+        JsonResult IsUserNameAvailable(string Name);
     }
 }

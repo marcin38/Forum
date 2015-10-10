@@ -1,6 +1,4 @@
-﻿@model Forum.Models.AccountCredentials
-
-@using Forum.Models
+﻿@model Forum.ViewModels.UserLoginViewModel
 
 @{
     ViewBag.Title = "Sign in";
@@ -9,9 +7,9 @@
 <h2>Sign in</h2>
 
 <div class="login-wrap form-horizontal">
-    @using (Html.BeginForm("Login", "User", FormMethod.Post))
+    @using (Html.BeginForm(MVC.User.Login((string) ViewBag.ReturnUrl), FormMethod.Post))
     {
-        
+        @Html.AntiForgeryToken()
 
         <div class="form-group">
             @Html.LabelFor(m => m.Name, new { @class = "col-md-3" })

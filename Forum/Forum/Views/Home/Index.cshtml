@@ -1,6 +1,6 @@
-﻿@model IEnumerable<Forum.Models.V_Categories>
+﻿@model IEnumerable<Domain.Models.V_Categories>
 
-@Html.ActionLink("Search", "Search")
+@Html.ActionLink("Search", MVC.Home.Search())
 
 <table class="my-table">
     <tr>
@@ -21,7 +21,7 @@
     {
         <tr>
             <td class="td1">
-                @Html.ActionLink(item.Name, "Index", "Category", new { id = item.Id }, null)
+                @Html.ActionLink(item.Name, MVC.Category.Index(item.Id, null))
                 <br />
                 @Html.DisplayFor(m => item.Description)
             </td>

@@ -1,7 +1,7 @@
 ﻿@using PagedList;
 @using PagedList.Mvc;
 
-@model IPagedList<Forum.Models.Post>
+@model IPagedList<Domain.Models.Post>
 
 @{
     ViewBag.Title = "Search";
@@ -24,7 +24,7 @@
         <div class="post-container">
             <div class="post-head">
                 <div class="thread-title"> 
-                @Html.ActionLink(item.Thread.Title, "Index", "Thread", new { id = item.ThreadId }, null)
+                @Html.ActionLink(item.Thread.Title, MVC.Thread.Index(item.ThreadId, null))
                 </div>
             </div>
             <div class="post-content">
@@ -36,7 +36,7 @@
     }
 </div>
 
-@Html.PagedListPager(Model, page => Url.Action("Search", new { page, searchBy = Request.QueryString["searchBy"], search = Request.QueryString["search"] }),
+@Html.PagedListPager(Model, page => Url.Action(MVC.Home.Search(Request.QueryString["searchBy"], Request.QueryString["search"], page)),
 new PagedListRenderOptions()
 {
     Display = PagedListDisplayMode.IfNeeded,

@@ -1,4 +1,4 @@
-﻿@model Forum.Models.User
+﻿@model Domain.Models.User
 
 <div class="login-wrap form-horizontal">
 @using (Html.BeginForm())
@@ -41,16 +41,16 @@
     <div class="form-group">
         @Html.Label("Avatar", new { @class = "col-md-3" })
         <div class="col-md-10">
-            <img src='@Url.Action("RenderPhoto", "User", new { id = @Model.AvatarId })' alt="avatar">
+            <img src='@Url.Action(MVC.User.RenderPhoto(Model.AvatarId ?? -1))' alt="avatar">
         </div>
     </div>
     }
 
     <div class="col-md-3 form-group">
-        @if (Model.Id == ((Forum.Controllers.BaseController)this.ViewContext.Controller).GetUserId())
+        @if (Model.Id == User.Id)
         {
-            <button class="btn btn-warning btn-block" type="button" onclick="location.href='@Url.Action("EditProfile", "User", new { id = Model.Id })'">Edit profile</button>
-            <button class="btn btn-primary btn-block" type="button" onclick="location.href='@Url.Action("MyPosts", "User", new { userId = Model.Id })'">Show my posts</button>
+            <button class="btn btn-warning btn-block" type="button" onclick="location.href='@Url.Action(MVC.User.EditProfile(Model.Id))'">Edit profile</button>
+            <button class="btn btn-primary btn-block" type="button" onclick="location.href='@Url.Action(MVC.User.MyPosts())'">Show my posts</button>
         }
         
     </div>

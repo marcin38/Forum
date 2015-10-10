@@ -7,9 +7,11 @@
 <h2>Edit profile</h2>
 
 <div class="login-wrap form-horizontal">
-    @using (Html.BeginForm("EditProfile", "User", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    @using (Html.BeginForm(MVC.User.EditProfile(), FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
-        //@Html.ValidationSummary()
+        @Html.ValidationSummary(true)
+        @Html.AntiForgeryToken()
+
         @Html.HiddenFor(m => m.Id)
         
         <div class="form-group">
@@ -41,7 +43,7 @@
             <div class="form-group">
                 @Html.Label("Current avatar", new { @class = "col-md-3" })
                 <div class="col-md-10">
-                    <img src='@Url.Action("RenderPhoto", "User", new { id = @Model.AvatarId })' alt="avatar">
+                    <img src='@Url.Action(MVC.User.RenderPhoto(Model.AvatarId ?? -1))' alt="avatar">
                 </div>
             </div>
         }

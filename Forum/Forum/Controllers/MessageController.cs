@@ -1,19 +1,22 @@
-﻿using Forum.Controllers.Interfaces;
-using Forum.Models;
+﻿using Domain.Models;
+using Forum.Controllers.Interfaces;
+using Forum.Exceptions;
 using Forum.ViewModels;
+using PagedList;
+using Repositories.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using PagedList;
-using PagedList.Mvc;
 
 namespace Forum.Controllers
 {
-    public class MessageController : BaseController, IMessageController
+    [Authorize]
+    public partial class MessageController : BaseController, IMessageController
     {
-        private IForumDBContext db;
+        private IMessageRepository messageRepository;
+        private IUserRepository userRepository;
 
         public enum MailboxType
         {
@@ -21,44 +24,43 @@ namespace Forum.Controllers
             Sent = 2
         }
 
-        public MessageController()
+        public MessageController() { }
+
+        public MessageController(IMessageRepository messageRepository, IUserRepository userRepository)
         {
-            db = new ForumDBContext();
+            this.messageRepository = messageRepository;
+            this.userRepository = userRepository;
         }
 
-        public MessageController(IForumDBContext db)
+        public virtual ActionResult Index(string type, int? page)
         {
-            this.db = db;
-        }
 
-        // GET: Message
-        public ActionResult Index(string type, int? page)
-        {
             IPagedList<Message> messages = null;
             if (type.Equals(MailboxType.Inbox.ToString()))
             {
-                int to = GetUserId();
-                messages = db.Messages.Where(m => m.To == to && m.DeletedBySender == false).ToList().ToPagedList(page ?? 1, ItemsPerPage());
+                int to = User.Id;
+                messages = messageRepository.Get(m => m.To == to && m.DeletedByRecipient == false).ToList().ToPagedList(page ?? 1, ItemsPerPage());
             }
             else if (type.Equals(MailboxType.Sent.ToString()))
             {
-                int from = GetUserId();
-                messages = db.Messages.Where(m => m.From == from && m.DeletedBySender == false).ToList().ToPagedList(page ?? 1, ItemsPerPage());
+                int from = User.Id;
+                messages = messageRepository.Get(m => m.From == from && m.DeletedBySender == false).ToList().ToPagedList(page ?? 1, ItemsPerPage());
             }
             ViewBag.Type = type;
             return View(messages);
 
         }
 
-        public ActionResult Send()
+        public virtual ActionResult Send()
         {
             MessageSendViewModel message = new MessageSendViewModel();
-            message.Users = new SelectList(db.Users.Where(m => m.RemovalDate == null), "Id", "Name");
+            message.Users = new SelectList(userRepository.Get(m => m.RemovalDate == null), "Id", "Name");
             return View(message);
         }
 
         [HttpPost]
-        public ActionResult Send(Message message)
+        [ValidateAntiForgeryToken]
+        public virtual ActionResult Send(Message message)
         {
             if (ModelState.IsValid)
             {
@@ -66,69 +68,130 @@ namespace Forum.Controllers
                 message.DeletedBySender = false;
                 message.IsRead = false;
                 message.SentDate = DateTime.Now;
-                message.From = GetUserId();
+                message.From = User.Id;
                 if (message.To == 0)
                 {
-                    List<User> moderators = db.Users.Where(m => m.IsAdministrator == true).ToList();
+                    List<User> moderators = userRepository.Get(m => m.IsAdministrator == true).ToList();
                     foreach (User m in moderators)
                     {
                         message.To = m.Id;
-                        db.Messages.Add(message);
+                        messageRepository.Insert(message);
                     }
                 }
                 else
                 {
-                    db.Messages.Add(message);
+                    messageRepository.Insert(message);
                 }
 
-                db.SaveChanges();
+                messageRepository.Save();
 
-                return RedirectToAction("Index", new { type = MailboxType.Sent });
+                return RedirectToAction(MVC.Message.Index(MailboxType.Sent.ToString(), null));
             }
 
             return View(message);
         }
 
-        public ActionResult Show(int id)
+        public virtual ActionResult Show(int id)
         {
-            Message message = db.Messages.Where(m => m.Id == id && m.DeletedBySender == false).SingleOrDefault();
-            int userId = GetUserId();
-            bool markAsRead = userId.Equals(message.To);
-
-            if (markAsRead && !message.IsRead)
+            try
             {
-                message.IsRead = true;
-                db.SetModified(message);
-                db.SaveChanges();
+                Message message = GetMyMessageById(id);
+
+                int userId = User.Id;
+                bool markAsRead = userId.Equals(message.To);
+
+                if (markAsRead && !message.IsRead)
+                {
+                    message.IsRead = true;
+
+                    messageRepository.Update(message);
+                    messageRepository.Save();
+                }
+                return PartialView(MVC.Message.Views._Body, message);
             }
-            return PartialView("_Body", message);
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
-        public ActionResult Delete(int id)
+        public virtual ActionResult Delete(int id)
         {
-            Message message = db.Messages.Where(m => m.Id == id).SingleOrDefault();
-            return View(message);
+            try
+            {
+                Message message = GetMyMessageById(id);
+                return View(message);
+            }
+            catch(Exception ex)
+            {
+                return HandleException(ex);
+            }
+
         }
 
-        [HttpPost, ActionName("Delete")]
-        public ActionResult DeleteConfirmed(int id)
+        [HttpPost]
+        [ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public virtual ActionResult DeleteConfirmed(int id)
         {
-            Message message = db.Messages.Where(m => m.Id == id).SingleOrDefault();
-
-            if (message.From == GetUserId())
+            try
             {
-                message.DeletedBySender = true;
-            }
-            else
-            {
-                message.DeletedByRecipient = true;
-            }
-            db.SetModified(message);
-            db.SaveChanges();
+                Message message = messageRepository.Get(m => m.Id == id).Single();
 
-            return RedirectToAction("Index", new { type = Forum.Controllers.MessageController.MailboxType.Inbox });
+                if (ModelState.IsValid)
+                {
+
+                    if (message.From == User.Id)
+                    {
+                        message.DeletedBySender = true;
+                    }
+                    else
+                    {
+                        message.DeletedByRecipient = true;
+                    }
+                    messageRepository.Update(message);
+                    messageRepository.Save();
+
+                    if (message.From == User.Id)
+                    {
+                        return RedirectToAction(MVC.Message.Index(MailboxType.Inbox.ToString(), null));
+                    }
+                    else
+                    {
+                        return RedirectToAction(MVC.Message.Index(MailboxType.Sent.ToString(), null));
+                    }
+                }
+
+                return View(message);
+            }
+            catch(Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
-             
+
+        private Message GetMyMessageById(int id)
+        {
+            Message message = GetMessageById(id);
+
+            if (User == null || (User.Id != message.From && User.Id != message.To))
+            {
+                throw new HttpException(403, "Unauthorized access. The request requires user authentication. If the request already included Authorization credentials, then the 401 response indicates that authorization has been refused for those credentials.");
+
+            }
+
+            return message;
+        }
+
+        private Message GetMessageById(int id)
+        {
+            Message message = messageRepository.Get(m => m.Id == id && (m.DeletedBySender == false || m.DeletedByRecipient == false)).FirstOrDefault();
+            if (message == null)
+            {
+                throw new MyException(-1);
+            }
+            return message;
+        }
 
     }
 }

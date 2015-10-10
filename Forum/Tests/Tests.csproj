@@ -90,15 +90,27 @@
     </Otherwise>
   </Choose>
   <ItemGroup>
-    <Compile Include="FakeDbSet.cs" />
-    <Compile Include="FakeForumDBContext.cs" />
+    <Compile Include="FakeDB\FakeDbSet.cs" />
+    <Compile Include="FakeDB\FakeForumDBContext.cs" />
+    <Compile Include="FakeDB\IFakeDBContext.cs" />
+    <Compile Include="FakeRepositories\FakeCategoryRepository.cs" />
+    <Compile Include="FakeRepositories\FakeRepository.cs" />
+    <Compile Include="CategoryControllerTest.cs" />
     <Compile Include="UserControllerTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\Domain\Domain.csproj">
+      <Project>{1dde9b88-4028-4819-8372-02605da7b3c8}</Project>
+      <Name>Domain</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Forum\Forum.csproj">
       <Project>{d895a6c2-fc84-4839-8953-fb0cea043cad}</Project>
       <Name>Forum</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Repositories\Repositories.csproj">
+      <Project>{3046c4ed-b840-4951-a8ab-5c1713ec1b8f}</Project>
+      <Name>Repositories</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

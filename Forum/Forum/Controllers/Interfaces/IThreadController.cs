@@ -1,10 +1,4 @@
-﻿using Forum.Models;
-using Forum.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Forum.ViewModels;
 using System.Web.Mvc;
 
 namespace Forum.Controllers.Interfaces

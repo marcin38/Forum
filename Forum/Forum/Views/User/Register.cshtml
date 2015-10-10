@@ -9,9 +9,10 @@
 <h2>Register</h2>
 
 <div class="login-wrap form-horizontal">
-    @using (Html.BeginForm("Register", "User", null, FormMethod.Post, new { enctype = "multipart/form-data" }))
+    @using (Html.BeginForm(MVC.User.Register(), FormMethod.Post, new { enctype = "multipart/form-data" }))
     {
-        //@Html.ValidationSummary()
+        @Html.ValidationSummary(true)
+        @Html.AntiForgeryToken()
 
         <div class="form-group">
             @Html.LabelFor(m => m.Name, new { @class = "col-md-3" })
@@ -40,6 +41,7 @@
         <div class="form-group">
             @Html.LabelFor(m => m.Email, new { @class = "col-md-3" })
             <div class="col-md-10">
+
                 @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
                 @Html.ValidationMessageFor(m => m.Email)
             </div>

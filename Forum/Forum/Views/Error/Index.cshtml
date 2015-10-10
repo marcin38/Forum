@@ -1,0 +1,33 @@
+﻿@model Forum.Models.ErrorModel
+
+<div style="padding-top:100px; padding-left:60px; padding-right:150px; text-align:justify">
+
+    <div class="alert alert-info">
+        @{
+            string message = String.Empty;
+            switch (Model.HttpStatusCode)
+            {
+                case -1:
+                    message = "Object you are trying to edit or remove does not exists";
+                    break;
+                case 403:
+                    message = "Authentication credentials were missing or incorrect. If the request already included Authentication credentials, then the 403 response indicates that authentication has been refused for those credentials.";
+                    break;
+                case 404:
+                    message = "We can't find the page you are looking for. Be sure to check your spelling.";
+                    break;
+                case 500:
+                    message = "Internal Server Error. Something is broken.";
+                    break;
+                default:
+                    message = "Unexpected error occurred. Try again in a moment";
+                    break;
+            }
+
+        }
+        <div class="alert alert-info">
+            <h1>Error @Model.HttpStatusCode</h1>
+            <p><strong>@message</strong></p>
+        </div>
+    </div>
+</div>

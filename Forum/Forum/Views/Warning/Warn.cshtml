@@ -1,4 +1,4 @@
-﻿@model Forum.Models.Warning
+﻿@model Domain.Models.Warning
 
 <h3>Are you sure you want to warn this user?</h3>
 <div>
@@ -6,10 +6,11 @@
         @Html.Partial("ShowProfile", Model.User);
 
     <div class="login-wrap form-horizontal">
-        @using (Html.BeginForm("Warn", "Warning", new { postId = Model.PostId }, FormMethod.Post))
+        @using (Html.BeginForm(MVC.Warning.Warn(Model.PostId), FormMethod.Post))
         {
-            @Html.ValidationSummary();
+            @Html.ValidationSummary(true)
             @Html.AntiForgeryToken()
+            
             @Html.HiddenFor(m => m.PostId)
             @Html.HiddenFor(m => m.UserId)
             <hr />
@@ -33,7 +34,7 @@
 
     <div class="form-group">
         <div class="col-md-10">
-            @Html.ActionLink("Inbox", "Index", "Message", new { type = Forum.Controllers.MessageController.MailboxType.Inbox }, null)
+            @Html.ActionLink("Inbox", MVC.Message.Index(Forum.Controllers.MessageController.MailboxType.Inbox.ToString(), null))
         </div>
     </div>
         }

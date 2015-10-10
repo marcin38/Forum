@@ -1,8 +1,11 @@
-﻿@model Forum.Models.Category
+﻿@model Domain.Models.Category
 
 <div class="login-wrap form-horizontal">
     @using (Html.BeginForm())
     {
+        @Html.ValidationSummary(true)
+        @Html.AntiForgeryToken()
+        
         <div class="form-group">
             @Html.LabelFor(m => m.Name, new { @class = "col-md-3" })
             <div class="col-md-10">
@@ -28,5 +31,5 @@
 </div>
 
     <div>
-        @Html.ActionLink("Cancel", "AdministerCategories", "User")
+        @Html.ActionLink("Cancel", MVC.User.AdministerCategories())
     </div>

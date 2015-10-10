@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Forum.Models.Category>
+﻿@model IEnumerable<Domain.Models.Category>
 
 <p>
     @Html.ActionLink("Create New", "Create", "Category")
@@ -27,8 +27,8 @@
             </td>
             <td class="td1">
                 
-                @Html.ActionLink("Edit", "Edit", "Category",new { id = item.Id }, null)
-                @Html.ActionLink("Delete", "Delete", "Category", new { id = item.Id }, null)
+                @Html.ActionLink("Edit", MVC.Category.Edit(item.Id))
+                @Html.ActionLink("Delete", MVC.Category.Delete(item.Id))
             </td>
         </tr>
     }

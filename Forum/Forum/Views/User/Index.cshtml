@@ -1,7 +1,7 @@
 ﻿@using PagedList;
 @using PagedList.Mvc;
 
-@model IPagedList<Forum.Models.User>
+@model IPagedList<Domain.Models.User>
 
 <table class="my-table">
     <tr>
@@ -40,7 +40,7 @@
                 @Html.DisplayFor(m => item.Id)
             </td>
             <td class="td1">
-                @Html.ActionLink(item.Name, "ShowProfile", new { id = item.Id })
+                @Html.ActionLink(item.Name, MVC.User.ShowProfile(item.Id))
             </td>
             <td class="td1">
                 @Html.DisplayFor(m => item.Email)
@@ -61,10 +61,10 @@
                 @Html.CheckBoxFor(m => item.IsBanned, new { @disabled = "disabled" })
             </td>
             <td class="td1">
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id}) |
-                @Html.ActionLink("Ban", "Ban", new { id = item.Id }) |
-                @Html.ActionLink("Unban", "Unban", new { id = item.Id }) |
-                @Html.ActionLink("Show warnings", "Index", "Warning", new { id = item.Id }, null)
+                @Html.ActionLink("Delete", MVC.User.Delete(item.Id)) |
+                @Html.ActionLink("Ban", MVC.User.Ban(item.Id)) |
+                @Html.ActionLink("Unban", MVC.User.Unban(item.Id)) |
+                @Html.ActionLink("Show warnings", MVC.Warning.Index(item.Id))
             </td>
 
         </tr>

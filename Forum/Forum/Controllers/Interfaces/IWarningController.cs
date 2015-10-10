@@ -1,12 +1,12 @@
-﻿using Forum.Models;
-using System;
+﻿using Domain.Models;
+using System.Web.Mvc;
 
 namespace Forum.Controllers.Interfaces
 {
     interface IWarningController
     {
-        System.Web.Mvc.ActionResult Index(int id);
-        System.Web.Mvc.ActionResult Warn(Warning warning);
-        System.Web.Mvc.ActionResult Warn(int postId);
+        ActionResult Index(int id);
+        ActionResult Warn(Warning warning);
+        ActionResult Warn(int postId);
     }
 }

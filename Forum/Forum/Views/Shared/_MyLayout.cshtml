@@ -26,32 +26,32 @@
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    <li>@Html.ActionLink("Home", MVC.Home.Index())</li>
+                    <li>@Html.ActionLink("About", MVC.Home.About())</li>
+                    <li>@Html.ActionLink("Contact", MVC.Home.Contact())</li>
                 </ul>
 
-                @if (!((Forum.Controllers.BaseController)this.ViewContext.Controller).CheckIfUserIsAuthenticated())
+                @if (User == null || !User.Identity.IsAuthenticated)
                 {
                     <ul class="nav navbar-nav navbar-right">
-                        <li> @Html.ActionLink("Login", "Login", "User") </li>
-                        <li> @Html.ActionLink("Register", "Register", "User") </li>
+                        <li> @Html.ActionLink("Login", MVC.User.Login()) </li>
+                        <li> @Html.ActionLink("Register", MVC.User.Register()) </li>
                     </ul>
                 }
                 else
                 {
                     <ul class="nav navbar-nav navbar-right">
                         <li class="dropdown">
-                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Witaj @Html.Action("GetUserName").ToString()!<b class="caret"></b></a>
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">Witaj @User.Identity.Name!<b class="caret"></b></a>
                             <ul class="dropdown-menu">
-                                <li> @Html.ActionLink("Log off", "Logoff", "User") </li>
-                                <li> @Html.ActionLink("My profile", "ShowProfile", "User") </li>
-                                <li> @Html.ActionLink("Inbox", "Index", "Message", new {type = Forum.Controllers.MessageController.MailboxType.Inbox }, null)</li>
-                                <li> @Html.ActionLink("Sent", "Index", "Message", new { type = Forum.Controllers.MessageController.MailboxType.Sent }, null)</li>
-                                @if (((Forum.Controllers.BaseController)this.ViewContext.Controller).CheckIfUserIsAdministrator())
+                                <li> @Html.ActionLink("Log off", MVC.User.LogOff()) </li>
+                                <li> @Html.ActionLink("My profile", MVC.User.ShowProfile()) </li>
+                                <li> @Html.ActionLink("Inbox", MVC.Message.Index(Forum.Controllers.MessageController.MailboxType.Inbox.ToString(),null), null)</li>
+                                <li> @Html.ActionLink("Sent", MVC.Message.Index(Forum.Controllers.MessageController.MailboxType.Sent.ToString(), null), null)</li>
+                                @if (User.IsInRole("Administrator"))
                                 {
-                                    <li> @Html.ActionLink("Administer categories", "Administercategories", "User")</li>
-                                    <li> @Html.ActionLink("Administer users", "Index", "User")</li>
+                                    <li> @Html.ActionLink("Administer categories", MVC.User.AdministerCategories())</li>
+                                    <li> @Html.ActionLink("Administer users", MVC.User.Index())</li>
                                 }
                             </ul>
                         </li>

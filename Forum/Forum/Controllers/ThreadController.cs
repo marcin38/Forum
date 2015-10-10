@@ -1,78 +1,72 @@
-﻿using Forum.Controllers.Interfaces;
-using Forum.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using PagedList;
-using PagedList.Mvc;
+﻿using Domain.Models;
+using Forum.Controllers.Interfaces;
 using Forum.ViewModels;
+using PagedList;
+using Repositories.Repositories.Interfaces;
+using System;
+using System.Linq;
+using System.Web.Mvc;
 
 namespace Forum.Controllers
 {
-    public class ThreadController : BaseController, IThreadController
+    [Authorize]
+    public partial class ThreadController : BaseController, IThreadController
     {
-        private IForumDBContext db;
+        private IThreadRepository threadRepository;
+        private IPostRepository postRepository;
 
-        public ThreadController()
+        public ThreadController(){}
+
+        public ThreadController(IThreadRepository threadRepository, IPostRepository postRepository)
         {
-            db = new ForumDBContext();
+            this.threadRepository = threadRepository;
+            this.postRepository = postRepository;
         }
 
-        public ThreadController(IForumDBContext db)
+        [AllowAnonymous]
+        public virtual ActionResult Index(int id, int? page)
         {
-            this.db = db;
-        }
-
-        public ActionResult Index(int id, int? page)
-        {
-            ViewBag.UserId = GetUserId();
-            IPagedList<Post> posts = 
-                db.Posts
-                .Where(m => m.ThreadId == id)
-//                .OrderBy(m => m.CreationDate)
-                .ToList()                
+            ViewBag.UserId = User.Id;
+            IPagedList<Post> posts = postRepository.Get(m => m.ThreadId == id)
+                .ToList()
                 .ToPagedList(page ?? 1, ItemsPerPage());
+//                .OrderBy(m => m.CreationDate)
+                
             return View(posts);
         }
 
-        public ActionResult AddThread(int categoryId)
+        public virtual ActionResult AddThread(int categoryId)
         {
             ViewBag.CategoryId = categoryId;
             return View();
         }
 
         [HttpPost]
-        public ActionResult AddThread(ThreadAddThreadViewModel pt)
+        [ValidateAntiForgeryToken]
+        public virtual ActionResult AddThread(ThreadAddThreadViewModel pt)
         {
-            if (CheckIfUserIsAuthenticated())
-            {
                 if (ModelState.IsValid)
                 {
                     Post post = new Post();
                     Thread thread = new Thread();
-                    thread.AuthorId = GetUserId();
+                    thread.AuthorId = User.Id;
                     thread.CategoryId = pt.CategoryId;
                     thread.Title = pt.ThreadTitle;
-                    db.Threads.Add(thread);
-                    db.SaveChanges();
 
-                    post.AuthorId = GetUserId();
+                    threadRepository.Insert(thread);
+                    threadRepository.Save();
+
+                    post.AuthorId = User.Id;
                     post.CreationDate = DateTime.Now;
                     post.PostContent = pt.PostContent;
                     post.ThreadId = thread.Id;
-                    db.Posts.Add(post);
-                    db.SaveChanges();
 
-                    return RedirectToAction("Index", "Category", new { id = pt.CategoryId });
+                    postRepository.Insert(post);
+                    postRepository.Save();
+
+                    return RedirectToAction(MVC.Category.Index(pt.CategoryId, null));
                 }
                 return View(pt);
-            }
-            else 
-            {
-                return RedirectToAction("Login", "User");
-            }
         }
 
     }

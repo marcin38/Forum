@@ -1,115 +1,118 @@
-﻿using Forum.Controllers.Interfaces;
-using Forum.Models;
+﻿using Domain.Models;
+using Forum.Controllers.Interfaces;
+using Forum.Exceptions;
+using Repositories.Repositories.Interfaces;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
 namespace Forum.Controllers
 {
-    public class PostController : BaseController, IPostController
+    [Authorize]
+    public partial class PostController : BaseController, IPostController
     {
-        private IForumDBContext db;
+        private IPostRepository postRepository;
         
-        public PostController()
+        public PostController(){}
+
+        public PostController(IPostRepository postRepository)
         {
-            db = new ForumDBContext();
+            this.postRepository = postRepository;
         }
 
-        public PostController(IForumDBContext db)
-        {
-            this.db = db;
-        }
-
-        public ActionResult Index()
-        {
-            return View();
-        }
-
-        public ActionResult AddPost(int threadId)
+        public virtual ActionResult AddPost(int threadId)
         {
             ViewBag.ThreadId = threadId;
 
-            if (CheckIfUserIsAuthenticated())
-            {
-//                return View();
-            }
-            else 
-            {
-//                return "Nie możesz dodawać postów";
-            }
             return View();
         }
 
         [HttpPost]
-        public ActionResult AddPost(Post post)
+        [ValidateAntiForgeryToken]
+        public virtual ActionResult AddPost(Post post)
         {
-
-            if (CheckIfUserIsAuthenticated())
-            {
 
                 if (ModelState.IsValid)
                 {
-                    post.AuthorId = GetUserId();
+                    post.AuthorId = User.Id;
                     post.CreationDate = DateTime.Now;
-                    db.Posts.Add(post);
-                    db.SaveChanges();
 
-/*                    Thread thread = db.Threads.SingleOrDefault(m => m.Id == post.ThreadId);
-                    db.SetModified(thread);
-                    db.SaveChanges();*/
-                    return RedirectToAction("Index", "Thread", new { id = post.ThreadId });
+                    postRepository.Insert(post);
+                    postRepository.Save();
+
+                    return RedirectToAction(MVC.Thread.Index(post.ThreadId, null));
                 }
-                else
-                {
+                
                     return View(post);
-                }
-
-            }
-            else 
-            {
-                return RedirectToAction("Login", "User");
-            }
-
         }
 
-        public ActionResult EditPost(int id)
+        public virtual ActionResult EditPost(int id)
         {
-            Post post = db.Posts.Single(p => p.Id == id);
-            ViewBag.ThreadId = post.ThreadId;
-            return View("AddPost",post);
+            try
+            {
+                Post post = GetMyPostById(id);
+                ViewBag.ThreadId = post.ThreadId;
+
+                return View(MVC.Post.Views.AddPost, post);
+            }
+            catch(Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
         [HttpPost]
-        public ActionResult EditPost(Post post)
+        [ValidateAntiForgeryToken]
+        public virtual ActionResult EditPost(Post post)
         {
-            Post p = db.Posts.Single(m => m.Id == post.Id);
-            p.PostContent = post.PostContent;
-
-            if (CheckIfUserIsAuthenticated())
+            try
             {
+                Post p = GetMyPostById(post.Id);
+                p.PostContent = post.PostContent;
+
                 if (ModelState.IsValid)
                 {
-                    db.SetModified(p);
-                    db.SaveChanges();
-                    return RedirectToAction("Index", "Thread", new { id = p.ThreadId });
+                    postRepository.Update(p);
+                    postRepository.Save();
+
+                    return RedirectToAction(MVC.Thread.Index(p.ThreadId, null));
                 }
-                else
-                {
-                    return View("AddPost", post);
-                }
+
+                return View(MVC.Post.AddPost(post));
             }
-            else
+            catch(Exception ex)
             {
-                return RedirectToAction("Login", "User");
+                return HandleException(ex);
             }
         }
 
-        public ActionResult ShowPost(int id)
+        public virtual ActionResult ShowPost(int id)
         {
-            Post post = db.Posts.Where(m => m.Id == id).Single();
+            Post post = GetPostById(id);
             return View(post);
+        }
+
+        private Post GetMyPostById(int id)
+        {
+            Post post = GetPostById(id);
+            
+
+            if (User == null || User.Id != post.AuthorId )
+            {
+                throw new HttpException(403, "Unauthorized access. The request requires user authentication. If the request already included Authorization credentials, then the 401 response indicates that authorization has been refused for those credentials.");
+
+            }
+
+            return post;
+        }
+
+        private Post GetPostById(int id)
+        {
+            Post post = postRepository.Get(m => m.Id == id).FirstOrDefault();
+            if (post == null)
+                throw new MyException(-1);
+            return post;
         }
 
     }

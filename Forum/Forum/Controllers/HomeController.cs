@@ -1,18 +1,18 @@
-﻿using Forum.Controllers.Interfaces;
-using Forum.Models;
+﻿using Domain.Models;
+using Forum.Controllers.Interfaces;
+using PagedList;
+using Repositories.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using PagedList;
-using PagedList.Mvc;
 
 namespace Forum.Controllers
 {
-    public class HomeController : BaseController, IHomeController
+    public partial class HomeController : BaseController, IHomeController
     {
-        private IForumDBContext db;
+        private IV_CategoriesRepository v_categoriesRepository;
+        private IPostRepository postRepository;
 
         public enum SearchBy
         {
@@ -21,50 +21,45 @@ namespace Forum.Controllers
             PostContent = 3
         }
 
-        public HomeController()
+        public HomeController(){}
+
+        public HomeController(IPostRepository postRepository, IV_CategoriesRepository v_categoriesRepository)
         {
-            db = new ForumDBContext();
+            this.postRepository = postRepository;
+            this.v_categoriesRepository = v_categoriesRepository;
         }
 
-        public HomeController(IForumDBContext db)
+        public virtual ActionResult Index()
         {
-            this.db = db;
-        }
-
-        public ActionResult Index()
-        {
-            List<V_Categories> categories = db.V_Categories.ToList();
+            List<V_Categories> categories = v_categoriesRepository.Get().ToList();
             return View(categories);
         }
 
-        public ActionResult About()
+        public virtual ActionResult About()
         {
             return View();
         }
 
-        public ActionResult Contact()
+        public virtual ActionResult Contact()
         {
             return View();
         }
 
-        public ActionResult Search(string searchBy, string search, int? page)
+        public virtual ActionResult Search(string searchBy, string search, int? page)
         {
             List<Post> posts = new List<Post>();
 
             if(searchBy ==  SearchBy.User.ToString())
             {
-                posts = db.Posts.Where(m => search == String.Empty || m.User.Name == search).ToList();
+                posts = postRepository.Get(m => search == String.Empty || m.User.Name == search).ToList();
             }
             else if (searchBy == SearchBy.ThreadTitle.ToString())
             {
-                posts = db.Posts.Where(m => search == String.Empty || m.Thread.Title.ToLower().IndexOf(search.ToLower()) >= 0).ToList();
+                posts = postRepository.Get(m => search == String.Empty || m.Thread.Title.ToLower().IndexOf(search.ToLower()) >= 0).ToList();
             }
             else if (searchBy == SearchBy.PostContent.ToString())
             {
-                posts = db.Posts.Where(m => search == String.Empty || m.PostContent.ToLower().IndexOf(search.ToLower()) >= 0).ToList();
-
-                //posts = db.Posts.ToList();
-                //posts = posts.Where(m => m.PostContent.ToLower().IndexOf(search) >= 0);
+                posts = postRepository.Get(m => search == String.Empty || m.PostContent.ToLower().IndexOf(search.ToLower()) >= 0).ToList();
             }
 
             posts.ToPagedList(page ?? 1, ItemsPerPage());

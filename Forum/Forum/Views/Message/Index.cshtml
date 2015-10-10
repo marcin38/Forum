@@ -1,4 +1,4 @@
-﻿@model IPagedList<Forum.Models.Message>
+﻿@model IPagedList<Domain.Models.Message>
 
 @using PagedList;
 @using PagedList.Mvc;
@@ -14,7 +14,7 @@
     ViewBag.Title = "Sent messages";
 }
 
-@Html.ActionLink("New message", "Send")
+@Html.ActionLink("New message", MVC.Message.Send())
 
 <table class="my-table">
     <tr>
@@ -68,7 +68,7 @@
                 @Html.DisplayFor(m => item.SentDate)
             </td>
             <td class="td1">
-                @Ajax.ActionLink("Read", "Show", new { id = item.Id }, new AjaxOptions()
+                @Ajax.ActionLink("Read", MVC.Message.Show(item.Id), new AjaxOptions()
            {
                HttpMethod = "GET",
                UpdateTargetId = "idBody",
@@ -77,7 +77,7 @@
                //LoadingElementDuration = 1000,
                //OnBegin = "Clear",
            })
-                @Html.ActionLink("Delete", "Delete", new { id = item.Id })
+                @Html.ActionLink("Delete", MVC.Message.Delete(item.Id))
             </td>
         </tr>
     }
@@ -90,5 +90,5 @@
     <img src="~/Images/spinner.gif" />
 </div>
 
-@Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
+@Html.PagedListPager(Model, page => Url.Action(MVC.Message.Index( (string)ViewBag.Type, page)),
 new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })

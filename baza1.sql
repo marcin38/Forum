@@ -34,7 +34,8 @@ CREATE TABLE Users(
 	[NumberOfWarnings] [int] NOT NULL,
 	[IsBanned] [bit] NOT NULL
 
-	CONSTRAINT [FK_Users_AvatarId] FOREIGN KEY ([AvatarId]) REFERENCES [Avatars]([Id])
+	CONSTRAINT [FK_Users_AvatarId] FOREIGN KEY ([AvatarId]) REFERENCES [Avatars]([Id]),
+	CONSTRAINT [UQ_Users_Name] UNIQUE ([Name])
 );
 
 CREATE TABLE Messages(
@@ -67,7 +68,7 @@ CREATE TABLE Threads(
 	[CategoryId] [int] NOT NULL,
 	[LastPost] [int] NULL,
 	CONSTRAINT [FK_Threads_AuthorId] FOREIGN KEY ([AuthorId]) REFERENCES [Users]([Id]),
-	CONSTRAINT [FK_Threads_CategoryId] FOREIGN KEY ([CategoryId]) REFERENCES [Categories]([Id])
+	CONSTRAINT [FK_Threads_CategoryId] FOREIGN KEY ([CategoryId]) REFERENCES [Categories]([Id]) ON DELETE CASCADE
 )
 
 CREATE TABLE Posts(
@@ -78,7 +79,7 @@ CREATE TABLE Posts(
 	[ThreadId] [int] NOT NULL
 
 	CONSTRAINT [FK_Posts_AuthorId] FOREIGN KEY ([AuthorId]) REFERENCES [Users]([Id]),
-	CONSTRAINT [FK_Posts_ThreadId] FOREIGN KEY ([ThreadId]) REFERENCES [Threads]([Id])
+	CONSTRAINT [FK_Posts_ThreadId] FOREIGN KEY ([ThreadId]) REFERENCES [Threads]([Id]) ON DELETE CASCADE
 )
 
 CREATE TABLE Warnings(
@@ -90,3 +91,16 @@ CREATE TABLE Warnings(
 	CONSTRAINT [FK_Warnings_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users]([Id]),
 	CONSTRAINT [FK_Warnings_PostId] FOREIGN KEY ([PostId]) REFERENCES [Posts]([Id])
 )
+
+IF OBJECT_ID('TG_POSTS_INSERT', 'TR') IS NOT NULL
+	DROP TRIGGER TG_POSTS_INSERT;
+
+GO
+CREATE TRIGGER TG_POSTS_INSERT ON Posts AFTER INSERT
+AS
+BEGIN
+	UPDATE T set LastPost = i.Id 
+	FROM Threads AS T JOIN inserted AS i 
+	ON T.Id = i.ThreadId;
+END
+GO

@@ -1,4 +1,4 @@
-﻿@model Forum.Models.Post
+﻿@model Domain.Models.Post
 
 @{
     if (Model == null)
@@ -13,15 +13,18 @@
 
 @using (Html.BeginForm())
 {
-    @Html.ValidationSummary()
+    @Html.ValidationSummary(true)
+    @Html.AntiForgeryToken()
+
     <div class="col-md-12">
         @Html.TextAreaFor(m => m.PostContent, new { @class = "col-md-12 disable-max-width-setting", rows = "20" })
+        @Html.ValidationMessageFor(m => m.PostContent)
     </div>
     <div class="col-md-3">
         <input type="submit" class="btn btn-block btn-success" value="Submit" />
     </div>
     <div>
-        @Html.ActionLink("Cancel", "Index", "Thread", new { id = ViewBag.ThreadId }, null)
+        @Html.ActionLink("Cancel", MVC.Thread.Index((int)ViewBag.ThreadId, null))
     </div>
     @*@Html.HiddenFor(m => m.Id)*@
     @*@Html.HiddenFor(m => m.ThreadId)*@

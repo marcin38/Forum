@@ -6,13 +6,17 @@
 
 @using (Html.BeginForm())
 {
+    @Html.ValidationSummary(true)
+    @Html.AntiForgeryToken()
+    
     <div>
-        @Html.ValidationSummary()
+        
         <div class="col-md-12">
             @Html.TextBoxFor(m => m.ThreadTitle)
         </div>
         <div class="col-md-12">
             @Html.TextAreaFor(m => m.PostContent, new { @class = "col-md-12 disable-max-width-setting", rows = "20" })
+            @Html.ValidationMessageFor(m => m.PostContent)
         </div>
             @Html.HiddenFor(m => m.CategoryId, new { @Value = ViewBag.CategoryId })
     </div>
@@ -25,5 +29,5 @@
 
 }
 
-@Html.ActionLink("Cancel", "Index", "Category", new { id = ViewBag.CategoryId }, null)
+    @Html.ActionLink("Cancel", MVC.Category.Index((int)ViewBag.CategoryId, null))
 

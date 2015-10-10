@@ -1,100 +1,159 @@
-﻿using Forum.Controllers.Interfaces;
-using Forum.Models;
+﻿using Domain.Models;
+using Forum.Controllers.Interfaces;
+using Forum.Exceptions;
+using PagedList;
+using Repositories.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using PagedList;
-using PagedList.Mvc;
 
 namespace Forum.Controllers
 {
-
-    public class CategoryController : BaseController, ICategoryController
+    [Authorize(Roles = "Administrator")]
+    public partial class CategoryController : BaseController, ICategoryController
     {
-        private IForumDBContext db;
+        private IV_ThreadsRepository v_threadsRepository;
+        private ICategoryRepository categoryRepository;
+        private IPostRepository postRepository;
+        private IThreadRepository threadRepository;
 
-        public CategoryController()
+        public CategoryController(){}
+
+        public CategoryController(IV_ThreadsRepository v_threadsRepository, ICategoryRepository categoryRepository, IPostRepository postRepository, IThreadRepository threadRepository)
         {
-            db = new ForumDBContext();
+            this.v_threadsRepository = v_threadsRepository;
+            this.categoryRepository = categoryRepository;
+            this.postRepository = postRepository;
+            this.threadRepository = threadRepository;
         }
 
-        public CategoryController(IForumDBContext db)
+        [AllowAnonymous]
+        public virtual ActionResult Index(int id, int? page)
         {
-            this.db = db;
-        }
+            IPagedList<V_Threads> threads = v_threadsRepository.Get(m => m.CategoryId == id, m => m.OrderByDescending(x => x.WhenAddedLastPost))
+                .ToList()
+                .ToPagedList(page ?? 1, ItemsPerPage());
 
-        public ActionResult Index(int id, int? page)
-        {
-            IPagedList<V_Threads> threads = db.V_Threads
-                .Where(m => m.CategoryId == id)
-                .OrderByDescending(m => m.WhenAddedLastPost)
-                .ToList().ToPagedList(page ?? 1, ItemsPerPage());
             return View(threads);
         }
 
-        public ActionResult Create()
+        
+        public virtual ActionResult Create()
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult Create(Category category)
+        [ValidateAntiForgeryToken]
+        public virtual ActionResult Create(Category category)
         {
             if (ModelState.IsValid)
             {
-                db.Categories.Add(category);
-                db.SaveChanges();
+                categoryRepository.Insert(category);
+                categoryRepository.Save();
 
-                return RedirectToAction("AdministerCategories", "User");
+                return RedirectToAction(MVC.User.AdministerCategories());
             }
 
             return View(category);
         }
 
-        public ActionResult Edit(int id)
+        public virtual ActionResult Edit(int id)
         {
-            Category category = db.Categories.SingleOrDefault(m => m.Id == id);
+            try
+            { 
+            Category category = GetCategoryById(id);
+
             return View(category);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
+
         }
 
         [HttpPost]
-        public ActionResult Edit(Category category)
+        [ValidateAntiForgeryToken]
+        public virtual ActionResult Edit(Category category)
         {
+            try
+            {   
             if (ModelState.IsValid)
             {
-                db.SetModified(category);
-                db.SaveChanges();
+                categoryRepository.Update(category);
+                categoryRepository.Save();
 
-                return RedirectToAction("AdministerCategories", "User");
+                return RedirectToAction(MVC.User.AdministerCategories());
             }
 
             return View(category);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
+
         }
 
-        public ActionResult Delete(int id)
+        public virtual ActionResult Delete(int id)
         {
-            Category category = db.Categories.SingleOrDefault(m => m.Id == id);
+            try
+            { 
+            Category category = GetCategoryById(id);
+
             return View(category);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
+
         }
 
-        [HttpPost, ActionName("Delete")]
-        public ActionResult DeleteConfirmed(int id)
+        [HttpPost]
+        [ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public virtual ActionResult DeleteConfirmed(int id)
         {
-            Category category = db.Categories.SingleOrDefault(m => m.Id == id);
-            List<Post> posts = db.Posts.Where(m => m.Thread.CategoryId == id).ToList();
-            List<Thread> threads = db.Threads.Where(m => m.CategoryId == id).ToList();
+            try
+            {
+                Category category = GetCategoryById(id);
 
-            foreach (Post p in posts)
-                db.Posts.Remove(p);
-            foreach (Thread t in threads)
-                db.Threads.Remove(t);
+                if (ModelState.IsValid)
+                {
+                    //List<Post> posts = postRepository.Get(m => m.Thread.CategoryId == id).ToList();
+                    //List<Thread> threads = threadRepository.Get(m => m.CategoryId == id).ToList();
 
-            db.Categories.Remove(category);
-            db.SaveChanges();
+                    //foreach (Post p in posts)
+                    //    postRepository.Delete(p);
+                    //foreach (Thread t in threads)
+                    //    threadRepository.Delete(t);
 
-            return RedirectToAction("AdministerCategories", "User");
+                    categoryRepository.Delete(category);
+                    categoryRepository.Save();
+
+                    return RedirectToAction(MVC.User.AdministerCategories());
+                }
+
+                return View(category);
+            }
+            catch(Exception ex)
+            {
+                return HandleException(ex);
+            }
+            
+        }
+
+        private Category GetCategoryById(int id)
+        {
+            Category category = categoryRepository.Get(m => m.Id == id).FirstOrDefault();
+            if (category == null)
+            {
+                throw new MyException(-1);
+            }
+            return category;
         }
 
     }

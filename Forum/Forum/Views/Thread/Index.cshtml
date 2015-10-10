@@ -1,19 +1,18 @@
 ﻿@using PagedList;
 @using PagedList.Mvc;
 
-@model IPagedList<Forum.Models.Post>
+@model IPagedList<Domain.Models.Post>
 
 <div class="thread-container">
     @foreach (var item in Model)
     {
-        bool isAuthenticated = ((Forum.Controllers.BaseController)this.ViewContext.Controller).CheckIfUserIsAuthenticated();
         <div class="post-container">
             <div class="post-head">
                 <div class="thread-title"> @Html.DisplayFor(m => item.Thread.Title)</div>
                 
-                @if (isAuthenticated)
+                @if (User != null && User.Identity.IsAuthenticated)
                 {
-                    @Html.ActionLink(item.User.Name, "ShowProfile", "User", new {id = item.AuthorId}, null)
+                    @Html.ActionLink(item.User.Name, MVC.User.ShowProfile(item.AuthorId))
                 }
                 else
                 {
@@ -23,22 +22,22 @@
             </div>
             <div class="post-content">
                 @Html.DisplayFor(m => item.PostContent)
-            @if (isAuthenticated)
+            @if (User != null && User.Identity.IsAuthenticated)
             {
-                @Html.Partial("_Report", new Forum.Models.Message() { Subject = String.Format("Reporting post {0}", Html.ActionLink("#" + item.Id.ToString(), "ShowPost", "Post", new {id = item.Id} ,null).ToString()) }, new ViewDataDictionary { { "postId", item.Id } });
+                @Html.Partial("_Report", new Domain.Models.Message() { Subject = String.Format("Reporting post {0}", Html.ActionLink("#" + item.Id.ToString(), MVC.Post.ShowPost(item.Id) ,null).ToString()) }, new ViewDataDictionary { { "postId", item.Id } });
             }
-            @if (isAuthenticated && item.AuthorId == ViewBag.UserId)
+            @if (User != null && User.Identity.IsAuthenticated && item.AuthorId == ViewBag.UserId)
             {
-                <button class="btn btn-success edit-button" type="button" onclick="location.href='@Url.Action("EditPost", "Post", new { id = item.Id})'">Edit</button>
+                <button class="btn btn-success edit-button" type="button" onclick="location.href='@Url.Action(MVC.Post.EditPost(item.Id))'">Edit</button>
             }
             </div>
         </div>
     }
 </div>
-@if (((Forum.Controllers.BaseController)this.ViewContext.Controller).CheckIfUserIsAuthenticated())
+@if (User != null && User.Identity.IsAuthenticated)
 {
     <div class="col-md-10 form-group">
-        <button class="btn btn-success" type="button" onclick="location.href='@Url.Action("AddPost", "Post", new { threadId = ViewContext.RouteData.Values["id"] })'">Reply</button>
+        <button class="btn btn-success" type="button" onclick="location.href='@Url.Action(MVC.Post.AddPost(int.Parse(ViewContext.RouteData.Values["id"].ToString())))'">Reply</button>
     </div>
 }
 
@@ -48,4 +47,4 @@ new PagedListRenderOptions() {
     LinkToFirstPageFormat = "First",
     LinkToLastPageFormat = "Last"
 })    
-@Html.ActionLink("Back to threads", "Index", "Category", new { id = Model.ElementAt(0).Thread.CategoryId }, null)
+@Html.ActionLink("Back to threads", MVC.Category.Index(Model.ElementAt(0).Thread.CategoryId, null))

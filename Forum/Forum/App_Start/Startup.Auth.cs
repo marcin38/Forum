@@ -1,7 +1,4 @@
-﻿using System;
-using Microsoft.AspNet.Identity;
-using Microsoft.Owin;
-using Microsoft.Owin.Security.Cookies;
+﻿using Microsoft.Owin;
 using Owin;
 
 [assembly: OwinStartup(typeof(Forum.Startup))]

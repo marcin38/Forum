@@ -1,46 +1,56 @@
-﻿using System;
+﻿using Domain.Models;
+using Forum.Controllers.Interfaces;
+using Forum.Exceptions;
+using Forum.ViewModels;
+using PagedList;
+using Repositories.Repositories.Interfaces;
+using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using Forum.Models;
 using System.Security.Cryptography;
 using System.Text;
-using Forum.Controllers.Interfaces;
-using System.IO;
-using System.Data.Entity;
-using PagedList;
-using Forum.ViewModels;
+using System.Web;
+using System.Web.Mvc;
+using System.Web.Security;
 
 namespace Forum.Controllers
 {
-    public class UserController : BaseController, IUserController
+    [Authorize]
+    public partial class UserController : BaseController, IUserController
     {
-        private IForumDBContext db;
+        private IUserRepository userRepository;
+        private IAvatarRepository avatarRepository;
+        private ICategoryRepository categoryRepository;
+        private IPostRepository postRepository;
 
-        public UserController()
+        public UserController(){}
+
+        public UserController(IUserRepository userRepository, IAvatarRepository avatarRepository, ICategoryRepository categoryRepository, IPostRepository postRepository)
         {
-            db = new ForumDBContext();
+            this.userRepository = userRepository;
+            this.avatarRepository = avatarRepository;
+            this.categoryRepository = categoryRepository;
+            this.postRepository = postRepository;
         }
 
-        public UserController(IForumDBContext db)
+        [Authorize(Roles="Administrator")]
+        public virtual ActionResult Index(int? page)
         {
-            this.db = db;
-        }
-
-        public ActionResult Index(int? page)
-        {
-            IPagedList<User> users = db.Users.ToList().ToPagedList(page ?? 1, ItemsPerPage());
+            IPagedList<User> users = userRepository.Get().ToList().ToPagedList(page ?? 1, ItemsPerPage());
             return View(users);
         }
 
-        public ActionResult Register()
+        [AllowAnonymous]
+        public virtual ActionResult Register()
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult Register(UserRegisterViewModel user, HttpPostedFileBase upload)
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public virtual ActionResult Register(UserRegisterViewModel user, HttpPostedFileBase upload)
         {
             if (ModelState.IsValid)
             {
@@ -52,222 +62,290 @@ namespace Forum.Controllers
                         avatar.Image = reader.ReadBytes(upload.ContentLength);
                         avatar.ContentType = upload.ContentType;
                     }
-                    db.Avatars.Add(avatar);
-                    db.SaveChanges();
+
+                    avatarRepository.Insert(avatar);
+                    avatarRepository.Save();
                 }
 
                 user.Hash = ComputeHash(user.Password, user.Name);
                 user.RegistrationDate = System.DateTime.Now;
                 if (avatar.Id > 0)
                     user.AvatarId = avatar.Id;
-                
-                db.Users.Add(user.CreateUser());
-                db.SaveChanges();
 
-                return RedirectToAction("Login");
+                userRepository.Insert(user.CreateUser());
+                avatarRepository.Save();
+
+                return RedirectToAction(MVC.User.Login());
             }
 
             return View(user);
         }
 
-        public ActionResult Login()
+        [AllowAnonymous]
+        public virtual ActionResult Login(string returnUrl)
         {
+            ViewBag.ReturnUrl = returnUrl;
             return View();
         }
 
         [HttpPost]
-        public ActionResult Login(AccountCredentials credentials)
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public virtual ActionResult Login(UserLoginViewModel credentials, string returnUrl)
         {
-            byte[] password = ComputeHash(credentials.Password, credentials.Name);
 
-            if (ModelState.IsValid)
+            if (ModelState.IsValid && Membership.ValidateUser(credentials.Name, credentials.Password))
             {
-                List<User> users = db.Users
-                    .Where(u => u.Name == credentials.Name).ToList();
+                User user = userRepository.Get(m => m.Name == credentials.Name).Single();
+                SaveCookie(user);
 
-                if (users.Count == 0)
-                {
-                    ModelState.AddModelError("", "There is no user with that name");
-                }
-                else if (!password.SequenceEqual(users.ElementAt(0).Hash))
-                {
-                    ModelState.AddModelError("", "Password is wrong");
-                }
-                else
-                {
-                    User user = users.ElementAt(0);
-                    //user.Password = credentials.Password;
-                    SaveCookie(user);
-                    //var u = new ApplicationUser() { UserName = user.Name};
-                    //var result = await UserManager.CreateAsync(u, credentials.Password);
-                    //await SignIn(u, false);
-                    return RedirectToAction("Index", "Home");
-                }
-
+                return RedirectToLocal(returnUrl);
+            }
+            else
+            {
+                    ModelState.AddModelError("", "The user name or password is incorrect");
             }
 
             return View(credentials);
         }
 
-        public ActionResult LogOff()
+        public virtual ActionResult LogOff()
         {
             DeleteCookie();
-            return RedirectToAction("Index", "Home");
+            return RedirectToAction(MVC.Home.Index());
         }
 
-        public ActionResult ShowProfile(int? id)
+        public virtual ActionResult ShowProfile(int? id)
         {
-            if (id == null)
-                id = GetUserId();
-            List<User> users = db.Users.Include(m => m.Avatar).Where(u => u.Id == id).ToList();
+            if (id == null && User != null)
+                id = User.Id;
+            else
+                return RedirectToAction(MVC.Error.Index(-1, new MyException(-1)));
+            User user = userRepository.Get(u => u.Id == id, null, "Avatar").FirstOrDefault();
 
-            if (users.Count > 0)
-            {
-                return View(users.ElementAt(0));
-            }
-
-            return View();
+            return View(user);
         }
 
-        public ActionResult RenderPhoto(int id)
+        public virtual ActionResult RenderPhoto(int id)
         {
-            Avatar avatar = db.Avatars.Where(m => m.Id == id).SingleOrDefault();
+            Avatar avatar = avatarRepository.Get(m => m.Id == id).FirstOrDefault();
+            
             return File(avatar.Image, avatar.ContentType);
         }
 
-        public ActionResult EditProfile(int id)
+        public virtual ActionResult EditProfile(int id)
         {
-            ViewBag.Name = GetUserName();
-            User user = db.Users.Where(m => m.Id == id).SingleOrDefault();
+            try 
+            {
+            User user = GetMyUserById();
+            ViewBag.Name = user.Name;
+
             UserEditProfileViewModel u = new UserEditProfileViewModel(user);
             return View(u);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
         [HttpPost]
-        public ActionResult EditProfile(UserEditProfileViewModel user, HttpPostedFileBase upload)
+        [ValidateAntiForgeryToken]
+        public virtual ActionResult EditProfile(UserEditProfileViewModel user, HttpPostedFileBase upload)
         {
-            User u = db.Users.Where(m => m.Id == user.Id).SingleOrDefault();
-            //byte[] password = ComputeHash(user.OldPassword, user.Name);
-
-            
-            if (ModelState.IsValid)
+            try
             {
-                //if (!password.SequenceEqual(u.Hash))
-                //{
-                //    ModelState.AddModelError("", "Old password is wrong");
-                //}
+                User u = GetMyUserById();
 
-                //if (user.Password != null)
-                //{
-                //    u.Hash = ComputeHash(user.Password, user.Name);
-                //}
-
-                u.Location = user.Location;
-
-                Avatar avatar = new Avatar();
-                if (upload != null && upload.ContentLength > 0)
+                if (ModelState.IsValid)
                 {
-                    using (var reader = new BinaryReader(upload.InputStream))
+
+                    u.Location = user.Location;
+
+                    Avatar avatar = new Avatar();
+                    if (upload != null && upload.ContentLength > 0)
                     {
-                        avatar.Image = reader.ReadBytes(upload.ContentLength);
-                        avatar.ContentType = upload.ContentType;
+                        using (var reader = new BinaryReader(upload.InputStream))
+                        {
+                            avatar.Image = reader.ReadBytes(upload.ContentLength);
+                            avatar.ContentType = upload.ContentType;
+                        }
+
+                        avatarRepository.Insert(avatar);
+                        avatarRepository.Save();
                     }
-                    db.Avatars.Add(avatar);
-                    db.SaveChanges();
+
+
+                    if (avatar.Id > 0)
+                        u.AvatarId = avatar.Id;
+
+                    userRepository.Update(u);
+                    userRepository.Save();
+
+                    return RedirectToAction(MVC.User.ShowProfile(u.Id));
                 }
-
-
-                if (avatar.Id > 0)
-                    u.AvatarId = avatar.Id;
-
-                db.SetModified(u);
-                db.SaveChanges();
-
-                return RedirectToAction("ShowProfile", new {id = u.Id});
+                return View(new UserEditProfileViewModel(u));
             }
-            return View(new UserEditProfileViewModel(u));
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
+
         }
 
-        public ActionResult AdministerCategories()
+        [Authorize(Roles = "Administrator")]
+        public virtual ActionResult AdministerCategories()
         {
-            List<Category> categories = db.Categories.ToList();
+            List<Category> categories = categoryRepository.Get().ToList();
             return View(categories);
         }
 
-        public ActionResult Delete(int id)
+        [Authorize(Roles = "Administrator")]
+        public virtual ActionResult Delete(int id)
         {
-            User user = db.Users.Where(m => m.Id == id).SingleOrDefault();
+            try
+            { 
+            User user = GetUserById(id);
             return View(user);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
-        [HttpPost, ActionName("Delete")]
-        public ActionResult DeleteConfirmed(int id)
+        [HttpPost]
+        [ActionName("Delete")]
+        [Authorize(Roles = "Administrator")]
+        [ValidateAntiForgeryToken]
+        public virtual ActionResult DeleteConfirmed(int id)
         {
-            User user = db.Users.Where(m => m.Id == id).SingleOrDefault();
-            user.Name = "Użytkownik usunięty";
-            user.Email = "";
-            user.Hash = new byte[1] {0x01};
-            user.IsAdministrator = false;
-            user.Location = "";
-            user.RemovalDate = DateTime.Now;
+            try 
+            { 
+            User user = GetUserById(id);
+            if (ModelState.IsValid)
+            {
+                
+                user.Name = "Użytkownik usunięty" + id;
+                user.Email = "";
+                user.Hash = new byte[1] { 0x01 };
+                user.IsAdministrator = false;
+                user.Location = "";
+                user.RemovalDate = DateTime.Now;
 
-            db.SetModified(user);
-            db.SaveChanges();
-            return RedirectToAction("Index");
-        }
+                userRepository.Update(user);
+                userRepository.Save();
 
-        public ActionResult Ban(int id)
-        {
-            User user = db.Users.Where(m => m.Id == id).Single();
+                return RedirectToAction(MVC.User.Index());
+            }
+
             return View(user);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
-        [HttpPost, ActionName("Ban")]
-        public ActionResult BanConfirmed(int id)
+        [Authorize(Roles = "Administrator")]
+        public virtual ActionResult Ban(int id)
         {
-            User user = db.Users.Where(m => m.Id == id).Single();
-            user.IsBanned = true;
-            db.SetModified(user);
-            db.SaveChanges();
-
-            return RedirectToAction("Index");
-        }
-
-        public ActionResult Unban(int id)
-        {
-            User user = db.Users.Where(m => m.Id == id).Single();
+            try { 
+            User user = GetUserById(id);
             return View(user);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
-        [HttpPost, ActionName("Unban")]
-        public ActionResult UnbanConfirmed(int id)
+        [HttpPost]
+        [ActionName("Ban")]
+        [Authorize(Roles = "Administrator")]
+        [ValidateAntiForgeryToken]
+        public virtual ActionResult BanConfirmed(int id)
         {
-            User user = db.Users.Where(m => m.Id == id).Single();
-            user.IsBanned = false;
-            db.SetModified(user);
-            db.SaveChanges();
+            try
+            { 
+            User user = GetUserById(id);
 
-            return RedirectToAction("Index");
+            if (ModelState.IsValid)
+            {
+                user.IsBanned = true;
+
+                userRepository.Update(user);
+                userRepository.Save();
+
+                return RedirectToAction(MVC.User.Index());
+            }
+            return View(user);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
-        
-        public ActionResult MyPosts(int userId, int? page)
+        [Authorize(Roles = "Administrator")]
+        public virtual ActionResult Unban(int id)
         {
-            IPagedList<Post> posts = db.Posts.Where(m => m.AuthorId == userId).ToList().ToPagedList(page ?? 1, ItemsPerPage());
+            try 
+            { 
+            User user = GetUserById(id);
+            return View(user);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
+        }
+
+        [HttpPost]
+        [ActionName("Unban")]
+        [Authorize(Roles = "Administrator")]
+        [ValidateAntiForgeryToken]
+        public virtual ActionResult UnbanConfirmed(int id)
+        {
+            try 
+            { 
+            User user = GetUserById(id);
+            if (ModelState.IsValid)
+            {
+                user.IsBanned = false;
+
+                userRepository.Update(user);
+                userRepository.Save();
+
+                return RedirectToAction(MVC.User.Index());
+            }
+            return View(user);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
+        }
+
+
+        public virtual ActionResult MyPosts(int? page)
+        {
+            IPagedList<Post> posts = postRepository.Get(m => m.AuthorId == User.Id).ToList().ToPagedList(page ?? 1, ItemsPerPage());
             return View(posts);
         }
 
-        public JsonResult IsUserNameAvailable(string Name)
+        [AllowAnonymous]
+        public virtual JsonResult IsUserNameAvailable(string Name)
         {
             bool result = false;
             try
             {
-                User user = db.Users.Where(m => m.Name == Name.ToLower()).Single();
-                result = true;
+                User user = userRepository.Get(m => m.Name == Name.ToLower()).Single();
+                result = false;
             }
             catch
             {
-                result = false;
+                result = true;
             }
             return Json(result, JsonRequestBehavior.AllowGet);
         }
@@ -313,5 +391,34 @@ namespace Forum.Controllers
             return new string(buffer);
         }
 
+        private ActionResult RedirectToLocal(string returnUrl)
+        {
+            if (Url.IsLocalUrl(returnUrl))
+            {
+                return Redirect(returnUrl);
+            }
+            else
+            {
+                return RedirectToAction(MVC.Home.Index());
+            }
+        }
+
+        private User GetMyUserById()
+        {
+            if (User == null)
+                throw new MyException(-1);
+            User user = GetUserById(User.Id);
+
+            return user;
+        }
+
+        private User GetUserById(int id)
+        {
+            User user = userRepository.Get(m => m.Id == id).FirstOrDefault();
+            if (user == null)
+                throw new MyException(-1);
+
+            return user;
+        }
     }
 }
