@@ -135,3 +135,7 @@ textarea,
     padding-bottom: 10px; 
     padding-top: 10px
 }
+
+.login-wrap {
+	padding: 20px;
+}

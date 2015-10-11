@@ -10,9 +10,16 @@
     }
 </script>
 
-@{
-    ViewBag.Title = "Sent messages";
+
+@if (ViewBag.Type == Forum.Controllers.MessageController.MailboxType.Inbox.ToString())
+{
+    <h1>Inbox</h1>
 }
+else
+{
+    <h1>Sent</h1>
+}
+
 
 @Html.ActionLink("New message", MVC.Message.Send())
 

@@ -73,7 +73,7 @@ namespace Forum.Controllers
                     user.AvatarId = avatar.Id;
 
                 userRepository.Insert(user.CreateUser());
-                avatarRepository.Save();
+                userRepository.Save();
 
                 return RedirectToAction(MVC.User.Login());
             }
@@ -119,8 +119,9 @@ namespace Forum.Controllers
         {
             if (id == null && User != null)
                 id = User.Id;
-            else
+            if (id == null)
                 return RedirectToAction(MVC.Error.Index(-1, new MyException(-1)));
+
             User user = userRepository.Get(u => u.Id == id, null, "Avatar").FirstOrDefault();
 
             return View(user);
@@ -226,7 +227,7 @@ namespace Forum.Controllers
             if (ModelState.IsValid)
             {
                 
-                user.Name = "Użytkownik usunięty" + id;
+                user.Name = "Removed" + id;
                 user.Email = "";
                 user.Hash = new byte[1] { 0x01 };
                 user.IsAdministrator = false;

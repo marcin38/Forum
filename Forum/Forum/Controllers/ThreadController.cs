@@ -26,7 +26,6 @@ namespace Forum.Controllers
         [AllowAnonymous]
         public virtual ActionResult Index(int id, int? page)
         {
-            ViewBag.UserId = User.Id;
             IPagedList<Post> posts = postRepository.Get(m => m.ThreadId == id)
                 .ToList()
                 .ToPagedList(page ?? 1, ItemsPerPage());

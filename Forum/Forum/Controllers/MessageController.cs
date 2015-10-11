@@ -39,12 +39,12 @@ namespace Forum.Controllers
             if (type.Equals(MailboxType.Inbox.ToString()))
             {
                 int to = User.Id;
-                messages = messageRepository.Get(m => m.To == to && m.DeletedByRecipient == false).ToList().ToPagedList(page ?? 1, ItemsPerPage());
+                messages = messageRepository.Get(m => m.To == to && m.DeletedByRecipient == false, x => x.OrderByDescending(y => y.SentDate)).ToList().ToPagedList(page ?? 1, ItemsPerPage());
             }
             else if (type.Equals(MailboxType.Sent.ToString()))
             {
                 int from = User.Id;
-                messages = messageRepository.Get(m => m.From == from && m.DeletedBySender == false).ToList().ToPagedList(page ?? 1, ItemsPerPage());
+                messages = messageRepository.Get(m => m.From == from && m.DeletedBySender == false, x => x.OrderByDescending(y => y.SentDate)).ToList().ToPagedList(page ?? 1, ItemsPerPage());
             }
             ViewBag.Type = type;
             return View(messages);
@@ -136,7 +136,7 @@ namespace Forum.Controllers
         {
             try
             {
-                Message message = messageRepository.Get(m => m.Id == id).Single();
+                Message message = GetMyMessageById(id);
 
                 if (ModelState.IsValid)
                 {

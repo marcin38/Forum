@@ -5,9 +5,10 @@ namespace Forum.ViewModels
 {
     public class UserRegisterViewModelMetaData 
     {
-        [System.Web.Mvc.Remote("IsUserNameAvailable", "User", ErrorMessage = "Ta nazwa użytkownika jest zajęta")]
+        [System.Web.Mvc.Remote("IsUserNameAvailable", "User", ErrorMessage = "This name is taken")]
         [Required]
         [StringLength(50, MinimumLength = 3)]
+        [RegularExpression(@"^(?!Removed)\w+$", ErrorMessage = "User name must be built from letters, numbers and underscore. It cannot start with Removed.")]
         public string Name { get; set; }
 
         [Required]
