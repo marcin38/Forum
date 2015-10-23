@@ -15,30 +15,33 @@ namespace Forum.Controllers
     {
         private IV_ThreadsRepository v_threadsRepository;
         private ICategoryRepository categoryRepository;
-        private IPostRepository postRepository;
-        private IThreadRepository threadRepository;
 
-        public CategoryController(){}
+        public CategoryController() { }
 
-        public CategoryController(IV_ThreadsRepository v_threadsRepository, ICategoryRepository categoryRepository, IPostRepository postRepository, IThreadRepository threadRepository)
+        public CategoryController(IV_ThreadsRepository v_threadsRepository, ICategoryRepository categoryRepository)
         {
             this.v_threadsRepository = v_threadsRepository;
             this.categoryRepository = categoryRepository;
-            this.postRepository = postRepository;
-            this.threadRepository = threadRepository;
         }
 
         [AllowAnonymous]
         public virtual ActionResult Index(int id, int? page)
         {
-            IPagedList<V_Threads> threads = v_threadsRepository.Get(m => m.CategoryId == id, m => m.OrderByDescending(x => x.WhenAddedLastPost))
-                .ToList()
-                .ToPagedList(page ?? 1, ItemsPerPage());
+            try
+            {
+                IPagedList<V_Threads> threads = v_threadsRepository.Get(m => m.CategoryId == id, m => m.OrderByDescending(x => x.WhenAddedLastPost))
+                    .ToList()
+                    .ToPagedList(page ?? 1, ItemsPerPage());
 
-            return View(threads);
+                return View(threads);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
-        
+
         public virtual ActionResult Create()
         {
             return View();
@@ -48,24 +51,31 @@ namespace Forum.Controllers
         [ValidateAntiForgeryToken]
         public virtual ActionResult Create(Category category)
         {
-            if (ModelState.IsValid)
+            try
             {
-                categoryRepository.Insert(category);
-                categoryRepository.Save();
+                if (ModelState.IsValid)
+                {
+                    categoryRepository.Insert(category);
+                    categoryRepository.Save();
 
-                return RedirectToAction(MVC.User.AdministerCategories());
+                    return RedirectToAction(MVC.User.AdministerCategories());
+                }
+
+                return View(category);
             }
-
-            return View(category);
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
         public virtual ActionResult Edit(int id)
         {
             try
-            { 
-            Category category = GetCategoryById(id);
+            {
+                Category category = GetCategoryById(id);
 
-            return View(category);
+                return View(category);
             }
             catch (Exception ex)
             {
@@ -79,16 +89,16 @@ namespace Forum.Controllers
         public virtual ActionResult Edit(Category category)
         {
             try
-            {   
-            if (ModelState.IsValid)
             {
-                categoryRepository.Update(category);
-                categoryRepository.Save();
+                if (ModelState.IsValid)
+                {
+                    categoryRepository.Update(category);
+                    categoryRepository.Save();
 
-                return RedirectToAction(MVC.User.AdministerCategories());
-            }
+                    return RedirectToAction(MVC.User.AdministerCategories());
+                }
 
-            return View(category);
+                return View(category);
             }
             catch (Exception ex)
             {
@@ -100,10 +110,10 @@ namespace Forum.Controllers
         public virtual ActionResult Delete(int id)
         {
             try
-            { 
-            Category category = GetCategoryById(id);
+            {
+                Category category = GetCategoryById(id);
 
-            return View(category);
+                return View(category);
             }
             catch (Exception ex)
             {
@@ -123,14 +133,6 @@ namespace Forum.Controllers
 
                 if (ModelState.IsValid)
                 {
-                    //List<Post> posts = postRepository.Get(m => m.Thread.CategoryId == id).ToList();
-                    //List<Thread> threads = threadRepository.Get(m => m.CategoryId == id).ToList();
-
-                    //foreach (Post p in posts)
-                    //    postRepository.Delete(p);
-                    //foreach (Thread t in threads)
-                    //    threadRepository.Delete(t);
-
                     categoryRepository.Delete(category);
                     categoryRepository.Save();
 
@@ -139,11 +141,11 @@ namespace Forum.Controllers
 
                 return View(category);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return HandleException(ex);
             }
-            
+
         }
 
         private Category GetCategoryById(int id)

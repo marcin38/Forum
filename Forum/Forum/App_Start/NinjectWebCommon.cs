@@ -1,5 +1,4 @@
 [assembly: WebActivatorEx.PreApplicationStartMethod(typeof(Forum.App_Start.NinjectWebCommon), "Start")]
-//[assembly: WebActivatorEx.PostApplicationStartMethod(typeof(Forum.App_Start.NinjectWebCommon), "RegisterMembership")]
 [assembly: WebActivatorEx.ApplicationShutdownMethodAttribute(typeof(Forum.App_Start.NinjectWebCommon), "Stop")]
 
 namespace Forum.App_Start
@@ -33,12 +32,6 @@ namespace Forum.App_Start
         {
             bootstrapper.ShutDown();
         }
-
-        //public static void RegisterMembership()
-        //{
-        //    //bootstrapper.Kernel.Inject(Membership.Provider);
-        //    //bootstrapper.Kernel.Inject(Roles.Provider);
-        //} 
 
         /// <summary>
         /// Creates the kernel that will manage your application.

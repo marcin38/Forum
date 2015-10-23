@@ -1,12 +1,8 @@
 ﻿using Forum.Controllers;
-using Forum.Models;
+using Forum.ViewModels;
 using NUnit.Framework;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Mvc;
+using Tests.FakeRepositories;
 
 namespace Tests
 {
@@ -14,25 +10,79 @@ namespace Tests
     public class UserControllerTest
     {
         [Test]
-        public void IndexOrdersByName()
+        public void Register()
         {
-            //var context = new FakeForumDBContext
-            //{
-            //    Users = 
-            //    {
-            //        new User {Name = "BBB"},
-            //        new User {Name = "AAA"},
-            //        new User {Name = "CCC"}
-            //    }
-            //};
+            FakeUserRepository context = new FakeUserRepository();
+            UserController controller = new UserController(context, null, null, null);
 
-            //var controller = new UserController(context);
-            //var result = (ViewResult) controller.Index();
+            UserRegisterViewModel user = new UserRegisterViewModel();
+            controller.Register(user, null);
+            Assert.AreEqual(1, context.users.Count);
+        }
 
-            //var users = (IEnumerable<User>)result.ViewData.Model;
-            //Assert.AreEqual("AAA", users.ElementAt(0).Name);
-            //Assert.AreEqual("BBB", users.ElementAt(1).Name);
-            //Assert.AreEqual("CCC", users.ElementAt(2).Name);
+        [Test]
+        public void EditProfile()
+        {
+            FakeUserRepository context = new FakeUserRepository();
+            UserController controller = new UserController(context, null, null, null);
+
+            UserRegisterViewModel user = new UserRegisterViewModel { Id = 0 };
+            controller.Register(user, null);
+            Assert.AreEqual(1, context.users.Count);
+
+            UserEditProfileViewModel user2 = new UserEditProfileViewModel { Id = 0, Location = "abc" };
+            controller.EditProfile(user2, null);
+            Assert.AreEqual("abc", context.users.First().Location);
+        }
+
+        [Test]
+        public void DeleteConfirmed()
+        {
+            FakeUserRepository context = new FakeUserRepository();
+            UserController controller = new UserController(context, null, null, null);
+
+            UserRegisterViewModel user = new UserRegisterViewModel { Id = 1 };
+            controller.Register(user, null);
+            UserRegisterViewModel user2 = new UserRegisterViewModel { Id = 2 };
+            controller.Register(user2, null);
+
+            controller.DeleteConfirmed(1);
+            Assert.AreEqual(2, context.users.First().Id);
+        }
+
+        [Test]
+        public void BanConfirmed()
+        {
+            FakeUserRepository context = new FakeUserRepository();
+            UserController controller = new UserController(context, null, null, null);
+
+            UserRegisterViewModel user = new UserRegisterViewModel { Id = 1 };
+            controller.Register(user, null);
+            UserRegisterViewModel user2 = new UserRegisterViewModel { Id = 2 };
+            controller.Register(user2, null);
+
+            controller.BanConfirmed(1);
+            Assert.AreEqual(true, context.Get(x => x.Id == 1).First().IsBanned);
+            Assert.AreEqual(false, context.Get(x => x.Id == 2).First().IsBanned);
+        }
+
+        [Test]
+        public void UnbanConfirmed()
+        {
+            FakeUserRepository context = new FakeUserRepository();
+            UserController controller = new UserController(context, null, null, null);
+
+            UserRegisterViewModel user = new UserRegisterViewModel { Id = 1 };
+            controller.Register(user, null);
+            UserRegisterViewModel user2 = new UserRegisterViewModel { Id = 2 };
+            controller.Register(user2, null);
+            controller.BanConfirmed(1);
+            controller.BanConfirmed(1);
+            controller.UnbanConfirmed(2);
+
+            Assert.AreEqual(true, context.Get(x => x.Id == 1).First().IsBanned);
+            Assert.AreEqual(false, context.Get(x => x.Id == 2).First().IsBanned);
+
         }
     }
 }

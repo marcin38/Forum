@@ -34,61 +34,80 @@ namespace Forum.Controllers
 
         public virtual ActionResult Index(string type, int? page)
         {
-
-            IPagedList<Message> messages = null;
-            if (type.Equals(MailboxType.Inbox.ToString()))
+            try
             {
-                int to = User.Id;
-                messages = messageRepository.Get(m => m.To == to && m.DeletedByRecipient == false, x => x.OrderByDescending(y => y.SentDate)).ToList().ToPagedList(page ?? 1, ItemsPerPage());
+                IPagedList<Message> messages = null;
+                if (type.Equals(MailboxType.Inbox.ToString()))
+                {
+                    int to = User.Id;
+                    messages = messageRepository.Get(m => m.To == to && m.DeletedByRecipient == false, x => x.OrderByDescending(y => y.SentDate)).ToList().ToPagedList(page ?? 1, ItemsPerPage());
+                }
+                else if (type.Equals(MailboxType.Sent.ToString()))
+                {
+                    int from = User.Id;
+                    messages = messageRepository.Get(m => m.From == from && m.DeletedBySender == false, x => x.OrderByDescending(y => y.SentDate)).ToList().ToPagedList(page ?? 1, ItemsPerPage());
+                }
+                ViewBag.Type = type;
+                return View(messages);
             }
-            else if (type.Equals(MailboxType.Sent.ToString()))
+            catch (Exception ex)
             {
-                int from = User.Id;
-                messages = messageRepository.Get(m => m.From == from && m.DeletedBySender == false, x => x.OrderByDescending(y => y.SentDate)).ToList().ToPagedList(page ?? 1, ItemsPerPage());
+                return HandleException(ex);
             }
-            ViewBag.Type = type;
-            return View(messages);
-
         }
 
         public virtual ActionResult Send()
         {
-            MessageSendViewModel message = new MessageSendViewModel();
-            message.Users = new SelectList(userRepository.Get(m => m.RemovalDate == null), "Id", "Name");
-            return View(message);
+            try
+            {
+                MessageSendViewModel message = new MessageSendViewModel();
+                message.Users = new SelectList(userRepository.Get(m => m.RemovalDate == null), "Id", "Name");
+                return View(message);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public virtual ActionResult Send(Message message)
         {
-            if (ModelState.IsValid)
+            try
             {
-                message.DeletedByRecipient = false;
-                message.DeletedBySender = false;
-                message.IsRead = false;
-                message.SentDate = DateTime.Now;
-                message.From = User.Id;
-                if (message.To == 0)
+                if (ModelState.IsValid)
                 {
-                    List<User> moderators = userRepository.Get(m => m.IsAdministrator == true).ToList();
-                    foreach (User m in moderators)
+                    message.DeletedByRecipient = false;
+                    message.DeletedBySender = false;
+                    message.IsRead = false;
+                    message.SentDate = DateTime.Now;
+                    message.From = User.Id;
+                    if (message.To == 0)
                     {
-                        message.To = m.Id;
+                        List<User> moderators = userRepository.Get(m => m.IsAdministrator == true).ToList();
+                        foreach (User m in moderators)
+                        {
+                            message.To = m.Id;
+                            messageRepository.Insert(message);
+                        }
+                    }
+                    else
+                    {
                         messageRepository.Insert(message);
                     }
-                }
-                else
-                {
-                    messageRepository.Insert(message);
+
+                    messageRepository.Save();
+
+                    return RedirectToAction(MVC.Message.Index(MailboxType.Sent.ToString(), null));
                 }
 
-                messageRepository.Save();
-
-                return RedirectToAction(MVC.Message.Index(MailboxType.Sent.ToString(), null));
+                return View(message);
             }
-
-            return View(message);
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
         public virtual ActionResult Show(int id)
@@ -122,7 +141,7 @@ namespace Forum.Controllers
                 Message message = GetMyMessageById(id);
                 return View(message);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return HandleException(ex);
             }
@@ -164,7 +183,7 @@ namespace Forum.Controllers
 
                 return View(message);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return HandleException(ex);
             }

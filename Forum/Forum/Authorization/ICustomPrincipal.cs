@@ -6,8 +6,5 @@ namespace Forum.Authorization
     {
         int Id { get; set; }
         string Token { get; set; }
-        //string Name { get; set; }
-        //bool IsAuthenticated { get; set; }
-        
     }
 }

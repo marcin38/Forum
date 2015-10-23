@@ -18,7 +18,13 @@ namespace Forum.Controllers
 
         protected virtual new CustomPrincipal User
         {
-            get { return HttpContext.User as CustomPrincipal; }
+            get 
+            {
+                if (HttpContext == null)
+                    return new CustomPrincipal();
+                else
+                    return HttpContext.User as CustomPrincipal; 
+            }
         }
 
         protected ActionResult HandleException(Exception ex)

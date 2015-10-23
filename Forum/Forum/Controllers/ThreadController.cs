@@ -15,7 +15,7 @@ namespace Forum.Controllers
         private IThreadRepository threadRepository;
         private IPostRepository postRepository;
 
-        public ThreadController(){}
+        public ThreadController() { }
 
         public ThreadController(IThreadRepository threadRepository, IPostRepository postRepository)
         {
@@ -26,12 +26,18 @@ namespace Forum.Controllers
         [AllowAnonymous]
         public virtual ActionResult Index(int id, int? page)
         {
-            IPagedList<Post> posts = postRepository.Get(m => m.ThreadId == id)
-                .ToList()
-                .ToPagedList(page ?? 1, ItemsPerPage());
-//                .OrderBy(m => m.CreationDate)
-                
-            return View(posts);
+            try
+            {
+                IPagedList<Post> posts = postRepository.Get(m => m.ThreadId == id)
+                    .ToList()
+                    .ToPagedList(page ?? 1, ItemsPerPage());
+
+                return View(posts);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
         public virtual ActionResult AddThread(int categoryId)
@@ -44,6 +50,8 @@ namespace Forum.Controllers
         [ValidateAntiForgeryToken]
         public virtual ActionResult AddThread(ThreadAddThreadViewModel pt)
         {
+            try
+            {
                 if (ModelState.IsValid)
                 {
                     Post post = new Post();
@@ -66,6 +74,11 @@ namespace Forum.Controllers
                     return RedirectToAction(MVC.Category.Index(pt.CategoryId, null));
                 }
                 return View(pt);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
     }

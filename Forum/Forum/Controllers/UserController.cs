@@ -24,7 +24,7 @@ namespace Forum.Controllers
         private ICategoryRepository categoryRepository;
         private IPostRepository postRepository;
 
-        public UserController(){}
+        public UserController() { }
 
         public UserController(IUserRepository userRepository, IAvatarRepository avatarRepository, ICategoryRepository categoryRepository, IPostRepository postRepository)
         {
@@ -34,11 +34,18 @@ namespace Forum.Controllers
             this.postRepository = postRepository;
         }
 
-        [Authorize(Roles="Administrator")]
+        [Authorize(Roles = "Administrator")]
         public virtual ActionResult Index(int? page)
         {
-            IPagedList<User> users = userRepository.Get().ToList().ToPagedList(page ?? 1, ItemsPerPage());
-            return View(users);
+            try
+            {
+                IPagedList<User> users = userRepository.Get().ToList().ToPagedList(page ?? 1, ItemsPerPage());
+                return View(users);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
         [AllowAnonymous]
@@ -52,33 +59,40 @@ namespace Forum.Controllers
         [ValidateAntiForgeryToken]
         public virtual ActionResult Register(UserRegisterViewModel user, HttpPostedFileBase upload)
         {
-            if (ModelState.IsValid)
+            try
             {
-                Avatar avatar = new Avatar();
-                if (upload != null && upload.ContentLength > 0)
+                if (ModelState.IsValid)
                 {
-                    using(var reader = new BinaryReader(upload.InputStream))
+                    Avatar avatar = new Avatar();
+                    if (upload != null && upload.ContentLength > 0)
                     {
-                        avatar.Image = reader.ReadBytes(upload.ContentLength);
-                        avatar.ContentType = upload.ContentType;
+                        using (var reader = new BinaryReader(upload.InputStream))
+                        {
+                            avatar.Image = reader.ReadBytes(upload.ContentLength);
+                            avatar.ContentType = upload.ContentType;
+                        }
+
+                        avatarRepository.Insert(avatar);
+                        avatarRepository.Save();
                     }
 
-                    avatarRepository.Insert(avatar);
-                    avatarRepository.Save();
+                    user.Hash = ComputeHash(user.Password, user.Name);
+                    user.RegistrationDate = System.DateTime.Now;
+                    if (avatar.Id > 0)
+                        user.AvatarId = avatar.Id;
+
+                    userRepository.Insert(user.CreateUser());
+                    userRepository.Save();
+
+                    return RedirectToAction(MVC.User.Login());
                 }
 
-                user.Hash = ComputeHash(user.Password, user.Name);
-                user.RegistrationDate = System.DateTime.Now;
-                if (avatar.Id > 0)
-                    user.AvatarId = avatar.Id;
-
-                userRepository.Insert(user.CreateUser());
-                userRepository.Save();
-
-                return RedirectToAction(MVC.User.Login());
+                return View(user);
             }
-
-            return View(user);
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
         [AllowAnonymous]
@@ -93,20 +107,26 @@ namespace Forum.Controllers
         [ValidateAntiForgeryToken]
         public virtual ActionResult Login(UserLoginViewModel credentials, string returnUrl)
         {
-
-            if (ModelState.IsValid && Membership.ValidateUser(credentials.Name, credentials.Password))
+            try
             {
-                User user = userRepository.Get(m => m.Name == credentials.Name).Single();
-                SaveCookie(user);
+                if (ModelState.IsValid && Membership.ValidateUser(credentials.Name, credentials.Password))
+                {
+                    User user = userRepository.Get(m => m.Name == credentials.Name).Single();
+                    SaveCookie(user);
 
-                return RedirectToLocal(returnUrl);
-            }
-            else
-            {
+                    return RedirectToLocal(returnUrl);
+                }
+                else
+                {
                     ModelState.AddModelError("", "The user name or password is incorrect");
-            }
+                }
 
-            return View(credentials);
+                return View(credentials);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
         public virtual ActionResult LogOff()
@@ -117,32 +137,46 @@ namespace Forum.Controllers
 
         public virtual ActionResult ShowProfile(int? id)
         {
-            if (id == null && User != null)
-                id = User.Id;
-            if (id == null)
-                return RedirectToAction(MVC.Error.Index(-1, new MyException(-1)));
+            try
+            {
+                if (id == null && User != null)
+                    id = User.Id;
+                if (id == null)
+                    return RedirectToAction(MVC.Error.Index(-1, new MyException(-1)));
 
-            User user = userRepository.Get(u => u.Id == id, null, "Avatar").FirstOrDefault();
+                User user = userRepository.Get(u => u.Id == id, null, "Avatar").FirstOrDefault();
 
-            return View(user);
+                return View(user);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
         public virtual ActionResult RenderPhoto(int id)
         {
-            Avatar avatar = avatarRepository.Get(m => m.Id == id).FirstOrDefault();
-            
-            return File(avatar.Image, avatar.ContentType);
+            try
+            {
+                Avatar avatar = avatarRepository.Get(m => m.Id == id).FirstOrDefault();
+
+                return File(avatar.Image, avatar.ContentType);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
         public virtual ActionResult EditProfile(int id)
         {
-            try 
+            try
             {
-            User user = GetMyUserById();
-            ViewBag.Name = user.Name;
+                User user = GetMyUserById();
+                ViewBag.Name = user.Name;
 
-            UserEditProfileViewModel u = new UserEditProfileViewModel(user);
-            return View(u);
+                UserEditProfileViewModel u = new UserEditProfileViewModel(user);
+                return View(u);
             }
             catch (Exception ex)
             {
@@ -197,17 +231,24 @@ namespace Forum.Controllers
         [Authorize(Roles = "Administrator")]
         public virtual ActionResult AdministerCategories()
         {
-            List<Category> categories = categoryRepository.Get().ToList();
-            return View(categories);
+            try
+            {
+                List<Category> categories = categoryRepository.Get().ToList();
+                return View(categories);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
         [Authorize(Roles = "Administrator")]
         public virtual ActionResult Delete(int id)
         {
             try
-            { 
-            User user = GetUserById(id);
-            return View(user);
+            {
+                User user = GetUserById(id);
+                return View(user);
             }
             catch (Exception ex)
             {
@@ -221,26 +262,26 @@ namespace Forum.Controllers
         [ValidateAntiForgeryToken]
         public virtual ActionResult DeleteConfirmed(int id)
         {
-            try 
-            { 
-            User user = GetUserById(id);
-            if (ModelState.IsValid)
+            try
             {
-                
-                user.Name = "Removed" + id;
-                user.Email = "";
-                user.Hash = new byte[1] { 0x01 };
-                user.IsAdministrator = false;
-                user.Location = "";
-                user.RemovalDate = DateTime.Now;
+                User user = GetUserById(id);
+                if (ModelState.IsValid)
+                {
 
-                userRepository.Update(user);
-                userRepository.Save();
+                    user.Name = "Removed" + id;
+                    user.Email = "";
+                    user.Hash = new byte[1] { 0x01 };
+                    user.IsAdministrator = false;
+                    user.Location = "";
+                    user.RemovalDate = DateTime.Now;
 
-                return RedirectToAction(MVC.User.Index());
-            }
+                    userRepository.Update(user);
+                    userRepository.Save();
 
-            return View(user);
+                    return RedirectToAction(MVC.User.Index());
+                }
+
+                return View(user);
             }
             catch (Exception ex)
             {
@@ -251,9 +292,10 @@ namespace Forum.Controllers
         [Authorize(Roles = "Administrator")]
         public virtual ActionResult Ban(int id)
         {
-            try { 
-            User user = GetUserById(id);
-            return View(user);
+            try
+            {
+                User user = GetUserById(id);
+                return View(user);
             }
             catch (Exception ex)
             {
@@ -268,19 +310,19 @@ namespace Forum.Controllers
         public virtual ActionResult BanConfirmed(int id)
         {
             try
-            { 
-            User user = GetUserById(id);
-
-            if (ModelState.IsValid)
             {
-                user.IsBanned = true;
+                User user = GetUserById(id);
 
-                userRepository.Update(user);
-                userRepository.Save();
+                if (ModelState.IsValid)
+                {
+                    user.IsBanned = true;
 
-                return RedirectToAction(MVC.User.Index());
-            }
-            return View(user);
+                    userRepository.Update(user);
+                    userRepository.Save();
+
+                    return RedirectToAction(MVC.User.Index());
+                }
+                return View(user);
             }
             catch (Exception ex)
             {
@@ -291,10 +333,10 @@ namespace Forum.Controllers
         [Authorize(Roles = "Administrator")]
         public virtual ActionResult Unban(int id)
         {
-            try 
-            { 
-            User user = GetUserById(id);
-            return View(user);
+            try
+            {
+                User user = GetUserById(id);
+                return View(user);
             }
             catch (Exception ex)
             {
@@ -308,19 +350,19 @@ namespace Forum.Controllers
         [ValidateAntiForgeryToken]
         public virtual ActionResult UnbanConfirmed(int id)
         {
-            try 
-            { 
-            User user = GetUserById(id);
-            if (ModelState.IsValid)
+            try
             {
-                user.IsBanned = false;
+                User user = GetUserById(id);
+                if (ModelState.IsValid)
+                {
+                    user.IsBanned = false;
 
-                userRepository.Update(user);
-                userRepository.Save();
+                    userRepository.Update(user);
+                    userRepository.Save();
 
-                return RedirectToAction(MVC.User.Index());
-            }
-            return View(user);
+                    return RedirectToAction(MVC.User.Index());
+                }
+                return View(user);
             }
             catch (Exception ex)
             {
@@ -331,8 +373,15 @@ namespace Forum.Controllers
 
         public virtual ActionResult MyPosts(int? page)
         {
-            IPagedList<Post> posts = postRepository.Get(m => m.AuthorId == User.Id).ToList().ToPagedList(page ?? 1, ItemsPerPage());
-            return View(posts);
+            try
+            {
+                IPagedList<Post> posts = postRepository.Get(m => m.AuthorId == User.Id).ToList().ToPagedList(page ?? 1, ItemsPerPage());
+                return View(posts);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
         [AllowAnonymous]
@@ -352,9 +401,9 @@ namespace Forum.Controllers
         }
 
         private byte[] ComputeHash(string data, string salt)
-        {            
+        {
             SHA256 sha = new SHA256CryptoServiceProvider();
-            byte[] hash = sha.ComputeHash(Encoding.ASCII.GetBytes(String.Format("{0}{1}",data,salt)));
+            byte[] hash = sha.ComputeHash(Encoding.ASCII.GetBytes(String.Format("{0}{1}", data, salt)));
             return hash;
         }
 

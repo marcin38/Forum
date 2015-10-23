@@ -3,8 +3,6 @@ using Repositories.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Tests.FakeRepositories
 {
@@ -12,7 +10,7 @@ namespace Tests.FakeRepositories
     {
         public List<Category> categories;
 
-        public FakeCategoryRepository() 
+        public FakeCategoryRepository()
         {
             categories = new List<Category>();
         }

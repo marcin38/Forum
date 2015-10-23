@@ -13,8 +13,8 @@ namespace Forum.Controllers
     public partial class PostController : BaseController, IPostController
     {
         private IPostRepository postRepository;
-        
-        public PostController(){}
+
+        public PostController() { }
 
         public PostController(IPostRepository postRepository)
         {
@@ -32,7 +32,8 @@ namespace Forum.Controllers
         [ValidateAntiForgeryToken]
         public virtual ActionResult AddPost(Post post)
         {
-
+            try
+            {
                 if (ModelState.IsValid)
                 {
                     post.AuthorId = User.Id;
@@ -43,8 +44,13 @@ namespace Forum.Controllers
 
                     return RedirectToAction(MVC.Thread.Index(post.ThreadId, null));
                 }
-                
-                    return View(post);
+
+                return View(post);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
         public virtual ActionResult EditPost(int id)
@@ -56,7 +62,7 @@ namespace Forum.Controllers
 
                 return View(MVC.Post.Views.AddPost, post);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return HandleException(ex);
             }
@@ -81,7 +87,7 @@ namespace Forum.Controllers
 
                 return View(MVC.Post.AddPost(post));
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 return HandleException(ex);
             }
@@ -89,16 +95,23 @@ namespace Forum.Controllers
 
         public virtual ActionResult ShowPost(int id)
         {
-            Post post = GetPostById(id);
-            return View(post);
+            try
+            {
+                Post post = GetPostById(id);
+                return View(post);
+            }
+            catch (Exception ex)
+            {
+                return HandleException(ex);
+            }
         }
 
         private Post GetMyPostById(int id)
         {
             Post post = GetPostById(id);
-            
 
-            if (User == null || User.Id != post.AuthorId )
+
+            if (User == null || User.Id != post.AuthorId)
             {
                 throw new HttpException(403, "Unauthorized access. The request requires user authentication. If the request already included Authorization credentials, then the 401 response indicates that authorization has been refused for those credentials.");
 

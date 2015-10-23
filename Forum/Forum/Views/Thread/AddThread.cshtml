@@ -13,6 +13,7 @@
         
         <div class="col-md-12">
             @Html.TextBoxFor(m => m.ThreadTitle)
+            @Html.ValidationMessageFor(m => m.ThreadTitle)
         </div>
         <div class="col-md-12">
             @Html.TextAreaFor(m => m.PostContent, new { @class = "col-md-12 disable-max-width-setting", rows = "20" })
