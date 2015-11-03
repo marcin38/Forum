@@ -1,0 +1,25 @@
+﻿<script type="text/javascript">
+    $(document).ready(function () {
+        $('#small').on({
+            click : function(){
+                var src = $(this).attr('src');
+                $('#big').fadeOut(500, function () {
+                    $(this).attr('src', src);
+                }).fadeIn(500);
+            }
+        }, 'img');
+           
+            
+    });
+</script>
+
+<h2>Gallery</h2>
+
+<img id="big" class="img-big" src="@Links.Content.Images.ball_jpg"/>
+<div id="small">
+    <img class="img" src="@Links.Content.Images.ball_jpg" />
+    <img class="img" src="@Links.Content.Images.elektrownia_atomowa_jpg" />
+    <img class="img" src="@Links.Content.Images.kawa_jpg" />
+    <img class="img" src="@Links.Content.Images.ksiezyc_jpg" />
+    <img class="img" src="@Links.Content.Images.slon_jpg" />
+</div>

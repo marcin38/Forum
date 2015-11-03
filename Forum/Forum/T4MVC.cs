@@ -30,6 +30,7 @@ public static partial class MVC
     public static Forum.Controllers.BaseController Base = new Forum.Controllers.T4MVC_BaseController();
     public static Forum.Controllers.CategoryController Category = new Forum.Controllers.T4MVC_CategoryController();
     public static Forum.Controllers.ErrorController Error = new Forum.Controllers.T4MVC_ErrorController();
+    public static Forum.Controllers.GalleryController Gallery = new Forum.Controllers.T4MVC_GalleryController();
     public static Forum.Controllers.HomeController Home = new Forum.Controllers.T4MVC_HomeController();
     public static Forum.Controllers.MessageController Message = new Forum.Controllers.T4MVC_MessageController();
     public static Forum.Controllers.PostController Post = new Forum.Controllers.T4MVC_PostController();
@@ -120,6 +121,19 @@ namespace Links
         public static readonly string bootstrap_css = T4MVCHelpers.IsProduction() && T4Extensions.FileExists(URLPATH + "/bootstrap.min.css") ? Url("bootstrap.min.css") : Url("bootstrap.css");
              
         public static readonly string bootstrap_min_css = Url("bootstrap.min.css");
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public static class Images {
+            private const string URLPATH = "~/Content/Images";
+            public static string Url() { return T4MVCHelpers.ProcessVirtualPath(URLPATH); }
+            public static string Url(string fileName) { return T4MVCHelpers.ProcessVirtualPath(URLPATH + "/" + fileName); }
+            public static readonly string ball_jpg = Url("ball.jpg");
+            public static readonly string elektrownia_atomowa_jpg = Url("elektrownia-atomowa.jpg");
+            public static readonly string help_jpg = Url("help.jpg");
+            public static readonly string kawa_jpg = Url("kawa.jpg");
+            public static readonly string ksiezyc_jpg = Url("ksiezyc.jpg");
+            public static readonly string slon_jpg = Url("slon.jpg");
+        }
+    
         public static readonly string jquery_ui_css = T4MVCHelpers.IsProduction() && T4Extensions.FileExists(URLPATH + "/jquery-ui.min.css") ? Url("jquery-ui.min.css") : Url("jquery-ui.css");
              
         public static readonly string PagedList_css = T4MVCHelpers.IsProduction() && T4Extensions.FileExists(URLPATH + "/PagedList.min.css") ? Url("PagedList.min.css") : Url("PagedList.css");
@@ -231,6 +245,12 @@ namespace Links
         }
         public static partial class Content 
         {
+            public static partial class Images 
+            {
+                public static class Assets
+                {
+                }
+            }
             public static partial class themes 
             {
                 public static partial class @base 

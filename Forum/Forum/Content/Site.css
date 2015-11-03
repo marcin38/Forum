@@ -139,3 +139,30 @@ textarea,
 .login-wrap {
 	padding: 20px;
 }
+
+.form-control {
+    display: inline;
+}
+
+.help-text
+{
+    display: none;
+    color: #428bca;
+}
+
+input[type="file"] {
+  display: inline;
+}
+
+.img {
+    width: 100px;
+    height: 100px;
+    border: 2px solid red;
+}
+
+.img-big {
+    width: 500px;
+    height: 500px;
+    border: 3px solid red;
+    margin: 5px 0px;
+}

@@ -6,6 +6,24 @@
     ViewBag.Title = "Registration";
 }
 
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('img').mouseover(function () {
+            var imgId = $(this).attr('id');
+            var divId = imgId.replace('img', 'div');
+            $('#' + divId).fadeIn(500);
+        }).mouseout(function () {
+            var imgId = $(this).attr('id');
+            var divId = imgId.replace('img', 'div');
+            $('#' + divId).fadeOut(500);
+        });
+
+        $('#showPassword').click(function () {
+            $('#password').attr('type', $(this).is(':checked') ? 'text' : 'password');
+        });
+    });
+</script>
+
 <h2>Register</h2>
 
 <div class="login-wrap form-horizontal">
@@ -18,6 +36,8 @@
             @Html.LabelFor(m => m.Name, new { @class = "col-md-3" })
             <div class="col-md-10">
                 @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                <img id="imgName" src="@Links.Content.Images.help_jpg" height="25"/>
+                <div id="divName" class="help-text">Your username in forum</div>
                 @Html.ValidationMessageFor(m => m.Name)
             </div>
         </div>
@@ -25,7 +45,11 @@
         <div class="form-group">
             @Html.LabelFor(m => m.Password, new { @class = "col-md-3" })
             <div class="col-md-10">
-                @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                @Html.PasswordFor(m => m.Password, new { @class = "form-control", id = "password" })
+                <img id="imgPassword" src="@Links.Content.Images.help_jpg" height="25" /><br />
+                @Html.CheckBox("showPassword", new { id = "showPassword" })
+                Show password
+                <div id="divPassword" class="help-text">Set this to protect your account</div>
                 @Html.ValidationMessageFor(m => m.Password)
             </div>
         </div>
@@ -34,6 +58,8 @@
             @Html.LabelFor(m => m.ConfirmPassword, new { @class = "col-md-3" })
             <div class="col-md-10">
                 @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                <img id="imgConfirmPassword" src="@Links.Content.Images.help_jpg" height="25" />
+                <div id="divConfirmPassword" class="help-text">Type your password again</div>
                 @Html.ValidationMessageFor(m => m.ConfirmPassword)
             </div>
         </div>
@@ -41,8 +67,9 @@
         <div class="form-group">
             @Html.LabelFor(m => m.Email, new { @class = "col-md-3" })
             <div class="col-md-10">
-
                 @Html.TextBoxFor(m => m.Email, new { @class = "form-control" })
+                <img id="imgEmail" src="@Links.Content.Images.help_jpg" height="25" />
+                <div id="divEmail" class="help-text">Provide your e-mail adress</div>
                 @Html.ValidationMessageFor(m => m.Email)
             </div>
         </div>
@@ -51,6 +78,8 @@
             @Html.LabelFor(m => m.Location, new { @class = "col-md-3" })
             <div class="col-md-10">
                 @Html.TextBoxFor(m => m.Location, new { @class = "form-control" })
+                <img id="imgLocation" src="@Links.Content.Images.help_jpg" height="25" />
+                <div id="divLocation" class="help-text">Where do you live?</div>
                 @Html.ValidationMessageFor(m => m.Location)
             </div>
         </div>
@@ -59,6 +88,8 @@
             @Html.Label("Avatar", new { @class = "col-md-3" })
             <div class="col-md-10">
                 <input type="file" id="Avatar" name="upload" />
+                <img id="imgAvatar" src="@Links.Content.Images.help_jpg" height="25" />
+                <div id="divAvatar" class="help-text">Upload your avatar</div>
             </div>
         </div>
 
