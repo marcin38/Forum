@@ -2,11 +2,17 @@
 
 @using PagedList;
 @using PagedList.Mvc;
+@using Forum.AjaxHelpers;
 
 <script type="text/javascript" language="javascript">
-    function Clear()
+    function Mark(id)
     {
-        $("#idBody").empty();
+        var body = $('#idBody');
+        var bodyId = 'body' + id;
+        body.html($('#' + bodyId).val());
+        body.addClass('table-bordered');
+        var header = '#row' + id;
+        $(header +' td').removeClass('message-unread-header').addClass('message-header');
     }
 </script>
 
@@ -55,7 +61,7 @@ else
         {
            messageClass = "message-header";        
         }
-        <tr>
+        <tr id="@("row" + item.Id)">
         @if (isInbox)
         {
             <td class="td1 @messageClass">
@@ -75,23 +81,20 @@ else
                 @Html.DisplayFor(m => item.SentDate)
             </td>
             <td class="td1">
-                @Ajax.ActionLink("Read", MVC.Message.Show(item.Id), new AjaxOptions()
+                 @Ajax.ImageActionLink(new Image { altText = "Read", height = "25", width = "32", imageUrl = @Links.Content.Images.email_jpg, title="Read" }, MVC.Message.Read(item.Id), new AjaxOptions()
            {
                HttpMethod = "GET",
-               UpdateTargetId = "idBody",
-               InsertionMode = InsertionMode.Replace,
-               //LoadingElementId = "idLoading",
-               //LoadingElementDuration = 1000,
-               //OnBegin = "Clear",
-           })
-                @Html.ActionLink("Delete", MVC.Message.Delete(item.Id))
-            </td>
+               OnSuccess = String.Format("Mark({0})", item.Id)
+           })  
+            
+            @Html.HiddenFor(m => item.Body, new { @id = "body" + item.Id})
+                       @Html.ActionLink("Delete", MVC.Message.Delete(item.Id))</td>
         </tr>
     }
 
 </table>
 
-<div id="idBody">
+<div id="idBody" class="col-md-6 disable-max-width-setting" style="height: 200px">
 </div>
 <div id="idLoading" style="display:none">
     <img src="~/Images/spinner.gif" />

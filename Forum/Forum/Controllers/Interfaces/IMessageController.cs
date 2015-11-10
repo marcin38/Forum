@@ -8,7 +8,7 @@ namespace Forum.Controllers.Interfaces
         ActionResult Index(string type, int? page);
         ActionResult Send();
         ActionResult Send(Message message);
-        ActionResult Show(int id);
+        EmptyResult Read(int id);
         ActionResult Delete(int id);
         ActionResult DeleteConfirmed(int id);
     }

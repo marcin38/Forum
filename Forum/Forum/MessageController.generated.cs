@@ -64,9 +64,9 @@ namespace Forum.Controllers
         }
         [NonAction]
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
-        public virtual System.Web.Mvc.ActionResult Show()
+        public virtual System.Web.Mvc.EmptyResult Read()
         {
-            return new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Show);
+            return new T4MVC_System_Web_Mvc_EmptyResult(Area, Name, ActionNames.Read);
         }
         [NonAction]
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
@@ -98,7 +98,7 @@ namespace Forum.Controllers
         {
             public readonly string Index = "Index";
             public readonly string Send = "Send";
-            public readonly string Show = "Show";
+            public readonly string Read = "Read";
             public readonly string Delete = "Delete";
             public readonly string DeleteConfirmed = "Delete";
         }
@@ -108,7 +108,7 @@ namespace Forum.Controllers
         {
             public const string Index = "Index";
             public const string Send = "Send";
-            public const string Show = "Show";
+            public const string Read = "Read";
             public const string Delete = "Delete";
             public const string DeleteConfirmed = "Delete";
         }
@@ -131,11 +131,11 @@ namespace Forum.Controllers
         {
             public readonly string message = "message";
         }
-        static readonly ActionParamsClass_Show s_params_Show = new ActionParamsClass_Show();
+        static readonly ActionParamsClass_Read s_params_Read = new ActionParamsClass_Read();
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
-        public ActionParamsClass_Show ShowParams { get { return s_params_Show; } }
+        public ActionParamsClass_Read ReadParams { get { return s_params_Read; } }
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
-        public class ActionParamsClass_Show
+        public class ActionParamsClass_Read
         {
             public readonly string id = "id";
         }
@@ -219,14 +219,14 @@ namespace Forum.Controllers
         }
 
         [NonAction]
-        partial void ShowOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, int id);
+        partial void ReadOverride(T4MVC_System_Web_Mvc_EmptyResult callInfo, int id);
 
         [NonAction]
-        public override System.Web.Mvc.ActionResult Show(int id)
+        public override System.Web.Mvc.EmptyResult Read(int id)
         {
-            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Show);
+            var callInfo = new T4MVC_System_Web_Mvc_EmptyResult(Area, Name, ActionNames.Read);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "id", id);
-            ShowOverride(callInfo, id);
+            ReadOverride(callInfo, id);
             return callInfo;
         }
 

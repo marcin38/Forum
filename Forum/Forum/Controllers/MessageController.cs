@@ -110,7 +110,7 @@ namespace Forum.Controllers
             }
         }
 
-        public virtual ActionResult Show(int id)
+        public virtual EmptyResult Read(int id)
         {
             try
             {
@@ -126,12 +126,12 @@ namespace Forum.Controllers
                     messageRepository.Update(message);
                     messageRepository.Save();
                 }
-                return PartialView(MVC.Message.Views._Body, message);
             }
             catch (Exception ex)
             {
-                return HandleException(ex);
+                HandleException(ex);
             }
+            return new EmptyResult();
         }
 
         public virtual ActionResult Delete(int id)
