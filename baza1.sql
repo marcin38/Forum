@@ -29,6 +29,7 @@ CREATE TABLE Users(
 	[RegistrationDate] [datetime] NOT NULL,
 	[RemovalDate] [datetime] NULL,
 	[Location] [nvarchar](50) NULL,
+	[BirthDate] [date] NULL,
 	[AvatarId] [int] NULL,
 	[IsAdministrator] [bit] NOT NULL,
 	[NumberOfWarnings] [int] NOT NULL,

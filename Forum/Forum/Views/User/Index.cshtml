@@ -3,75 +3,60 @@
 
 @model IPagedList<Domain.Models.User>
 
-<table class="my-table">
-    <tr>
-        <td class="td1">
-            Id
-        </td>
-        <td class="td1">
-            User name
-        </td>
-        <td class="td1">
-            E-mail
-        </td>
-        <td class="td1">
-            Location
-        </td>
-        <td class="td1">
-            Registration date
-        </td>
-        <td class="td1">
-            Administrator
-        </td>
-        <td class="td1">
-            Warnings
-        </td>
-        <td class="td1">
-            Banned
-        </td>
-        <td class ="td1">
-            Action
-        </td>
-    </tr>
-    @foreach (var item in Model)
-    {
-        <tr>
-            <td class="td1">
-                @Html.DisplayFor(m => item.Id)
-            </td>
-            <td class="td1">
-                @Html.ActionLink(item.Name, MVC.User.ShowProfile(item.Id))
-            </td>
-            <td class="td1">
-                @Html.DisplayFor(m => item.Email)
-            </td>
-            <td class="td1">
-                @Html.DisplayFor(m => item.Location)
-            </td>
-            <td class="td1">
-                @Html.DisplayFor(m => item.RegistrationDate)
-            </td>
-            <td class="td1 text-center">
-                @Html.CheckBoxFor(m => item.IsAdministrator, new { @disabled = "disabled" })
-            </td>
-            <td class="td1 text-center">
-                @Html.DisplayFor(m => item.NumberOfWarnings, new { @disabled = "disabled" })
-            </td>
-            <td class="td1 text-center">
-                @Html.CheckBoxFor(m => item.IsBanned, new { @disabled = "disabled" })
-            </td>
-            <td class="td1">
-                @Html.ActionLink("Delete", MVC.User.Delete(item.Id)) |
-                @Html.ActionLink("Ban", MVC.User.Ban(item.Id)) |
-                @Html.ActionLink("Unban", MVC.User.Unban(item.Id)) |
-                @Html.ActionLink("Show warnings", MVC.Warning.Index(item.Id))
-            </td>
+<link href="~/Content/jquery-ui.css" rel="stylesheet" />
 
-        </tr>
-    }
+<script type="text/javascript">
+    $(document).ready(function () {
+        var userTextBox = $('#user');
+        
+        userTextBox.keypress(function()
+        {
+            var term = $(this).val();
+                $.ajax({
+                    url: $('#indexLink').attr('href'),
+                    data: { term: term },
+                    method: 'GET',
+                    success: function (data) {
+                        var $target = $('#usersList');
+                        $target.replaceWith(data);
+                    }
+                });
+            
+        })
 
-</table>
+        userTextBox.autocomplete({
+            minLength: 1,
+            select: function(event, ui){
+                $.ajax({
+                    url: $('#indexLink').attr('href'),
+                    data: { term: ui.item.value },
+                    method: 'GET',
+                    success: function (data) {
+                        var $target = $('#usersList');
+                        $target.replaceWith(data);
+                    }
+                });
+            },
+            source:
+                function (request, response) {
+                $.ajax({
+                    url: $('#namesLink').attr('href'),
+                    data: { term: userTextBox.val() },
+                    method: 'GET',
+                    success: function (data) {
+                        response(data);
+                    }
+                });
+            }
+        });
+    });
+</script>
 
-@Html.PagedListPager(Model, page => Url.Action("Index", new { page }),
-new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })
-@*@Html.ActionLink("Back to administer page", "AdministerCategories")*@
+@Html.ActionLink("Index", MVC.User.Index(),new {style="display:none", id = "indexLink"})
+@Html.ActionLink("GetNames", MVC.User.GetNames(), new { style = "display:none", id="namesLink" })
+@Html.Label("user", "Search")
+@Html.TextBox("user", "", new { id = "user" })
+
+
+
+@Html.Partial(MVC.User.Views._Table, Model)

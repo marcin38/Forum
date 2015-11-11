@@ -1,0 +1,82 @@
+﻿@using PagedList;
+@using PagedList.Mvc;
+
+@model IPagedList<Domain.Models.User>
+
+<div id="usersList">
+    <table id="tblUsers" class="my-table">
+        <tr>
+            <td class="td1">
+                Id
+            </td>
+            <td class="td1">
+                User name
+            </td>
+            <td class="td1">
+                E-mail
+            </td>
+            <td class="td1">
+                Location
+            </td>
+            <td class="td1">
+                Registration date
+            </td>
+            <td class="td1">
+                Administrator
+            </td>
+            <td class="td1">
+                Warnings
+            </td>
+            <td class="td1">
+                Banned
+            </td>
+            <td class="td1">
+                Action
+            </td>
+        </tr>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="td1">
+                    @Html.DisplayFor(m => item.Id)
+                </td>
+                <td class="td1">
+                    @Html.ActionLink(item.Name, MVC.User.ShowProfile(item.Id))
+                </td>
+                <td class="td1">
+                    @Html.DisplayFor(m => item.Email)
+                </td>
+                <td class="td1">
+                    @Html.DisplayFor(m => item.Location)
+                </td>
+                <td class="td1">
+                    @Html.DisplayFor(m => item.RegistrationDate)
+                </td>
+                <td class="td1 text-center">
+                    @Html.CheckBoxFor(m => item.IsAdministrator, new { @disabled = "disabled" })
+                </td>
+                <td class="td1 text-center">
+                    @Html.DisplayFor(m => item.NumberOfWarnings, new { @disabled = "disabled" })
+                </td>
+                <td class="td1 text-center">
+                    @Html.CheckBoxFor(m => item.IsBanned, new { @disabled = "disabled" })
+                </td>
+                <td class="td1">
+                    @Html.ActionLink("Delete", MVC.User.Delete(item.Id)) |
+                    @Html.ActionLink("Ban", MVC.User.Ban(item.Id)) |
+                    @Html.ActionLink("Unban", MVC.User.Unban(item.Id)) |
+                    @Html.ActionLink("Show warnings", MVC.Warning.Index(item.Id))
+                </td>
+
+            </tr>
+        }
+
+    </table>
+
+    @Html.PagedListPager(Model, page => Url.Action("Index", new { term = Request.QueryString["term"], page = page }),
+            PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+            new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded }, 
+            new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "usersList" })
+//new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded }
+)
+</div>

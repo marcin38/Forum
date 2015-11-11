@@ -140,6 +140,7 @@ namespace Links
             public static string Url() { return T4MVCHelpers.ProcessVirtualPath(URLPATH); }
             public static string Url(string fileName) { return T4MVCHelpers.ProcessVirtualPath(URLPATH + "/" + fileName); }
             public static readonly string ball_jpg = Url("ball.jpg");
+            public static readonly string calendar_jpg = Url("calendar.jpg");
             public static readonly string elektrownia_atomowa_jpg = Url("elektrownia-atomowa.jpg");
             public static readonly string email_jpg = Url("email.jpg");
             public static readonly string help_jpg = Url("help.jpg");

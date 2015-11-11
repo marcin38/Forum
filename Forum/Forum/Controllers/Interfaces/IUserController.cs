@@ -6,7 +6,7 @@ namespace Forum.Controllers.Interfaces
 {
     interface IUserController
     {
-        ActionResult Index(int? page);
+        ActionResult Index(string term, int? page);
         ActionResult Register();
         ActionResult Register(UserRegisterViewModel user, HttpPostedFileBase upload);
         ActionResult Login(string returnUrl);

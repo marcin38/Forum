@@ -121,6 +121,7 @@ namespace Forum.Controllers
         public class ActionParamsClass_Index
         {
             public readonly string type = "type";
+            public readonly string sortOrder = "sortOrder";
             public readonly string page = "page";
         }
         static readonly ActionParamsClass_Send s_params_Send = new ActionParamsClass_Send();
@@ -165,12 +166,10 @@ namespace Forum.Controllers
             public _ViewNamesClass ViewNames { get { return s_ViewNames; } }
             public class _ViewNamesClass
             {
-                public readonly string _Body = "_Body";
                 public readonly string Delete = "Delete";
                 public readonly string Index = "Index";
                 public readonly string Send = "Send";
             }
-            public readonly string _Body = "~/Views/Message/_Body.cshtml";
             public readonly string Delete = "~/Views/Message/Delete.cshtml";
             public readonly string Index = "~/Views/Message/Index.cshtml";
             public readonly string Send = "~/Views/Message/Send.cshtml";
@@ -183,15 +182,16 @@ namespace Forum.Controllers
         public T4MVC_MessageController() : base(Dummy.Instance) { }
 
         [NonAction]
-        partial void IndexOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, string type, int? page);
+        partial void IndexOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, string type, string sortOrder, int? page);
 
         [NonAction]
-        public override System.Web.Mvc.ActionResult Index(string type, int? page)
+        public override System.Web.Mvc.ActionResult Index(string type, string sortOrder, int? page)
         {
             var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Index);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "type", type);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "sortOrder", sortOrder);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "page", page);
-            IndexOverride(callInfo, type, page);
+            IndexOverride(callInfo, type, sortOrder, page);
             return callInfo;
         }
 

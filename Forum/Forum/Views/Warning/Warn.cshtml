@@ -3,7 +3,7 @@
 <h3>Are you sure you want to warn this user?</h3>
 <div>
     <hr />
-        @Html.Partial("ShowProfile", Model.User);
+        @Html.Partial(MVC.Shared.Views.ShowProfile, Model.User);
 
     <div class="login-wrap form-horizontal">
         @using (Html.BeginForm(MVC.Warning.Warn(Model.PostId), FormMethod.Post))
@@ -34,7 +34,7 @@
 
     <div class="form-group">
         <div class="col-md-10">
-            @Html.ActionLink("Inbox", MVC.Message.Index(Forum.Controllers.MessageController.MailboxType.Inbox.ToString(), null))
+            @Html.ActionLink("Inbox", MVC.Message.Index(Forum.Controllers.MessageController.MailboxType.Inbox.ToString(), null, null))
         </div>
     </div>
         }

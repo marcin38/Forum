@@ -5,6 +5,7 @@
 <div id="@("dialog-modal" + ViewData["postId"])" class="modal fade" >
     @using (Html.BeginForm("Send", "Message"))
     {
+        @Html.AntiForgeryToken()
         <div class="modal-dialog my-modal-dialog">
             
                 @Html.Label("What is wrong with that post?")

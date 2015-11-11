@@ -248,6 +248,7 @@
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\Images\ball.jpg" />
+    <Content Include="Content\Images\calendar.jpg" />
     <Content Include="Content\Images\elektrownia-atomowa.jpg" />
     <Content Include="Content\Images\email.jpg" />
     <Content Include="Content\Images\kawa.jpg" />
@@ -346,7 +347,6 @@
     <Content Include="Views\Category\Delete.cshtml" />
     <Content Include="Views\User\Delete.cshtml" />
     <Content Include="Views\Message\Send.cshtml" />
-    <Content Include="Views\Message\_Body.cshtml" />
     <Content Include="Views\Message\Delete.cshtml" />
     <Content Include="Views\Message\Index.cshtml" />
     <Content Include="Views\Thread\_Report.cshtml" />
@@ -364,6 +364,7 @@
     </None>
     <Content Include="Views\Error\Index.cshtml" />
     <Content Include="Views\Gallery\Index.cshtml" />
+    <Content Include="Views\User\_Table.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

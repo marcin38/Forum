@@ -9,6 +9,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - My ASP.NET Application</title>
     @Styles.Render("~/Content/css")
+
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/jquery")
 </head>
@@ -46,8 +47,8 @@
                             <ul class="dropdown-menu">
                                 <li> @Html.ActionLink("Log off", MVC.User.LogOff()) </li>
                                 <li> @Html.ActionLink("My profile", MVC.User.ShowProfile()) </li>
-                                <li> @Html.ActionLink("Inbox", MVC.Message.Index(Forum.Controllers.MessageController.MailboxType.Inbox.ToString(),null), null)</li>
-                                <li> @Html.ActionLink("Sent", MVC.Message.Index(Forum.Controllers.MessageController.MailboxType.Sent.ToString(), null), null)</li>
+                                <li> @Html.ActionLink("Inbox", MVC.Message.Index(Forum.Controllers.MessageController.MailboxType.Inbox.ToString(),null, null), null)</li>
+                                <li> @Html.ActionLink("Sent", MVC.Message.Index(Forum.Controllers.MessageController.MailboxType.Sent.ToString(), null, null), null)</li>
                                 @if (User.IsInRole("Administrator"))
                                 {
                                     <li> @Html.ActionLink("Administer categories", MVC.User.AdministerCategories())</li>

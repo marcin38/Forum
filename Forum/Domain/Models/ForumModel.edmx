@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="ForumModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="ForumModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="Avatars">
           <Key>
             <PropertyRef Name="Id" />
@@ -66,6 +66,7 @@
           <Property Name="RegistrationDate" Type="datetime" Nullable="false" />
           <Property Name="RemovalDate" Type="datetime" />
           <Property Name="Location" Type="nvarchar" MaxLength="50" />
+          <Property Name="BirthDate" Type="datetime" />
           <Property Name="AvatarId" Type="int" />
           <Property Name="IsAdministrator" Type="bit" Nullable="false" />
           <Property Name="NumberOfWarnings" Type="int" Nullable="false" />
@@ -147,7 +148,9 @@ warning 6002: The table/view 'Forum.dbo.V_Threads' does not have a primary key d
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Posts_ThreadId">
-          <End Role="Threads" Type="Self.Threads" Multiplicity="1" />
+          <End Role="Threads" Type="Self.Threads" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Posts" Type="Self.Posts" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Threads">
@@ -171,7 +174,9 @@ warning 6002: The table/view 'Forum.dbo.V_Threads' does not have a primary key d
           </ReferentialConstraint>
         </Association>
         <Association Name="FK_Threads_CategoryId">
-          <End Role="Categories" Type="Self.Categories" Multiplicity="1" />
+          <End Role="Categories" Type="Self.Categories" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
           <End Role="Threads" Type="Self.Threads" Multiplicity="*" />
           <ReferentialConstraint>
             <Principal Role="Categories">
@@ -284,8 +289,7 @@ warning 6002: The table/view 'Forum.dbo.V_Threads' does not have a primary key d
             <End Role="Warnings" EntitySet="Warnings" />
           </AssociationSet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="ForumModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -370,6 +374,7 @@ warning 6002: The table/view 'Forum.dbo.V_Threads' does not have a primary key d
           <NavigationProperty Name="Posts" Relationship="Self.FK_Posts_AuthorId" FromRole="Users" ToRole="Posts" />
           <NavigationProperty Name="Threads" Relationship="Self.FK_Threads_AuthorId" FromRole="Users" ToRole="Threads" />
           <NavigationProperty Name="Warnings" Relationship="Self.FK_Warnings_UserId" FromRole="Users" ToRole="Warnings" />
+          <Property Name="BirthDate" Type="DateTime" Precision="3" />
         </EntityType>
         <EntityType Name="Warning">
           <Key>
@@ -627,6 +632,7 @@ warning 6002: The table/view 'Forum.dbo.V_Threads' does not have a primary key d
           <EntitySetMapping Name="Users">
             <EntityTypeMapping TypeName="ForumModel.User">
               <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="Email" ColumnName="Email" />

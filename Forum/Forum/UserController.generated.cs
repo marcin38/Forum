@@ -134,6 +134,12 @@ namespace Forum.Controllers
         {
             return new T4MVC_System_Web_Mvc_JsonResult(Area, Name, ActionNames.IsUserNameAvailable);
         }
+        [NonAction]
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public virtual System.Web.Mvc.JsonResult GetNames()
+        {
+            return new T4MVC_System_Web_Mvc_JsonResult(Area, Name, ActionNames.GetNames);
+        }
 
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
         public UserController Actions { get { return MVC.User; } }
@@ -166,6 +172,7 @@ namespace Forum.Controllers
             public readonly string UnbanConfirmed = "Unban";
             public readonly string MyPosts = "MyPosts";
             public readonly string IsUserNameAvailable = "IsUserNameAvailable";
+            public readonly string GetNames = "GetNames";
         }
 
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
@@ -187,6 +194,7 @@ namespace Forum.Controllers
             public const string UnbanConfirmed = "Unban";
             public const string MyPosts = "MyPosts";
             public const string IsUserNameAvailable = "IsUserNameAvailable";
+            public const string GetNames = "GetNames";
         }
 
 
@@ -196,6 +204,7 @@ namespace Forum.Controllers
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
         public class ActionParamsClass_Index
         {
+            public readonly string term = "term";
             public readonly string page = "page";
         }
         static readonly ActionParamsClass_Register s_params_Register = new ActionParamsClass_Register();
@@ -306,6 +315,14 @@ namespace Forum.Controllers
         {
             public readonly string Name = "Name";
         }
+        static readonly ActionParamsClass_GetNames s_params_GetNames = new ActionParamsClass_GetNames();
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public ActionParamsClass_GetNames GetNamesParams { get { return s_params_GetNames; } }
+        [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
+        public class ActionParamsClass_GetNames
+        {
+            public readonly string term = "term";
+        }
         static readonly ViewsClass s_views = new ViewsClass();
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
         public ViewsClass Views { get { return s_views; } }
@@ -316,6 +333,7 @@ namespace Forum.Controllers
             public _ViewNamesClass ViewNames { get { return s_ViewNames; } }
             public class _ViewNamesClass
             {
+                public readonly string _Table = "_Table";
                 public readonly string AdministerCategories = "AdministerCategories";
                 public readonly string Ban = "Ban";
                 public readonly string Delete = "Delete";
@@ -326,6 +344,7 @@ namespace Forum.Controllers
                 public readonly string Register = "Register";
                 public readonly string Unban = "Unban";
             }
+            public readonly string _Table = "~/Views/User/_Table.cshtml";
             public readonly string AdministerCategories = "~/Views/User/AdministerCategories.cshtml";
             public readonly string Ban = "~/Views/User/Ban.cshtml";
             public readonly string Delete = "~/Views/User/Delete.cshtml";
@@ -344,14 +363,15 @@ namespace Forum.Controllers
         public T4MVC_UserController() : base(Dummy.Instance) { }
 
         [NonAction]
-        partial void IndexOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, int? page);
+        partial void IndexOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, string term, int? page);
 
         [NonAction]
-        public override System.Web.Mvc.ActionResult Index(int? page)
+        public override System.Web.Mvc.ActionResult Index(string term, int? page)
         {
             var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Index);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "term", term);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "page", page);
-            IndexOverride(callInfo, page);
+            IndexOverride(callInfo, term, page);
             return callInfo;
         }
 
@@ -568,6 +588,18 @@ namespace Forum.Controllers
             var callInfo = new T4MVC_System_Web_Mvc_JsonResult(Area, Name, ActionNames.IsUserNameAvailable);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "Name", Name);
             IsUserNameAvailableOverride(callInfo, Name);
+            return callInfo;
+        }
+
+        [NonAction]
+        partial void GetNamesOverride(T4MVC_System_Web_Mvc_JsonResult callInfo, string term);
+
+        [NonAction]
+        public override System.Web.Mvc.JsonResult GetNames(string term)
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_JsonResult(Area, Name, ActionNames.GetNames);
+            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "term", term);
+            GetNamesOverride(callInfo, term);
             return callInfo;
         }
 

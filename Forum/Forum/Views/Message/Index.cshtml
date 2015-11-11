@@ -4,6 +4,8 @@
 @using PagedList.Mvc;
 @using Forum.AjaxHelpers;
 
+
+
 <script type="text/javascript" language="javascript">
     function Mark(id)
     {
@@ -29,25 +31,25 @@ else
 
 @Html.ActionLink("New message", MVC.Message.Send())
 
-<table class="my-table">
+<table id="messages" class="my-table">
     <tr>
         @if (ViewBag.Type == Forum.Controllers.MessageController.MailboxType.Inbox.ToString())
         {
             <td class="td1">
-                Sender
+                @Html.ActionLink("Sender", MVC.Message.Index((string)ViewBag.Type, ViewBag.Sort == "Sender_desc" ? "Sender_asc" : "Sender_desc", null))
             </td>
         }
         else
         {
             <td class="td1">
-                Recipient
+                @Html.ActionLink("Recipient", MVC.Message.Index((string)ViewBag.Type, ViewBag.Sort == "Recipient_desc" ? "Recipient_asc" : "Recipient_desc", null))
             </td>
         }
         <td class="td1">
-            Subject
+            @Html.ActionLink("Subject", MVC.Message.Index((string)ViewBag.Type, ViewBag.Sort == "Subject_desc" ? "Subject_asc" : "Subject_desc", null))
         </td>
         <td class="td1">
-            Sent date
+            @Html.ActionLink("Sent date", MVC.Message.Index((string)ViewBag.Type, ViewBag.Sort == "Sent_date_desc" ? "Sent_date_asc" : "Sent_date_desc", null))
         </td>
         <td class="td1">
             Action
@@ -100,5 +102,5 @@ else
     <img src="~/Images/spinner.gif" />
 </div>
 
-@Html.PagedListPager(Model, page => Url.Action(MVC.Message.Index( (string)ViewBag.Type, page)),
+@Html.PagedListPager(Model, page => Url.Action(MVC.Message.Index( (string)ViewBag.Type, (string) ViewBag.Sort, page)),
 new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded })

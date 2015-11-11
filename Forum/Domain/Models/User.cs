@@ -34,6 +34,7 @@ namespace Domain.Models
         public bool IsAdministrator { get; set; }
         public int NumberOfWarnings { get; set; }
         public bool IsBanned { get; set; }
+        public Nullable<System.DateTime> BirthDate { get; set; }
     
         public virtual Avatar Avatar { get; set; }
         public virtual ICollection<Message> Messages { get; set; }

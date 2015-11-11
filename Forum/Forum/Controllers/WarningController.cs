@@ -73,7 +73,7 @@ namespace Forum.Controllers
                     warningRepository.Save();
 
 
-                    return RedirectToAction(MVC.Message.Index(Forum.Controllers.MessageController.MailboxType.Inbox.ToString(), null));
+                    return RedirectToAction(MVC.Message.Index(Forum.Controllers.MessageController.MailboxType.Inbox.ToString(),null, null));
                 }
                 int postId = warning.PostId;
                 User u = postRepository.Get(m => m.Id == postId).Single().User;

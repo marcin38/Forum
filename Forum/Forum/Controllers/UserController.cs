@@ -35,11 +35,20 @@ namespace Forum.Controllers
         }
 
         [Authorize(Roles = "Administrator")]
-        public virtual ActionResult Index(int? page)
+        public virtual ActionResult Index(string term, int? page)
         {
             try
             {
-                IPagedList<User> users = userRepository.Get().ToList().ToPagedList(page ?? 1, ItemsPerPage());
+                IPagedList<User> users;
+                if (String.IsNullOrEmpty(term))
+                    users = userRepository.Get().ToList().ToPagedList(page ?? 1, ItemsPerPage());
+                else
+                    users = userRepository.Get(m => m.Name.ToLower().StartsWith(term.ToLower())).ToList().ToPagedList(page ?? 1, ItemsPerPage());
+                if (Request.IsAjaxRequest())
+                {
+                    return PartialView(MVC.User.Views._Table, users);
+                }
+
                 return View(users);
             }
             catch (Exception ex)
@@ -398,6 +407,13 @@ namespace Forum.Controllers
                 result = true;
             }
             return Json(result, JsonRequestBehavior.AllowGet);
+        }
+
+        public virtual JsonResult GetNames(string term)
+        {
+            List<User> users = userRepository.Get(m => m.Name.ToLower().StartsWith(term.ToLower())).ToList();
+            List<String> names = users.Select(m => m.Name).ToList();
+            return Json(names, JsonRequestBehavior.AllowGet);
         }
 
         private byte[] ComputeHash(string data, string salt)
