@@ -15,7 +15,7 @@ namespace Tests
             PostController controller = new PostController(context);
 
             Post post = new Post();
-            controller.AddPost(post);
+            controller.Add(post);
             Assert.AreEqual(1, context.posts.Count);
         }
 
@@ -26,7 +26,7 @@ namespace Tests
             PostController controller = new PostController(context);
 
             Post post = new Post();
-            controller.AddPost(post);
+            controller.Add(post);
             post.PostContent = "content";
             Assert.AreEqual("content", context.posts.First().PostContent);
         }

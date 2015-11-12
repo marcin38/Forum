@@ -1,6 +1,7 @@
 ﻿using Domain.Models;
 using Forum.Controllers.Interfaces;
 using Forum.Exceptions;
+using Forum.ViewModels;
 using Repositories.Repositories.Interfaces;
 using System;
 using System.Linq;
@@ -21,16 +22,9 @@ namespace Forum.Controllers
             this.postRepository = postRepository;
         }
 
-        public virtual ActionResult AddPost(int threadId)
-        {
-            ViewBag.ThreadId = threadId;
-
-            return View();
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult AddPost(Post post)
+        public virtual ActionResult Add(Post post)
         {
             try
             {
@@ -53,28 +47,13 @@ namespace Forum.Controllers
             }
         }
 
-        public virtual ActionResult EditPost(int id)
-        {
-            try
-            {
-                Post post = GetMyPostById(id);
-                ViewBag.ThreadId = post.ThreadId;
-
-                return View(MVC.Post.Views.AddPost, post);
-            }
-            catch (Exception ex)
-            {
-                return HandleException(ex);
-            }
-        }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public virtual ActionResult EditPost(Post post)
+        public virtual ActionResult Edit(PostEditViewModel post)
         {
             try
             {
-                Post p = GetMyPostById(post.Id);
+                Post p = GetMyPostById(post.PostId);
                 p.PostContent = post.PostContent;
 
                 if (ModelState.IsValid)
@@ -85,7 +64,7 @@ namespace Forum.Controllers
                     return RedirectToAction(MVC.Thread.Index(p.ThreadId, null));
                 }
 
-                return View(MVC.Post.AddPost(post));
+                return View(MVC.Post.Edit(post));
             }
             catch (Exception ex)
             {

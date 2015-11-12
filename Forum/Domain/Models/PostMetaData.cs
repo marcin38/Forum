@@ -8,6 +8,7 @@ namespace Domain.Models
         public int AuthorId { get; set; }
 
         [Required]
+        [Display(Name="Content of post")]
         public string PostContent { get; set; }
 
         [Required]

@@ -58,15 +58,15 @@ namespace Forum.Controllers
 
         [NonAction]
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
-        public virtual System.Web.Mvc.ActionResult AddPost()
+        public virtual System.Web.Mvc.ActionResult Add()
         {
-            return new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.AddPost);
+            return new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Add);
         }
         [NonAction]
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
-        public virtual System.Web.Mvc.ActionResult EditPost()
+        public virtual System.Web.Mvc.ActionResult Edit()
         {
-            return new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.EditPost);
+            return new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Edit);
         }
         [NonAction]
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
@@ -90,36 +90,34 @@ namespace Forum.Controllers
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
         public class ActionNamesClass
         {
-            public readonly string AddPost = "AddPost";
-            public readonly string EditPost = "EditPost";
+            public readonly string Add = "Add";
+            public readonly string Edit = "Edit";
             public readonly string ShowPost = "ShowPost";
         }
 
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
         public class ActionNameConstants
         {
-            public const string AddPost = "AddPost";
-            public const string EditPost = "EditPost";
+            public const string Add = "Add";
+            public const string Edit = "Edit";
             public const string ShowPost = "ShowPost";
         }
 
 
-        static readonly ActionParamsClass_AddPost s_params_AddPost = new ActionParamsClass_AddPost();
+        static readonly ActionParamsClass_Add s_params_Add = new ActionParamsClass_Add();
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
-        public ActionParamsClass_AddPost AddPostParams { get { return s_params_AddPost; } }
+        public ActionParamsClass_Add AddParams { get { return s_params_Add; } }
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
-        public class ActionParamsClass_AddPost
+        public class ActionParamsClass_Add
         {
-            public readonly string threadId = "threadId";
             public readonly string post = "post";
         }
-        static readonly ActionParamsClass_EditPost s_params_EditPost = new ActionParamsClass_EditPost();
+        static readonly ActionParamsClass_Edit s_params_Edit = new ActionParamsClass_Edit();
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
-        public ActionParamsClass_EditPost EditPostParams { get { return s_params_EditPost; } }
+        public ActionParamsClass_Edit EditParams { get { return s_params_Edit; } }
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
-        public class ActionParamsClass_EditPost
+        public class ActionParamsClass_Edit
         {
-            public readonly string id = "id";
             public readonly string post = "post";
         }
         static readonly ActionParamsClass_ShowPost s_params_ShowPost = new ActionParamsClass_ShowPost();
@@ -140,10 +138,12 @@ namespace Forum.Controllers
             public _ViewNamesClass ViewNames { get { return s_ViewNames; } }
             public class _ViewNamesClass
             {
-                public readonly string AddPost = "AddPost";
+                public readonly string Add = "Add";
+                public readonly string Edit = "Edit";
                 public readonly string ShowPost = "ShowPost";
             }
-            public readonly string AddPost = "~/Views/Post/AddPost.cshtml";
+            public readonly string Add = "~/Views/Post/Add.cshtml";
+            public readonly string Edit = "~/Views/Post/Edit.cshtml";
             public readonly string ShowPost = "~/Views/Post/ShowPost.cshtml";
         }
     }
@@ -154,50 +154,26 @@ namespace Forum.Controllers
         public T4MVC_PostController() : base(Dummy.Instance) { }
 
         [NonAction]
-        partial void AddPostOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, int threadId);
+        partial void AddOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, Domain.Models.Post post);
 
         [NonAction]
-        public override System.Web.Mvc.ActionResult AddPost(int threadId)
+        public override System.Web.Mvc.ActionResult Add(Domain.Models.Post post)
         {
-            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.AddPost);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "threadId", threadId);
-            AddPostOverride(callInfo, threadId);
-            return callInfo;
-        }
-
-        [NonAction]
-        partial void AddPostOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, Domain.Models.Post post);
-
-        [NonAction]
-        public override System.Web.Mvc.ActionResult AddPost(Domain.Models.Post post)
-        {
-            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.AddPost);
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Add);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "post", post);
-            AddPostOverride(callInfo, post);
+            AddOverride(callInfo, post);
             return callInfo;
         }
 
         [NonAction]
-        partial void EditPostOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, int id);
+        partial void EditOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, Forum.ViewModels.PostEditViewModel post);
 
         [NonAction]
-        public override System.Web.Mvc.ActionResult EditPost(int id)
+        public override System.Web.Mvc.ActionResult Edit(Forum.ViewModels.PostEditViewModel post)
         {
-            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.EditPost);
-            ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "id", id);
-            EditPostOverride(callInfo, id);
-            return callInfo;
-        }
-
-        [NonAction]
-        partial void EditPostOverride(T4MVC_System_Web_Mvc_ActionResult callInfo, Domain.Models.Post post);
-
-        [NonAction]
-        public override System.Web.Mvc.ActionResult EditPost(Domain.Models.Post post)
-        {
-            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.EditPost);
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.Edit);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "post", post);
-            EditPostOverride(callInfo, post);
+            EditOverride(callInfo, post);
             return callInfo;
         }
 

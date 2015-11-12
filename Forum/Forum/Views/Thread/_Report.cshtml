@@ -1,29 +1,46 @@
 ﻿@model Domain.Models.Message
 
-<button id="modal-opener" class="btn btn-danger report-button" data-toggle="modal" data-target="@("#dialog-modal" + ViewData["postId"])" type="button">Report</button>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var divDialog = $('div[title="Dialog-report"]');
+        divDialog.dialog({
+            autoOpen: false,
+            title: 'Report'
+        });
 
-<div id="@("dialog-modal" + ViewData["postId"])" class="modal fade" >
+        $('.report-button').click(function () {
+            var id = $(this).attr('id').replace('report', 'dialog-report');
+            $('#'+id).dialog('open');
+        });
+
+        $('input[data-value="rCancel"]').click(function () {
+            var id = $(this).attr('id').replace('rCancel', 'dialog-report');
+            $('#'+id).dialog('close');
+        });
+    });
+</script>
+
+
+<button id="@("report" + ViewData["postId"])" class="btn btn-danger report-button">Report</button>
+
+<div id="@("dialog-report" + ViewData["postId"])" title="Dialog-report">
     @using (Html.BeginForm("Send", "Message"))
     {
         @Html.AntiForgeryToken()
-        <div class="modal-dialog my-modal-dialog">
-            
-                @Html.Label("What is wrong with that post?")
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
-            
-            
+            @Html.Label("What is wrong with that post?")
+
             <div class="col-md-12">
                 @Html.TextAreaFor(m => m.Body, new { @class = "form-control" })
                 @Html.ValidationMessageFor(m => m.Body) <br />
             </div>
             @Html.HiddenFor(m => m.Subject)
 
-            <div class="margin-top">
-                <input type="button" class="btn btn-block btn-warning" value="Cancel" data-dismiss="modal" />
+            <div class="col-md-6">
                 <input type="submit" class="btn btn-block btn-success" value="Send" />
             </div>
-
-        </div>
+            <div class="col-md-6">
+                <input type="button" class="btn btn-block btn-warning" id="@("rCancel" + ViewData["postId"])" data-value="rCancel" value="Cancel" />
+            </div>
 
     }
 </div>

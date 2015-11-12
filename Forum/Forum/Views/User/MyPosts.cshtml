@@ -18,7 +18,7 @@
                                 @if (isAuthenticated)
                                 {
                                     <div class="btn-toolbar">
-                                        <button class="btn btn-success edit-button" type="button" onclick="location.href='@Url.Action(MVC.Post.EditPost(item.Id))'">Edit</button>
+                                        @Html.Partial(MVC.Post.Views.Edit, new Forum.ViewModels.PostEditViewModel { PostContent = item.PostContent, PostId = item.Id })  
                                         <button class="btn btn-success thread-button" type="button" onclick="location.href='@Url.Action(MVC.Thread.Index(item.ThreadId, null))'">To thread</button>
                                     </div>
                                 }

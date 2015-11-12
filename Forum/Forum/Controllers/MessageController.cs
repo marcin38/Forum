@@ -65,6 +65,9 @@ namespace Forum.Controllers
                     case "Sent_date_asc":
                         orderBy = x => x.OrderBy(y => y.SentDate);
                         break;
+                    default: 
+                        orderBy = x => x.OrderByDescending(y => y.SentDate);
+                        break;
                 }
                 
                 if (type.Equals(MailboxType.Inbox.ToString()))

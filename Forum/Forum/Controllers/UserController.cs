@@ -384,7 +384,7 @@ namespace Forum.Controllers
         {
             try
             {
-                IPagedList<Post> posts = postRepository.Get(m => m.AuthorId == User.Id).ToList().ToPagedList(page ?? 1, ItemsPerPage());
+                IPagedList<Post> posts = postRepository.Get(m => m.AuthorId == User.Id, m => m.OrderByDescending(x => x.CreationDate)).ToList().ToPagedList(page ?? 1, ItemsPerPage());
                 return View(posts);
             }
             catch (Exception ex)

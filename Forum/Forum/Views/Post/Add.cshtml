@@ -1,0 +1,52 @@
+﻿@model Domain.Models.Post
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var divDialog = $('div[title="DialogAdd"]');
+        divDialog.dialog({
+            autoOpen: false,
+            title: 'Add post'
+        });
+
+        $('button[data-value="reply"]').click(function () {
+            var id = $(this).attr('id').replace('btn', 'dialog');
+            $('#'+id).dialog('open');
+        });
+
+        $('input[data-value="cancel"]').click(function () {
+            
+            var id = $(this).attr('id').replace('cancel', 'dialog');
+            $('#'+id).dialog('close');
+        });
+    });
+</script>
+
+<div class="col-md-10 form-group">
+    <button id="@("btn"+ Model.Id)" class="btn btn-success" data-value="reply">Reply</button>
+</div>
+
+
+
+
+
+<div id="@("dialog" + Model.Id)" title="DialogAdd" data-title="Add post">
+    @using (Html.BeginForm(MVC.Post.Add(), FormMethod.Post))
+    {
+        @Html.ValidationSummary(true)
+        @Html.AntiForgeryToken()
+
+        <div class="col-md-12">
+            @Html.LabelFor(m => m.PostContent)
+            @Html.TextAreaFor(m => m.PostContent, new { @class = "col-md-12 disable-max-width-setting", rows = "20" })
+            @Html.ValidationMessageFor(m => m.PostContent)
+            @Html.HiddenFor(m => m.ThreadId)
+        </div>
+        <div class="col-md-6">
+            <input type="submit" class="btn btn-block btn-success" value="Submit" />
+        </div>
+        <div class="col-md-6">
+            <input type="button" class="btn btn-block btn-warning" id="@("cancel" + Model.Id)" data-value="cancel" value="Cancel" />
+        </div>
+    }
+</div>
+

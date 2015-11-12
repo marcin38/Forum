@@ -1,0 +1,49 @@
+﻿@model Forum.ViewModels.PostEditViewModel
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var divDialog = $('div[title="DialogEdit"]');
+        divDialog.dialog({
+            autoOpen: false,
+            title: 'Edit post'
+        });
+
+        $('button[data-value="edit"]').click(function () {
+            var id = $(this).attr('id').replace('btn', 'dialog');
+            $('#'+id).dialog('open');
+        });
+
+        $('input[data-value="cancel"]').click(function () {
+            var id = $(this).attr('id').replace('cancel', 'dialog');
+            $('#'+id).dialog('close');
+        });
+    });
+</script>
+
+    <button id="@("btn"+ Model.PostId)" class="btn btn-primary edit-button" data-value="edit">Edit</button>
+
+
+
+<div id="@("dialog" + Model.PostId)" title="DialogEdit" data-title="Edit post">
+    @using (Html.BeginForm(MVC.Post.Edit(), FormMethod.Post))
+    {
+        @Html.ValidationSummary(true)
+        @Html.AntiForgeryToken()
+
+        <div class="col-md-12">
+            @Html.LabelFor(m => m.PostContent)
+            @Html.TextAreaFor(m => m.PostContent, new { @class = "col-md-12 disable-max-width-setting", rows = "20" })
+            @Html.ValidationMessageFor(m => m.PostContent)
+            @Html.HiddenFor(m => m.PostId)
+        </div>
+        <div class="col-md-6">
+            <input type="submit" class="btn btn-block btn-success" value="Submit" />
+        </div>
+        <div class="col-md-6">
+            <input type="button" class="btn btn-block btn-warning" id="@("cancel" + Model.PostId)" data-value="cancel" value="Cancel"/>
+        </div>
+    }
+</div>
+
+

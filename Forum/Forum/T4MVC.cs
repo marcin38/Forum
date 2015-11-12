@@ -147,6 +147,22 @@ namespace Links
             public static readonly string kawa_jpg = Url("kawa.jpg");
             public static readonly string ksiezyc_jpg = Url("ksiezyc.jpg");
             public static readonly string slon_jpg = Url("slon.jpg");
+            public static readonly string ui_bg_flat_0_888888_40x100_png = Url("ui-bg_flat_0_888888_40x100.png");
+            public static readonly string ui_bg_flat_0_aaaaaa_40x100_png = Url("ui-bg_flat_0_aaaaaa_40x100.png");
+            public static readonly string ui_bg_flat_75_ffffff_40x100_png = Url("ui-bg_flat_75_ffffff_40x100.png");
+            public static readonly string ui_bg_glass_25_e1f0f5_1x400_png = Url("ui-bg_glass_25_e1f0f5_1x400.png");
+            public static readonly string ui_bg_glass_55_444444_1x400_png = Url("ui-bg_glass_55_444444_1x400.png");
+            public static readonly string ui_bg_glass_65_ffffff_1x400_png = Url("ui-bg_glass_65_ffffff_1x400.png");
+            public static readonly string ui_bg_glass_75_dadada_1x400_png = Url("ui-bg_glass_75_dadada_1x400.png");
+            public static readonly string ui_bg_glass_75_e6e6e6_1x400_png = Url("ui-bg_glass_75_e6e6e6_1x400.png");
+            public static readonly string ui_bg_highlight_soft_75_cccccc_1x100_png = Url("ui-bg_highlight-soft_75_cccccc_1x100.png");
+            public static readonly string ui_bg_inset_soft_95_fef1ec_1x100_png = Url("ui-bg_inset-soft_95_fef1ec_1x100.png");
+            public static readonly string ui_icons_222222_256x240_png = Url("ui-icons_222222_256x240.png");
+            public static readonly string ui_icons_309bbf_256x240_png = Url("ui-icons_309bbf_256x240.png");
+            public static readonly string ui_icons_454545_256x240_png = Url("ui-icons_454545_256x240.png");
+            public static readonly string ui_icons_888888_256x240_png = Url("ui-icons_888888_256x240.png");
+            public static readonly string ui_icons_bf3030_256x240_png = Url("ui-icons_bf3030_256x240.png");
+            public static readonly string ui_icons_ffffff_256x240_png = Url("ui-icons_ffffff_256x240.png");
         }
     
         public static readonly string jquery_ui_css = T4MVCHelpers.IsProduction() && T4Extensions.FileExists(URLPATH + "/jquery-ui.min.css") ? Url("jquery-ui.min.css") : Url("jquery-ui.css");
