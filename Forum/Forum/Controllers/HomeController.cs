@@ -1,6 +1,7 @@
 ﻿using Domain.Models;
 using Forum.Controllers.Interfaces;
 using PagedList;
+using Repositories.Repositories;
 using Repositories.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -11,7 +12,7 @@ namespace Forum.Controllers
 {
     public partial class HomeController : BaseController, IHomeController
     {
-        private IV_CategoriesRepository v_categoriesRepository;
+        private ICategoryRepository categoryRepository;
         private IPostRepository postRepository;
 
         public enum SearchBy
@@ -23,17 +24,18 @@ namespace Forum.Controllers
 
         public HomeController() { }
 
-        public HomeController(IPostRepository postRepository, IV_CategoriesRepository v_categoriesRepository)
+        public HomeController(IPostRepository postRepository, ICategoryRepository categoryRepository)
         {
             this.postRepository = postRepository;
-            this.v_categoriesRepository = v_categoriesRepository;
+            this.categoryRepository = categoryRepository;
         }
 
         public virtual ActionResult Index()
         {
             try
             {
-                List<V_Categories> categories = v_categoriesRepository.Get().ToList();
+                List<CategoryStatistics> categories = categoryRepository.GetCategories().ToList();
+                    
                 return View(categories);
             }
             catch (Exception ex)

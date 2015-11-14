@@ -12,8 +12,6 @@
         <EntityTypeShape EntityType="ForumModel.Thread" Width="1.5" PointX="5.25" PointY="0.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ForumModel.User" Width="1.5" PointX="3" PointY="4" IsExpanded="true" />
         <EntityTypeShape EntityType="ForumModel.Warning" Width="1.5" PointX="10.5" PointY="5.25" IsExpanded="true" />
-        <EntityTypeShape EntityType="ForumModel.V_Categories" Width="1.5" PointX="7.75" PointY="0.75" IsExpanded="true" />
-        <EntityTypeShape EntityType="ForumModel.V_Threads" Width="1.5" PointX="5.75" PointY="8.75" IsExpanded="true" />
         <AssociationConnector Association="ForumModel.FK_Users_AvatarId" ManuallyRouted="false" />
         <AssociationConnector Association="ForumModel.FK_Threads_CategoryId" ManuallyRouted="false" />
         <AssociationConnector Association="ForumModel.FK_Message_From" ManuallyRouted="false" />

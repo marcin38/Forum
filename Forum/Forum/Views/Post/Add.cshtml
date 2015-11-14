@@ -13,7 +13,7 @@
             $('#'+id).dialog('open');
         });
 
-        $('input[data-value="cancel"]').click(function () {
+        $('input[data-value="rCancel"]').click(function () {
             
             var id = $(this).attr('id').replace('cancel', 'dialog');
             $('#'+id).dialog('close');
@@ -45,7 +45,7 @@
             <input type="submit" class="btn btn-block btn-success" value="Submit" />
         </div>
         <div class="col-md-6">
-            <input type="button" class="btn btn-block btn-warning" id="@("cancel" + Model.Id)" data-value="cancel" value="Cancel" />
+            <input type="button" class="btn btn-block btn-warning" id="@("cancel" + Model.Id)" data-value="rCancel" value="Cancel" />
         </div>
     }
 </div>

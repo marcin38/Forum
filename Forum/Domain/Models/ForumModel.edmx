@@ -50,7 +50,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="AuthorId" Type="int" Nullable="false" />
           <Property Name="CategoryId" Type="int" Nullable="false" />
           <Property Name="LastPost" Type="int" />
@@ -66,7 +66,7 @@
           <Property Name="RegistrationDate" Type="datetime" Nullable="false" />
           <Property Name="RemovalDate" Type="datetime" />
           <Property Name="Location" Type="nvarchar" MaxLength="50" />
-          <Property Name="BirthDate" Type="datetime" />
+          <Property Name="BirthDate" Type="date" />
           <Property Name="AvatarId" Type="int" />
           <Property Name="IsAdministrator" Type="bit" Nullable="false" />
           <Property Name="NumberOfWarnings" Type="int" Nullable="false" />
@@ -80,36 +80,6 @@
           <Property Name="UserId" Type="int" Nullable="false" />
           <Property Name="PostId" Type="int" Nullable="false" />
           <Property Name="Reason" Type="nvarchar" MaxLength="500" Nullable="false" />
-        </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'Forum.dbo.V_Categories' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="V_Categories">
-          <Key>
-            <PropertyRef Name="Id" />
-            <PropertyRef Name="Name" />
-          </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
-          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Description" Type="nvarchar" MaxLength="200" />
-          <Property Name="ThreadsNumber" Type="int" />
-          <Property Name="PostsNumber" Type="int" />
-          <Property Name="LastPost" Type="nvarchar(max)" />
-        </EntityType>
-        <!--Errors Found During Generation:
-warning 6002: The table/view 'Forum.dbo.V_Threads' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="V_Threads">
-          <Key>
-            <PropertyRef Name="Id" />
-            <PropertyRef Name="Title" />
-            <PropertyRef Name="CategoryId" />
-          </Key>
-          <Property Name="Id" Type="int" Nullable="false" />
-          <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="CategoryId" Type="int" Nullable="false" />
-          <Property Name="WhenAddedLastPost" Type="datetime" />
-          <Property Name="WhoAddedLastPost" Type="nvarchar" MaxLength="50" />
-          <Property Name="PostsNumber" Type="int" />
-          <Property Name="LastPost" Type="nvarchar(max)" />
         </EntityType>
         <Association Name="FK_Message_From">
           <End Role="Users" Type="Self.Users" Multiplicity="1" />
@@ -231,27 +201,6 @@ warning 6002: The table/view 'Forum.dbo.V_Threads' does not have a primary key d
           <EntitySet Name="Threads" EntityType="Self.Threads" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Warnings" EntityType="Self.Warnings" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="V_Categories" EntityType="Self.V_Categories" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [V_Categories].[Id] AS [Id], 
-    [V_Categories].[Name] AS [Name], 
-    [V_Categories].[Description] AS [Description], 
-    [V_Categories].[ThreadsNumber] AS [ThreadsNumber], 
-    [V_Categories].[PostsNumber] AS [PostsNumber], 
-    [V_Categories].[LastPost] AS [LastPost]
-    FROM [dbo].[V_Categories] AS [V_Categories]</DefiningQuery>
-          </EntitySet>
-          <EntitySet Name="V_Threads" EntityType="Self.V_Threads" store:Type="Views" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [V_Threads].[Id] AS [Id], 
-    [V_Threads].[Title] AS [Title], 
-    [V_Threads].[CategoryId] AS [CategoryId], 
-    [V_Threads].[WhenAddedLastPost] AS [WhenAddedLastPost], 
-    [V_Threads].[WhoAddedLastPost] AS [WhoAddedLastPost], 
-    [V_Threads].[PostsNumber] AS [PostsNumber], 
-    [V_Threads].[LastPost] AS [LastPost]
-    FROM [dbo].[V_Threads] AS [V_Threads]</DefiningQuery>
-          </EntitySet>
           <AssociationSet Name="FK_Message_From" Association="Self.FK_Message_From">
             <End Role="Users" EntitySet="Users" />
             <End Role="Messages" EntitySet="Messages" />
@@ -345,7 +294,7 @@ warning 6002: The table/view 'Forum.dbo.V_Threads' does not have a primary key d
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="AuthorId" Type="Int32" Nullable="false" />
           <Property Name="CategoryId" Type="Int32" Nullable="false" />
           <Property Name="LastPost" Type="Int32" />
@@ -374,7 +323,7 @@ warning 6002: The table/view 'Forum.dbo.V_Threads' does not have a primary key d
           <NavigationProperty Name="Posts" Relationship="Self.FK_Posts_AuthorId" FromRole="Users" ToRole="Posts" />
           <NavigationProperty Name="Threads" Relationship="Self.FK_Threads_AuthorId" FromRole="Users" ToRole="Threads" />
           <NavigationProperty Name="Warnings" Relationship="Self.FK_Warnings_UserId" FromRole="Users" ToRole="Warnings" />
-          <Property Name="BirthDate" Type="DateTime" Precision="3" />
+          <Property Name="BirthDate" Type="DateTime" Precision="0" />
         </EntityType>
         <EntityType Name="Warning">
           <Key>
@@ -386,32 +335,6 @@ warning 6002: The table/view 'Forum.dbo.V_Threads' does not have a primary key d
           <Property Name="Reason" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Post" Relationship="Self.FK_Warnings_PostId" FromRole="Warnings" ToRole="Posts" />
           <NavigationProperty Name="User" Relationship="Self.FK_Warnings_UserId" FromRole="Warnings" ToRole="Users" />
-        </EntityType>
-        <EntityType Name="V_Categories">
-          <Key>
-            <PropertyRef Name="Id" />
-            <PropertyRef Name="Name" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Description" Type="String" MaxLength="200" FixedLength="false" Unicode="true" />
-          <Property Name="ThreadsNumber" Type="Int32" />
-          <Property Name="PostsNumber" Type="Int32" />
-          <Property Name="LastPost" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
-        </EntityType>
-        <EntityType Name="V_Threads">
-          <Key>
-            <PropertyRef Name="Id" />
-            <PropertyRef Name="Title" />
-            <PropertyRef Name="CategoryId" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="Title" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="CategoryId" Type="Int32" Nullable="false" />
-          <Property Name="WhenAddedLastPost" Type="DateTime" Precision="3" />
-          <Property Name="WhoAddedLastPost" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="PostsNumber" Type="Int32" />
-          <Property Name="LastPost" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
         </EntityType>
         <Association Name="FK_Users_AvatarId">
           <End Role="Avatars" Type="Self.Avatar" Multiplicity="0..1" />
@@ -529,8 +452,6 @@ warning 6002: The table/view 'Forum.dbo.V_Threads' does not have a primary key d
           <EntitySet Name="Threads" EntityType="Self.Thread" />
           <EntitySet Name="Users" EntityType="Self.User" />
           <EntitySet Name="Warnings" EntityType="Self.Warning" />
-          <EntitySet Name="V_Categories" EntityType="Self.V_Categories" />
-          <EntitySet Name="V_Threads" EntityType="Self.V_Threads" />
           <AssociationSet Name="FK_Users_AvatarId" Association="Self.FK_Users_AvatarId">
             <End Role="Avatars" EntitySet="Avatars" />
             <End Role="Users" EntitySet="Users" />
@@ -656,32 +577,7 @@ warning 6002: The table/view 'Forum.dbo.V_Threads' does not have a primary key d
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="V_Categories">
-            <EntityTypeMapping TypeName="ForumModel.V_Categories">
-              <MappingFragment StoreEntitySet="V_Categories">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Description" ColumnName="Description" />
-                <ScalarProperty Name="ThreadsNumber" ColumnName="ThreadsNumber" />
-                <ScalarProperty Name="PostsNumber" ColumnName="PostsNumber" />
-                <ScalarProperty Name="LastPost" ColumnName="LastPost" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="V_Threads">
-            <EntityTypeMapping TypeName="ForumModel.V_Threads">
-              <MappingFragment StoreEntitySet="V_Threads">
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Title" ColumnName="Title" />
-                <ScalarProperty Name="CategoryId" ColumnName="CategoryId" />
-                <ScalarProperty Name="WhenAddedLastPost" ColumnName="WhenAddedLastPost" />
-                <ScalarProperty Name="WhoAddedLastPost" ColumnName="WhoAddedLastPost" />
-                <ScalarProperty Name="PostsNumber" ColumnName="PostsNumber" />
-                <ScalarProperty Name="LastPost" ColumnName="LastPost" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-        </EntityContainerMapping>
+          </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>
   </edmx:Runtime>

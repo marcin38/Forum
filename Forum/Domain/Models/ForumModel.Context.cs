@@ -32,7 +32,5 @@ namespace Domain.Models
         public virtual DbSet<Thread> Threads { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Warning> Warnings { get; set; }
-        public virtual DbSet<V_Categories> V_Categories { get; set; }
-        public virtual DbSet<V_Threads> V_Threads { get; set; }
     }
 }

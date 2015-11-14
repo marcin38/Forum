@@ -2,6 +2,7 @@
 using Forum.Controllers.Interfaces;
 using Forum.Exceptions;
 using PagedList;
+using Repositories.Repositories;
 using Repositories.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -13,14 +14,14 @@ namespace Forum.Controllers
     [Authorize(Roles = "Administrator")]
     public partial class CategoryController : BaseController, ICategoryController
     {
-        private IV_ThreadsRepository v_threadsRepository;
+        private IThreadRepository threadRepository;
         private ICategoryRepository categoryRepository;
 
         public CategoryController() { }
 
-        public CategoryController(IV_ThreadsRepository v_threadsRepository, ICategoryRepository categoryRepository)
+        public CategoryController(IThreadRepository threadRepository, ICategoryRepository categoryRepository)
         {
-            this.v_threadsRepository = v_threadsRepository;
+            this.threadRepository = threadRepository;
             this.categoryRepository = categoryRepository;
         }
 
@@ -29,7 +30,7 @@ namespace Forum.Controllers
         {
             try
             {
-                IPagedList<V_Threads> threads = v_threadsRepository.Get(m => m.CategoryId == id, m => m.OrderByDescending(x => x.WhenAddedLastPost))
+                IPagedList<ThreadStatistics> threads = threadRepository.GetThreadsByCategoryId(id)
                     .ToList()
                     .ToPagedList(page ?? 1, ItemsPerPage());
 

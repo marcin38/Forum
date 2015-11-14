@@ -28,7 +28,6 @@ namespace Tests
 
             UserRegisterViewModel user = new UserRegisterViewModel { Id = 0 };
             controller.Register(user, null);
-            Assert.AreEqual(1, context.users.Count);
 
             UserEditProfileViewModel user2 = new UserEditProfileViewModel { Id = 0, Location = "abc" };
             controller.EditProfile(user2, null);

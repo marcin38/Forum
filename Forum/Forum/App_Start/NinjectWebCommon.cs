@@ -67,8 +67,6 @@ namespace Forum.App_Start
             kernel.Bind<IPostRepository>().To<PostRepository>();
             kernel.Bind<IThreadRepository>().To<ThreadRepository>();
             kernel.Bind<IUserRepository>().To<UserRepository>();
-            kernel.Bind<IV_CategoriesRepository>().To<V_CategoriesRepository>();
-            kernel.Bind<IV_ThreadsRepository>().To<V_ThreadsRepository>();
             kernel.Bind<IWarningRepository>().To<WarningRepository>();
         }        
     }

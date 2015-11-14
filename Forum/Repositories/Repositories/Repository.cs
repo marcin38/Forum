@@ -10,7 +10,7 @@ namespace Repositories.Repositories
 {
     public class Repository<T> : IRepository<T> where T : class
     {
-        private ForumDBContext context;
+        protected ForumDBContext context;
 
         public Repository(ForumDBContext context)
         {

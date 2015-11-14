@@ -1,5 +1,6 @@
 ﻿using Domain.Models;
 using Forum.Controllers;
+using Forum.ViewModels;
 using NUnit.Framework;
 using System.Linq;
 using Tests.FakeRepositories;
@@ -12,9 +13,11 @@ namespace Tests
         public void AddPost()
         {
             FakePostRepository context = new FakePostRepository();
-            PostController controller = new PostController(context);
+            FakeThreadRepository context2 = new FakeThreadRepository();
+            PostController controller = new PostController(context, context2);
 
-            Post post = new Post();
+            context2.Insert(new Thread { Id = 1 });
+            Post post = new Post { ThreadId = 1};
             controller.Add(post);
             Assert.AreEqual(1, context.posts.Count);
         }
@@ -23,11 +26,13 @@ namespace Tests
         public void EditPost()
         {
             FakePostRepository context = new FakePostRepository();
-            PostController controller = new PostController(context);
+            FakeThreadRepository context2 = new FakeThreadRepository();
+            PostController controller = new PostController(context, context2);
 
-            Post post = new Post();
+            context2.Insert(new Thread { Id = 1 });
+            Post post = new Post { ThreadId = 1};
             controller.Add(post);
-            post.PostContent = "content";
+            controller.Edit(new PostEditViewModel{PostContent = "content"});
             Assert.AreEqual("content", context.posts.First().PostContent);
         }
     }

@@ -71,6 +71,10 @@ namespace Forum.Controllers
                     postRepository.Insert(post);
                     postRepository.Save();
 
+                    thread.LastPost = post.Id;
+                    threadRepository.Update(thread);
+                    threadRepository.Save();
+
                     return RedirectToAction(MVC.Category.Index(pt.CategoryId, null));
                 }
                 return View(pt);

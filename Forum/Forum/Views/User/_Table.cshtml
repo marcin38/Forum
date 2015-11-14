@@ -74,9 +74,9 @@
     </table>
 
     @Html.PagedListPager(Model, page => Url.Action("Index", new { term = Request.QueryString["term"], page = page }),
-            PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
-            new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded }, 
-            new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "usersList" })
-//new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded }
+            //PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(
+            //new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded }, 
+            //new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "usersList" })
+new PagedListRenderOptions() { Display = PagedListDisplayMode.IfNeeded }
 )
 </div>

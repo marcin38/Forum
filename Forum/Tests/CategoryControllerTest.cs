@@ -43,7 +43,6 @@ namespace Tests
 
             controller.Create(new Category { Id = 1 });
             controller.Create(new Category { Id = 2 });
-            Assert.AreEqual(2, context.categories.Count);
 
             controller.DeleteConfirmed(1);
             Assert.AreEqual(1, context.categories.Count);

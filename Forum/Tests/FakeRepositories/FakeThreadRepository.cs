@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Repositories.Repositories;
 using Repositories.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -51,5 +52,10 @@ namespace Tests.FakeRepositories
             threads.Add(entity);
         }
 
+
+        public IEnumerable<ThreadStatistics> GetThreadsByCategoryId(int categoryId)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -9,9 +9,10 @@
     $(document).ready(function () {
         var userTextBox = $('#user');
         
-        userTextBox.keypress(function()
+        userTextBox.keypress(function(e)
         {
-            var term = $(this).val();
+            if (e.which == 13) {
+                var term = $(this).val();
                 $.ajax({
                     url: $('#indexLink').attr('href'),
                     data: { term: term },
@@ -21,7 +22,7 @@
                         $target.replaceWith(data);
                     }
                 });
-            
+            }
         })
 
         userTextBox.autocomplete({

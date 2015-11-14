@@ -64,7 +64,7 @@ CREATE TABLE Categories(
 
 CREATE TABLE Threads(
 	[Id] [int] NOT NULL PRIMARY KEY IDENTITY,
-	[Title] [nvarchar](50) NOT NULL,
+	[Title] [nvarchar](100) NOT NULL,
 	[AuthorId] [int] NOT NULL,
 	[CategoryId] [int] NOT NULL,
 	[LastPost] [int] NULL,

@@ -14,12 +14,14 @@ namespace Forum.Controllers
     public partial class PostController : BaseController, IPostController
     {
         private IPostRepository postRepository;
+        private IThreadRepository threadRepository;
 
         public PostController() { }
 
-        public PostController(IPostRepository postRepository)
+        public PostController(IPostRepository postRepository, IThreadRepository threadRepository)
         {
             this.postRepository = postRepository;
+            this.threadRepository = threadRepository;
         }
 
         [HttpPost]
@@ -35,6 +37,11 @@ namespace Forum.Controllers
 
                     postRepository.Insert(post);
                     postRepository.Save();
+
+                    Thread thread = GetThreadById(post.ThreadId);
+                    thread.LastPost = post.Id;
+                    threadRepository.Update(thread);
+                    threadRepository.Save();
 
                     return RedirectToAction(MVC.Thread.Index(post.ThreadId, null));
                 }
@@ -105,6 +112,14 @@ namespace Forum.Controllers
             if (post == null)
                 throw new MyException(-1);
             return post;
+        }
+
+        private Thread GetThreadById(int id)
+        {
+            Thread thread = threadRepository.Get(m => m.Id == id).FirstOrDefault();
+            if (thread == null)
+                throw new MyException(-1);
+            return thread;
         }
 
     }

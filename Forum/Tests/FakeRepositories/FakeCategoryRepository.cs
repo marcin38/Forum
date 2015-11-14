@@ -1,4 +1,5 @@
 ﻿using Domain.Models;
+using Repositories.Repositories;
 using Repositories.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -49,6 +50,11 @@ namespace Tests.FakeRepositories
             int id = entity.Id;
             categories.RemoveAll(m => m.Id == id);
             categories.Add(entity);
+        }
+
+        public IEnumerable<CategoryStatistics> GetCategories()
+        {
+            throw new NotImplementedException();
         }
     }
 }
