@@ -50,5 +50,10 @@ namespace Tests.FakeRepositories
             users.RemoveAll(m => m.Id == id);
             users.Add(entity);
         }
+
+        public IEnumerable<string> GetRolesForUser(string username)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

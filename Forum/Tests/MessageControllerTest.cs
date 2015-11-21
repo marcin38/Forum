@@ -12,7 +12,7 @@ namespace Tests
         public void Send()
         {
             FakeMessageRepository context = new FakeMessageRepository();
-            MessageController controler = new MessageController(context, null);
+            MessageController controler = new MessageController(context, null, null);
 
             Message message = new Message { Id = 1, To = 1 };
             controler.Send(message);
@@ -23,7 +23,7 @@ namespace Tests
         public void DeleteConfirmed()
         {
             FakeMessageRepository context = new FakeMessageRepository();
-            MessageController controler = new MessageController(context, null);
+            MessageController controler = new MessageController(context, null, null);
 
             Message message = new Message { Id = 1, To = 1 };
             controler.Send(message);

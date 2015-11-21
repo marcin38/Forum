@@ -20,17 +20,19 @@ namespace Domain.Models
         {
         }
     
-        protected override void OnModelCreating(DbModelBuilder modelBuilder)
-        {
-            throw new UnintentionalCodeFirstException();
-        }
+        //protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        //{
+        //    throw new UnintentionalCodeFirstException();
+        //}
     
         public virtual DbSet<Avatar> Avatars { get; set; }
         public virtual DbSet<Category> Categories { get; set; }
         public virtual DbSet<Message> Messages { get; set; }
         public virtual DbSet<Post> Posts { get; set; }
         public virtual DbSet<Thread> Threads { get; set; }
-        public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Warning> Warnings { get; set; }
+        public virtual DbSet<Role> Roles { get; set; }
+        public virtual DbSet<RolesUser> RolesUsers { get; set; }
+        public virtual DbSet<User> Users { get; set; }
     }
 }

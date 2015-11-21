@@ -10,18 +10,22 @@
         <EntityTypeShape EntityType="ForumModel.Message" Width="1.5" PointX="5.25" PointY="4.625" IsExpanded="true" />
         <EntityTypeShape EntityType="ForumModel.Post" Width="1.5" PointX="8.25" PointY="4.875" IsExpanded="true" />
         <EntityTypeShape EntityType="ForumModel.Thread" Width="1.5" PointX="5.25" PointY="0.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="ForumModel.User" Width="1.5" PointX="3" PointY="4" IsExpanded="true" />
         <EntityTypeShape EntityType="ForumModel.Warning" Width="1.5" PointX="10.5" PointY="5.25" IsExpanded="true" />
-        <AssociationConnector Association="ForumModel.FK_Users_AvatarId" ManuallyRouted="false" />
         <AssociationConnector Association="ForumModel.FK_Threads_CategoryId" ManuallyRouted="false" />
-        <AssociationConnector Association="ForumModel.FK_Message_From" ManuallyRouted="false" />
-        <AssociationConnector Association="ForumModel.FK_Message_To" ManuallyRouted="false" />
-        <AssociationConnector Association="ForumModel.FK_Posts_AuthorId" ManuallyRouted="false" />
         <AssociationConnector Association="ForumModel.FK_Posts_ThreadId" ManuallyRouted="false" />
         <AssociationConnector Association="ForumModel.FK_Warnings_PostId" ManuallyRouted="false" />
-        <AssociationConnector Association="ForumModel.FK_Threads_AuthorId" ManuallyRouted="false" />
-        <AssociationConnector Association="ForumModel.FK_Warnings_UserId" ManuallyRouted="false" />
-      </Diagram>
+        <EntityTypeShape EntityType="ForumModel.Role" Width="1.5" PointX="6" PointY="9.375" />
+        <EntityTypeShape EntityType="ForumModel.RolesUser" Width="1.5" PointX="8.25" PointY="2.125" />
+        <EntityTypeShape EntityType="ForumModel.User" Width="1.5" PointX="3" PointY="3.875" />
+        <AssociationConnector Association="ForumModel.FK_Users_AvatarId" />
+        <AssociationConnector Association="ForumModel.FK_Message_From" />
+        <AssociationConnector Association="ForumModel.FK_Message_To" />
+        <AssociationConnector Association="ForumModel.FK_Posts_AuthorId" />
+        <AssociationConnector Association="ForumModel.FK_RolesUsers_RoleId" />
+        <AssociationConnector Association="ForumModel.FK_RolesUsers_UserId" />
+        <AssociationConnector Association="ForumModel.FK_Threads_AuthorId" />
+        <AssociationConnector Association="ForumModel.FK_Warnings_UserId" />
+        </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>
 </edmx:Edmx>

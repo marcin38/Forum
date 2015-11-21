@@ -45,6 +45,21 @@
           <Property Name="CreationDate" Type="datetime" Nullable="false" />
           <Property Name="ThreadId" Type="int" Nullable="false" />
         </EntityType>
+        <EntityType Name="Roles">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="RolesUsers">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="RoleId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Threads">
           <Key>
             <PropertyRef Name="Id" />
@@ -68,7 +83,6 @@
           <Property Name="Location" Type="nvarchar" MaxLength="50" />
           <Property Name="BirthDate" Type="date" />
           <Property Name="AvatarId" Type="int" />
-          <Property Name="IsAdministrator" Type="bit" Nullable="false" />
           <Property Name="NumberOfWarnings" Type="int" Nullable="false" />
           <Property Name="IsBanned" Type="bit" Nullable="false" />
         </EntityType>
@@ -128,6 +142,30 @@
             </Principal>
             <Dependent Role="Posts">
               <PropertyRef Name="ThreadId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RolesUsers_RoleId">
+          <End Role="Roles" Type="Self.Roles" Multiplicity="1" />
+          <End Role="RolesUsers" Type="Self.RolesUsers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Roles">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RolesUsers">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RolesUsers_UserId">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="RolesUsers" Type="Self.RolesUsers" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RolesUsers">
+              <PropertyRef Name="UserId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -198,6 +236,8 @@
           <EntitySet Name="Categories" EntityType="Self.Categories" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Messages" EntityType="Self.Messages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Posts" EntityType="Self.Posts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Roles" EntityType="Self.Roles" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RolesUsers" EntityType="Self.RolesUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Threads" EntityType="Self.Threads" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Users" EntityType="Self.Users" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Warnings" EntityType="Self.Warnings" Schema="dbo" store:Type="Tables" />
@@ -216,6 +256,14 @@
           <AssociationSet Name="FK_Posts_ThreadId" Association="Self.FK_Posts_ThreadId">
             <End Role="Threads" EntitySet="Threads" />
             <End Role="Posts" EntitySet="Posts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RolesUsers_RoleId" Association="Self.FK_RolesUsers_RoleId">
+            <End Role="Roles" EntitySet="Roles" />
+            <End Role="RolesUsers" EntitySet="RolesUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RolesUsers_UserId" Association="Self.FK_RolesUsers_UserId">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="RolesUsers" EntitySet="RolesUsers" />
           </AssociationSet>
           <AssociationSet Name="FK_Threads_AuthorId" Association="Self.FK_Threads_AuthorId">
             <End Role="Users" EntitySet="Users" />
@@ -249,7 +297,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Image" Type="Binary" MaxLength="Max" FixedLength="false" Nullable="false" />
           <Property Name="ContentType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <NavigationProperty Name="Users" Relationship="Self.FK_Users_AvatarId" FromRole="Avatars" ToRole="Users" />
+          <NavigationProperty Name="Users" Relationship="ForumModel.FK_Users_AvatarId" FromRole="Avatar" ToRole="User" />
         </EntityType>
         <EntityType Name="Category">
           <Key>
@@ -273,9 +321,9 @@
           <Property Name="IsRead" Type="Boolean" Nullable="false" />
           <Property Name="DeletedBySender" Type="Boolean" Nullable="false" />
           <Property Name="DeletedByRecipient" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="User" Relationship="Self.FK_Message_From" FromRole="Messages" ToRole="Users" />
-          <NavigationProperty Name="User1" Relationship="Self.FK_Message_To" FromRole="Messages" ToRole="Users" />
-        </EntityType>
+          <NavigationProperty Name="User" Relationship="ForumModel.FK_Message_From" FromRole="Message" ToRole="User" />
+          <NavigationProperty Name="User1" Relationship="ForumModel.FK_Message_To" FromRole="Message" ToRole="User" />
+          </EntityType>
         <EntityType Name="Post">
           <Key>
             <PropertyRef Name="Id" />
@@ -285,9 +333,9 @@
           <Property Name="PostContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CreationDate" Type="DateTime" Nullable="false" Precision="3" />
           <Property Name="ThreadId" Type="Int32" Nullable="false" />
-          <NavigationProperty Name="User" Relationship="Self.FK_Posts_AuthorId" FromRole="Posts" ToRole="Users" />
           <NavigationProperty Name="Thread" Relationship="Self.FK_Posts_ThreadId" FromRole="Posts" ToRole="Threads" />
           <NavigationProperty Name="Warnings" Relationship="Self.FK_Warnings_PostId" FromRole="Posts" ToRole="Warnings" />
+          <NavigationProperty Name="User" Relationship="ForumModel.FK_Posts_AuthorId" FromRole="Post" ToRole="User" />
         </EntityType>
         <EntityType Name="Thread">
           <Key>
@@ -300,30 +348,7 @@
           <Property Name="LastPost" Type="Int32" />
           <NavigationProperty Name="Category" Relationship="Self.FK_Threads_CategoryId" FromRole="Threads" ToRole="Categories" />
           <NavigationProperty Name="Posts" Relationship="Self.FK_Posts_ThreadId" FromRole="Threads" ToRole="Posts" />
-          <NavigationProperty Name="User" Relationship="Self.FK_Threads_AuthorId" FromRole="Threads" ToRole="Users" />
-        </EntityType>
-        <EntityType Name="User">
-          <Key>
-            <PropertyRef Name="Id" />
-          </Key>
-          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
-          <Property Name="Hash" Type="Binary" MaxLength="50" FixedLength="false" Nullable="false" />
-          <Property Name="RegistrationDate" Type="DateTime" Nullable="false" Precision="3" />
-          <Property Name="RemovalDate" Type="DateTime" Precision="3" />
-          <Property Name="Location" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="AvatarId" Type="Int32" />
-          <Property Name="IsAdministrator" Type="Boolean" Nullable="false" />
-          <Property Name="NumberOfWarnings" Type="Int32" Nullable="false" />
-          <Property Name="IsBanned" Type="Boolean" Nullable="false" />
-          <NavigationProperty Name="Avatar" Relationship="Self.FK_Users_AvatarId" FromRole="Users" ToRole="Avatars" />
-          <NavigationProperty Name="Messages" Relationship="Self.FK_Message_From" FromRole="Users" ToRole="Messages" />
-          <NavigationProperty Name="Messages1" Relationship="Self.FK_Message_To" FromRole="Users" ToRole="Messages" />
-          <NavigationProperty Name="Posts" Relationship="Self.FK_Posts_AuthorId" FromRole="Users" ToRole="Posts" />
-          <NavigationProperty Name="Threads" Relationship="Self.FK_Threads_AuthorId" FromRole="Users" ToRole="Threads" />
-          <NavigationProperty Name="Warnings" Relationship="Self.FK_Warnings_UserId" FromRole="Users" ToRole="Warnings" />
-          <Property Name="BirthDate" Type="DateTime" Precision="0" />
+          <NavigationProperty Name="User" Relationship="ForumModel.FK_Threads_AuthorId" FromRole="Thread" ToRole="User" />
         </EntityType>
         <EntityType Name="Warning">
           <Key>
@@ -334,20 +359,8 @@
           <Property Name="PostId" Type="Int32" Nullable="false" />
           <Property Name="Reason" Type="String" MaxLength="500" FixedLength="false" Unicode="true" Nullable="false" />
           <NavigationProperty Name="Post" Relationship="Self.FK_Warnings_PostId" FromRole="Warnings" ToRole="Posts" />
-          <NavigationProperty Name="User" Relationship="Self.FK_Warnings_UserId" FromRole="Warnings" ToRole="Users" />
+          <NavigationProperty Name="User" Relationship="ForumModel.FK_Warnings_UserId" FromRole="Warning" ToRole="User" />
         </EntityType>
-        <Association Name="FK_Users_AvatarId">
-          <End Role="Avatars" Type="Self.Avatar" Multiplicity="0..1" />
-          <End Role="Users" Type="Self.User" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Avatars">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Users">
-              <PropertyRef Name="AvatarId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Threads_CategoryId">
           <End Role="Categories" Type="Self.Category" Multiplicity="1" />
           <End Role="Threads" Type="Self.Thread" Multiplicity="*" />
@@ -357,42 +370,6 @@
             </Principal>
             <Dependent Role="Threads">
               <PropertyRef Name="CategoryId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Message_From">
-          <End Role="Users" Type="Self.User" Multiplicity="1" />
-          <End Role="Messages" Type="Self.Message" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Messages">
-              <PropertyRef Name="From" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Message_To">
-          <End Role="Users" Type="Self.User" Multiplicity="1" />
-          <End Role="Messages" Type="Self.Message" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Messages">
-              <PropertyRef Name="To" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Posts_AuthorId">
-          <End Role="Users" Type="Self.User" Multiplicity="1" />
-          <End Role="Posts" Type="Self.Post" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Posts">
-              <PropertyRef Name="AuthorId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -420,57 +397,16 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Threads_AuthorId">
-          <End Role="Users" Type="Self.User" Multiplicity="1" />
-          <End Role="Threads" Type="Self.Thread" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Threads">
-              <PropertyRef Name="AuthorId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Warnings_UserId">
-          <End Role="Users" Type="Self.User" Multiplicity="1" />
-          <End Role="Warnings" Type="Self.Warning" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Users">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Warnings">
-              <PropertyRef Name="UserId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="ForumDBContext" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Avatars" EntityType="Self.Avatar" />
           <EntitySet Name="Categories" EntityType="Self.Category" />
           <EntitySet Name="Messages" EntityType="Self.Message" />
           <EntitySet Name="Posts" EntityType="Self.Post" />
           <EntitySet Name="Threads" EntityType="Self.Thread" />
-          <EntitySet Name="Users" EntityType="Self.User" />
           <EntitySet Name="Warnings" EntityType="Self.Warning" />
-          <AssociationSet Name="FK_Users_AvatarId" Association="Self.FK_Users_AvatarId">
-            <End Role="Avatars" EntitySet="Avatars" />
-            <End Role="Users" EntitySet="Users" />
-          </AssociationSet>
           <AssociationSet Name="FK_Threads_CategoryId" Association="Self.FK_Threads_CategoryId">
             <End Role="Categories" EntitySet="Categories" />
             <End Role="Threads" EntitySet="Threads" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Message_From" Association="Self.FK_Message_From">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="Messages" EntitySet="Messages" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Message_To" Association="Self.FK_Message_To">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="Messages" EntitySet="Messages" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Posts_AuthorId" Association="Self.FK_Posts_AuthorId">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="Posts" EntitySet="Posts" />
           </AssociationSet>
           <AssociationSet Name="FK_Posts_ThreadId" Association="Self.FK_Posts_ThreadId">
             <End Role="Threads" EntitySet="Threads" />
@@ -480,15 +416,179 @@
             <End Role="Posts" EntitySet="Posts" />
             <End Role="Warnings" EntitySet="Warnings" />
           </AssociationSet>
-          <AssociationSet Name="FK_Threads_AuthorId" Association="Self.FK_Threads_AuthorId">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="Threads" EntitySet="Threads" />
+          <EntitySet Name="Roles" EntityType="ForumModel.Role" />
+          <EntitySet Name="RolesUsers" EntityType="ForumModel.RolesUser" />
+          <EntitySet Name="Users" EntityType="ForumModel.User" />
+          <AssociationSet Name="FK_Users_AvatarId" Association="ForumModel.FK_Users_AvatarId">
+            <End Role="Avatar" EntitySet="Avatars" />
+            <End Role="User" EntitySet="Users" />
           </AssociationSet>
-          <AssociationSet Name="FK_Warnings_UserId" Association="Self.FK_Warnings_UserId">
-            <End Role="Users" EntitySet="Users" />
-            <End Role="Warnings" EntitySet="Warnings" />
+          <AssociationSet Name="FK_Message_From" Association="ForumModel.FK_Message_From">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Message" EntitySet="Messages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Message_To" Association="ForumModel.FK_Message_To">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Message" EntitySet="Messages" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Posts_AuthorId" Association="ForumModel.FK_Posts_AuthorId">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Post" EntitySet="Posts" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RolesUsers_RoleId" Association="ForumModel.FK_RolesUsers_RoleId">
+            <End Role="Role" EntitySet="Roles" />
+            <End Role="RolesUser" EntitySet="RolesUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RolesUsers_UserId" Association="ForumModel.FK_RolesUsers_UserId">
+            <End Role="User" EntitySet="Users" />
+            <End Role="RolesUser" EntitySet="RolesUsers" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Threads_AuthorId" Association="ForumModel.FK_Threads_AuthorId">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Thread" EntitySet="Threads" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Warnings_UserId" Association="ForumModel.FK_Warnings_UserId">
+            <End Role="User" EntitySet="Users" />
+            <End Role="Warning" EntitySet="Warnings" />
           </AssociationSet>
         </EntityContainer>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <NavigationProperty Name="RolesUsers" Relationship="ForumModel.FK_RolesUsers_RoleId" FromRole="Role" ToRole="RolesUser" />
+        </EntityType>
+        <EntityType Name="RolesUser">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="RoleId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="Role" Relationship="ForumModel.FK_RolesUsers_RoleId" FromRole="RolesUser" ToRole="Role" />
+          <NavigationProperty Name="User" Relationship="ForumModel.FK_RolesUsers_UserId" FromRole="RolesUser" ToRole="User" />
+        </EntityType>
+        <EntityType Name="User">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Hash" Type="Binary" Nullable="false" MaxLength="50" FixedLength="false" />
+          <Property Name="RegistrationDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="RemovalDate" Type="DateTime" Precision="3" />
+          <Property Name="Location" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BirthDate" Type="DateTime" Precision="0" />
+          <Property Name="AvatarId" Type="Int32" />
+          <Property Name="NumberOfWarnings" Type="Int32" Nullable="false" />
+          <Property Name="IsBanned" Type="Boolean" Nullable="false" />
+          <NavigationProperty Name="Avatar" Relationship="ForumModel.FK_Users_AvatarId" FromRole="User" ToRole="Avatar" />
+          <NavigationProperty Name="Messages" Relationship="ForumModel.FK_Message_From" FromRole="User" ToRole="Message" />
+          <NavigationProperty Name="Messages1" Relationship="ForumModel.FK_Message_To" FromRole="User" ToRole="Message" />
+          <NavigationProperty Name="Posts" Relationship="ForumModel.FK_Posts_AuthorId" FromRole="User" ToRole="Post" />
+          <NavigationProperty Name="RolesUsers" Relationship="ForumModel.FK_RolesUsers_UserId" FromRole="User" ToRole="RolesUser" />
+          <NavigationProperty Name="Threads" Relationship="ForumModel.FK_Threads_AuthorId" FromRole="User" ToRole="Thread" />
+          <NavigationProperty Name="Warnings" Relationship="ForumModel.FK_Warnings_UserId" FromRole="User" ToRole="Warning" />
+        </EntityType>
+        <Association Name="FK_Users_AvatarId">
+          <End Type="ForumModel.Avatar" Role="Avatar" Multiplicity="0..1" />
+          <End Type="ForumModel.User" Role="User" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Avatar">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="User">
+              <PropertyRef Name="AvatarId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Message_From">
+          <End Type="ForumModel.User" Role="User" Multiplicity="1" />
+          <End Type="ForumModel.Message" Role="Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="From" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Message_To">
+          <End Type="ForumModel.User" Role="User" Multiplicity="1" />
+          <End Type="ForumModel.Message" Role="Message" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Message">
+              <PropertyRef Name="To" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Posts_AuthorId">
+          <End Type="ForumModel.User" Role="User" Multiplicity="1" />
+          <End Type="ForumModel.Post" Role="Post" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Post">
+              <PropertyRef Name="AuthorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RolesUsers_RoleId">
+          <End Type="ForumModel.Role" Role="Role" Multiplicity="1" />
+          <End Type="ForumModel.RolesUser" Role="RolesUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Role">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RolesUser">
+              <PropertyRef Name="RoleId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_RolesUsers_UserId">
+          <End Type="ForumModel.User" Role="User" Multiplicity="1" />
+          <End Type="ForumModel.RolesUser" Role="RolesUser" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RolesUser">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Threads_AuthorId">
+          <End Type="ForumModel.User" Role="User" Multiplicity="1" />
+          <End Type="ForumModel.Thread" Role="Thread" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Thread">
+              <PropertyRef Name="AuthorId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Warnings_UserId">
+          <End Type="ForumModel.User" Role="User" Multiplicity="1" />
+          <End Type="ForumModel.Warning" Role="Warning" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Warning">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -550,30 +650,46 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="Users">
-            <EntityTypeMapping TypeName="ForumModel.User">
-              <MappingFragment StoreEntitySet="Users">
-                <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
-                <ScalarProperty Name="Id" ColumnName="Id" />
-                <ScalarProperty Name="Name" ColumnName="Name" />
-                <ScalarProperty Name="Email" ColumnName="Email" />
-                <ScalarProperty Name="Hash" ColumnName="Hash" />
-                <ScalarProperty Name="RegistrationDate" ColumnName="RegistrationDate" />
-                <ScalarProperty Name="RemovalDate" ColumnName="RemovalDate" />
-                <ScalarProperty Name="Location" ColumnName="Location" />
-                <ScalarProperty Name="AvatarId" ColumnName="AvatarId" />
-                <ScalarProperty Name="IsAdministrator" ColumnName="IsAdministrator" />
-                <ScalarProperty Name="NumberOfWarnings" ColumnName="NumberOfWarnings" />
-                <ScalarProperty Name="IsBanned" ColumnName="IsBanned" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Warnings">
             <EntityTypeMapping TypeName="ForumModel.Warning">
               <MappingFragment StoreEntitySet="Warnings">
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="PostId" ColumnName="PostId" />
                 <ScalarProperty Name="Reason" ColumnName="Reason" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="ForumModel.Role">
+              <MappingFragment StoreEntitySet="Roles">
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RolesUsers">
+            <EntityTypeMapping TypeName="ForumModel.RolesUser">
+              <MappingFragment StoreEntitySet="RolesUsers">
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Users">
+            <EntityTypeMapping TypeName="ForumModel.User">
+              <MappingFragment StoreEntitySet="Users">
+                <ScalarProperty Name="IsBanned" ColumnName="IsBanned" />
+                <ScalarProperty Name="NumberOfWarnings" ColumnName="NumberOfWarnings" />
+                <ScalarProperty Name="AvatarId" ColumnName="AvatarId" />
+                <ScalarProperty Name="BirthDate" ColumnName="BirthDate" />
+                <ScalarProperty Name="Location" ColumnName="Location" />
+                <ScalarProperty Name="RemovalDate" ColumnName="RemovalDate" />
+                <ScalarProperty Name="RegistrationDate" ColumnName="RegistrationDate" />
+                <ScalarProperty Name="Hash" ColumnName="Hash" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

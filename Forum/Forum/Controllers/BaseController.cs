@@ -29,20 +29,7 @@ namespace Forum.Controllers
 
         protected ActionResult HandleException(Exception ex)
         {
-            int statusCode;
-
-            if (ex.GetType() == typeof(HttpException))
-            {
-                statusCode = ((HttpException)ex).GetHttpCode();
-            }
-            else if (ex.GetType() == typeof(MyException))
-            {
-                statusCode = ((MyException)ex).status;
-            }
-            else
-            {
-                statusCode = 500;
-            }
+            int statusCode = 500;
             ErrorSignal.FromCurrentContext().Raise(ex);
 
             return RedirectToAction(MVC.Error.Index(statusCode, ex));

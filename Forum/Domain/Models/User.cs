@@ -19,6 +19,7 @@ namespace Domain.Models
             this.Messages = new HashSet<Message>();
             this.Messages1 = new HashSet<Message>();
             this.Posts = new HashSet<Post>();
+            this.RolesUsers = new HashSet<RolesUser>();
             this.Threads = new HashSet<Thread>();
             this.Warnings = new HashSet<Warning>();
         }
@@ -30,16 +31,16 @@ namespace Domain.Models
         public System.DateTime RegistrationDate { get; set; }
         public Nullable<System.DateTime> RemovalDate { get; set; }
         public string Location { get; set; }
+        public Nullable<System.DateTime> BirthDate { get; set; }
         public Nullable<int> AvatarId { get; set; }
-        public bool IsAdministrator { get; set; }
         public int NumberOfWarnings { get; set; }
         public bool IsBanned { get; set; }
-        public Nullable<System.DateTime> BirthDate { get; set; }
     
         public virtual Avatar Avatar { get; set; }
         public virtual ICollection<Message> Messages { get; set; }
         public virtual ICollection<Message> Messages1 { get; set; }
         public virtual ICollection<Post> Posts { get; set; }
+        public virtual ICollection<RolesUser> RolesUsers { get; set; }
         public virtual ICollection<Thread> Threads { get; set; }
         public virtual ICollection<Warning> Warnings { get; set; }
     }

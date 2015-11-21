@@ -280,7 +280,6 @@ namespace Forum.Controllers
                     user.Name = "Removed" + id;
                     user.Email = "";
                     user.Hash = new byte[1] { 0x01 };
-                    user.IsAdministrator = false;
                     user.Location = "";
                     user.RemovalDate = DateTime.Now;
 

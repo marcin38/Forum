@@ -97,6 +97,12 @@
       <DependentUpon>ForumModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Models\PostMetaData.cs" />
+    <Compile Include="Models\Role.cs">
+      <DependentUpon>ForumModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Models\RolesUser.cs">
+      <DependentUpon>ForumModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Thread.cs">
       <DependentUpon>ForumModel.tt</DependentUpon>
     </Compile>

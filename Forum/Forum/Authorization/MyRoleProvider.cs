@@ -22,26 +22,8 @@ namespace Forum.Authorization
 
         public override bool IsUserInRole(string username, string roleName)
         {
-            try 
-            {
-                User user = userRepository.Get(m => m.Name == username).Single();
-
-                if (roleName == "Administrator")
-                {
-                    return user.IsAdministrator;
-                }
-                if (roleName == "User")
-                {
-                    return true;
-                }
-            }
-            catch
-            {
-                return false;
-            }
-
-            return false;
-
+            string[] roles = GetRolesForUser(username);
+            return roles.Contains(roleName);
         }
 
         public override void AddUsersToRoles(string[] usernames, string[] roleNames)
@@ -83,12 +65,8 @@ namespace Forum.Authorization
 
         public override string[] GetRolesForUser(string username)
         {
-            User user = userRepository.Get(m => m.Name == username).Single();
 
-            if (user.IsAdministrator)
-                return new[] { "User", "Administrator" };
-            else
-                return new[] { "User" };
+            return userRepository.GetRolesForUser(username).ToArray();
         }
 
         public override string[] GetUsersInRole(string roleName)

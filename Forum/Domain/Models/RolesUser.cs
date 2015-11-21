@@ -12,21 +12,13 @@ namespace Domain.Models
     using System;
     using System.Collections.Generic;
     
-    public partial class Post
+    public partial class RolesUser
     {
-        public Post()
-        {
-            this.Warnings = new HashSet<Warning>();
-        }
-    
         public int Id { get; set; }
-        public int AuthorId { get; set; }
-        public string PostContent { get; set; }
-        public System.DateTime CreationDate { get; set; }
-        public int ThreadId { get; set; }
+        public int UserId { get; set; }
+        public int RoleId { get; set; }
     
-        public virtual Thread Thread { get; set; }
-        public virtual ICollection<Warning> Warnings { get; set; }
+        public virtual Role Role { get; set; }
         public virtual User User { get; set; }
     }
 }

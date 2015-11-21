@@ -1,4 +1,5 @@
-﻿using Forum.Authorization;
+﻿using Elmah;
+using Forum.Authorization;
 using Forum.Controllers;
 using Forum.Exceptions;
 using System;
@@ -54,10 +55,6 @@ namespace Forum
             if (lastError.GetType() == typeof(HttpException))
             {
                 statusCode = ((HttpException)lastError).GetHttpCode();
-            }
-            else if (lastError.GetType() == typeof(MyException))
-            {
-                statusCode = ((MyException)lastError).status;
             }
             else
             {

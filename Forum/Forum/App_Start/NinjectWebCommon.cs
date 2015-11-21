@@ -68,6 +68,8 @@ namespace Forum.App_Start
             kernel.Bind<IThreadRepository>().To<ThreadRepository>();
             kernel.Bind<IUserRepository>().To<UserRepository>();
             kernel.Bind<IWarningRepository>().To<WarningRepository>();
+            kernel.Bind<IRoleRepository>().To<RoleRepository>();
+            kernel.Bind<IRolesUserRepository>().To<RolesUserRepository>();
         }        
     }
 }

@@ -1,3 +1,7 @@
+IF OBJECT_ID('RolesUsers', 'U') IS NOT NULL
+	drop table RolesUsers;
+IF OBJECT_ID('Roles','U') IS NOT NULL
+	drop table Roles;
 IF OBJECT_ID('Warnings', 'U') IS NOT NULL
 	drop table Warnings;
 IF OBJECT_ID('POSTS', 'U') IS NOT NULL
@@ -31,7 +35,6 @@ CREATE TABLE Users(
 	[Location] [nvarchar](50) NULL,
 	[BirthDate] [date] NULL,
 	[AvatarId] [int] NULL,
-	[IsAdministrator] [bit] NOT NULL,
 	[NumberOfWarnings] [int] NOT NULL,
 	[IsBanned] [bit] NOT NULL
 
@@ -93,15 +96,16 @@ CREATE TABLE Warnings(
 	CONSTRAINT [FK_Warnings_PostId] FOREIGN KEY ([PostId]) REFERENCES [Posts]([Id])
 )
 
-IF OBJECT_ID('TG_POSTS_INSERT', 'TR') IS NOT NULL
-	DROP TRIGGER TG_POSTS_INSERT;
+CREATE TABLE Roles(
+	[Id] [int] NOT NULL PRIMARY KEY IDENTITY,
+	[Name] [nvarchar](50) NOT NULL
+)
 
-GO
-CREATE TRIGGER TG_POSTS_INSERT ON Posts AFTER INSERT
-AS
-BEGIN
-	UPDATE T set LastPost = i.Id 
-	FROM Threads AS T JOIN inserted AS i 
-	ON T.Id = i.ThreadId;
-END
-GO
+CREATE TABLE RolesUsers(
+	[Id] [int] NOT NULL PRIMARY KEY IDENTITY,
+	[UserId] [int] NOT NULL,
+	[RoleId] [int] NOT NULL
+
+	CONSTRAINT [FK_RolesUsers_UserId] FOREIGN KEY ([UserId]) REFERENCES [Users]([Id]),
+	CONSTRAINT [FK_RolesUsers_RoleId] FOREIGN KEY ([RoleId]) REFERENCES [Roles]([Id])
+)

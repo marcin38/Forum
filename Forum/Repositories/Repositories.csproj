@@ -55,6 +55,8 @@
     <Compile Include="Repositories\Interfaces\ICategoryRepository.cs" />
     <Compile Include="Repositories\Interfaces\IMessageRepository.cs" />
     <Compile Include="Repositories\Interfaces\IPostRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IRoleRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IRolesUserRepository.cs" />
     <Compile Include="Repositories\Interfaces\IThreadRepository.cs" />
     <Compile Include="Repositories\Interfaces\IUserRepository.cs" />
     <Compile Include="Repositories\Interfaces\IWarningRepository.cs" />
@@ -63,6 +65,8 @@
     <Compile Include="Repositories\Repository.cs" />
     <Compile Include="Repositories\Interfaces\IRepository.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Repositories\RoleRepository.cs" />
+    <Compile Include="Repositories\RolesUserRepository.cs" />
     <Compile Include="Repositories\ThreadRepository.cs" />
     <Compile Include="Repositories\UserRepository.cs" />
     <Compile Include="Repositories\WarningRepository.cs" />

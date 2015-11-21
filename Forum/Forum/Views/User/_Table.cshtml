@@ -22,9 +22,6 @@
                 Registration date
             </td>
             <td class="td1">
-                Administrator
-            </td>
-            <td class="td1">
                 Warnings
             </td>
             <td class="td1">
@@ -51,9 +48,6 @@
                 </td>
                 <td class="td1">
                     @Html.DisplayFor(m => item.RegistrationDate)
-                </td>
-                <td class="td1 text-center">
-                    @Html.CheckBoxFor(m => item.IsAdministrator, new { @disabled = "disabled" })
                 </td>
                 <td class="td1 text-center">
                     @Html.DisplayFor(m => item.NumberOfWarnings, new { @disabled = "disabled" })

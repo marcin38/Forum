@@ -17,6 +17,7 @@ namespace Forum.Controllers
     {
         private IMessageRepository messageRepository;
         private IUserRepository userRepository;
+        private IRolesUserRepository rolesUserRepository;
 
         public enum MailboxType
         {
@@ -26,10 +27,11 @@ namespace Forum.Controllers
 
         public MessageController() { }
 
-        public MessageController(IMessageRepository messageRepository, IUserRepository userRepository)
+        public MessageController(IMessageRepository messageRepository, IUserRepository userRepository, IRolesUserRepository rolesUserRepository)
         {
             this.messageRepository = messageRepository;
             this.userRepository = userRepository;
+            this.rolesUserRepository = rolesUserRepository;
         }
 
         public virtual ActionResult Index(string type, string sortOrder,int? page)
@@ -118,11 +120,22 @@ namespace Forum.Controllers
                     message.From = User.Id;
                     if (message.To == 0)
                     {
-                        List<User> moderators = userRepository.Get(m => m.IsAdministrator == true).ToList();
-                        foreach (User m in moderators)
+                        List<User> moderators = rolesUserRepository.GetModerators().ToList();
+                        foreach (User u in moderators)
                         {
-                            message.To = m.Id;
-                            messageRepository.Insert(message);
+                            Message m = new Message()
+                            {
+                                Body = message.Body,
+                                DeletedByRecipient = message.DeletedByRecipient,
+                                DeletedBySender = message.DeletedBySender,
+                                From = message.From,
+                                IsRead = message.IsRead,
+                                SentDate = message.SentDate,
+                                Subject = message.Subject,
+                                To = u.Id,
+                            };
+
+                            messageRepository.Insert(m);
                         }
                     }
                     else
