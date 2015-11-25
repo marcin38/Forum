@@ -21,7 +21,9 @@
                 @Html.DisplayFor(m => item.CreationDate)
             </div>
             <div class="post-content">
-                @Html.DisplayFor(m => item.PostContent)
+                <div style="white-space: pre-line">
+                    @Html.DisplayFor(m => item.PostContent)
+                </div>
             @if (User != null && User.Identity.IsAuthenticated)
             {
                 @Html.Partial(MVC.Thread.Views._Report, new Domain.Models.Message() {Subject = String.Format("Reporting post {0}", Html.ActionLink("#" + item.Id.ToString(), MVC.Post.ShowPost(item.Id) ,null).ToString()) }, new ViewDataDictionary { { "postId", item.Id } });

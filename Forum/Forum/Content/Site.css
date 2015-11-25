@@ -87,7 +87,8 @@ textarea,
 .post-content
 {
     background-color: #5BFC8E;
-    padding: 5px
+    padding: 5px;
+    padding-bottom: 25px;
 }
 
 .disable-max-width-setting
