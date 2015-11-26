@@ -2,17 +2,24 @@
 using Forum.Controllers.Interfaces;
 using Forum.Exceptions;
 using Forum.ViewModels;
+using iTextSharp.text;
+using iTextSharp.text.html.simpleparser;
+using iTextSharp.text.pdf;
+using iTextSharp.tool.xml;
 using PagedList;
 using Repositories.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.Mvc;
 using System.Web.Security;
+using System.Xml;
 
 namespace Forum.Controllers
 {
@@ -413,6 +420,86 @@ namespace Forum.Controllers
             List<User> users = userRepository.Get(m => m.Name.ToLower().StartsWith(term.ToLower())).ToList();
             List<String> names = users.Select(m => m.Name).ToList();
             return Json(names, JsonRequestBehavior.AllowGet);
+        }
+
+        [Authorize(Roles = "Administrator")]
+        public virtual ActionResult ExportToPDF()
+        {
+            String html = GenerateUsersWebGrid();
+            String export = String.Format(@"<html><head>{0}</head><body>{1}</body></html>", "<style>table, th, td{ border: 1px solid black; border-collapse: collapse;} table {repeat-header: yes;} </style>", html);
+
+            byte[] bytes = Encoding.UTF8.GetBytes(export);
+            using (MemoryStream input = new MemoryStream(bytes))
+            {
+                MemoryStream output = new MemoryStream();
+                Document document = new Document(PageSize.A4, 20, 20, 20, 20);
+                PdfWriter writer = PdfWriter.GetInstance(document, output);
+                writer.CloseStream = false;
+                document.Open();
+
+                XMLWorkerHelper worker = XMLWorkerHelper.GetInstance();
+                worker.ParseXHtml(writer, document, input, System.Text.Encoding.UTF8);
+                document.Close();
+                output.Position = 0;
+                document.Close();
+
+                bytes = output.ToArray();
+            }
+
+            GenerateResponse("application/pdf", "content-disposition", "attachment;filename=Users.pdf", bytes);
+            //Response.Clear();
+            //Response.ContentType = "application/pdf";
+            //Response.AddHeader("content-disposition", "attachment;filename=" + "Users.pdf");
+            //Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            //Response.BinaryWrite(bytes);
+            //Response.End();
+
+            return new EmptyResult();
+        }
+
+        [Authorize(Roles = "Administrator")]
+        public virtual ActionResult ExportToXLS()
+        {
+            String html = GenerateUsersWebGrid();
+            GenerateResponse("application/octet-stream", "content-disposition", "attachment;filename=Users.xls", html);
+            //Response.Clear();
+            //Response.ContentType = "application/octet-stream";
+            //Response.AddHeader("content-disposition", "attachment;filename=" + "Users.xls");
+            //Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            //Response.Output.Write(html);
+            //Response.End();
+
+            return new EmptyResult();
+        }
+
+        private string GenerateUsersWebGrid()
+        {
+            List<User> users = userRepository.Get().ToList();
+            WebGrid grid = new WebGrid(source: users, canPage: false, canSort: false);
+            return grid.GetHtml(
+                columns: grid.Columns(
+                grid.Column("Id", "Id"),
+                grid.Column("Name", "Name"),
+                grid.Column("Email", "Email"),
+                grid.Column("RegistrationDate", "Registration date"),
+                grid.Column("Location", "Location"),
+                grid.Column("BirthDate", "Birth date", format: (item) => item.BirthDate != null ? item.BirthDate.ToString("d/M/yyyy") : ""),
+                grid.Column("NumberOfWarnings", "Number of warnings")
+                )).ToString();
+        }
+
+        private void GenerateResponse(string contentType, string headerName, string headerValue, object content)
+        {
+            Response.Clear();
+            Response.ContentType = contentType;
+            Response.AddHeader(headerName, headerValue);
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            if (content is string)
+                Response.Output.Write(content);
+            else if (content is byte[])
+                Response.BinaryWrite((byte[])content);
+
+            Response.End();
         }
 
         private byte[] ComputeHash(string data, string salt)

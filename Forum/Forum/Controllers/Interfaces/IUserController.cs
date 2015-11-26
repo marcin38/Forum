@@ -25,5 +25,7 @@ namespace Forum.Controllers.Interfaces
         ActionResult UnbanConfirmed(int id);
         ActionResult MyPosts(int? page);
         JsonResult IsUserNameAvailable(string Name);
+        ActionResult ExportToPDF();
+        ActionResult ExportToXLS();
     }
 }

@@ -1,5 +1,6 @@
 ﻿@using PagedList;
 @using PagedList.Mvc;
+@using Forum.Helpers;
 
 @model IPagedList<Domain.Models.User>
 
@@ -57,7 +58,9 @@
 @Html.ActionLink("GetNames", MVC.User.GetNames(), new { style = "display:none", id="namesLink" })
 @Html.Label("user", "Search")
 @Html.TextBox("user", "", new { id = "user" })
-
+@Html.Label("export", "Export users")
+@Html.ImageActionLink(new Image { altText = "Export to pdf", height = "50", width = "50", imageUrl = @Links.Content.Images.pdf_eksport_jpg, title = "Export to pdf" }, MVC.User.ExportToPDF())
+@Html.ImageActionLink(new Image { altText = "Export to xls", height = "50", width = "50", imageUrl = @Links.Content.Images.xls_export_jpg, title = "Export to xls" }, MVC.User.ExportToXLS())
 
 
 @Html.Partial(MVC.User.Views._Table, Model)

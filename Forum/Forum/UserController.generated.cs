@@ -173,6 +173,8 @@ namespace Forum.Controllers
             public readonly string MyPosts = "MyPosts";
             public readonly string IsUserNameAvailable = "IsUserNameAvailable";
             public readonly string GetNames = "GetNames";
+            public readonly string ExportToPDF = "ExportToPDF";
+            public readonly string ExportToXLS = "ExportToXLS";
         }
 
         [GeneratedCode("T4MVC", "2.0"), DebuggerNonUserCode]
@@ -195,6 +197,8 @@ namespace Forum.Controllers
             public const string MyPosts = "MyPosts";
             public const string IsUserNameAvailable = "IsUserNameAvailable";
             public const string GetNames = "GetNames";
+            public const string ExportToPDF = "ExportToPDF";
+            public const string ExportToXLS = "ExportToXLS";
         }
 
 
@@ -600,6 +604,28 @@ namespace Forum.Controllers
             var callInfo = new T4MVC_System_Web_Mvc_JsonResult(Area, Name, ActionNames.GetNames);
             ModelUnbinderHelpers.AddRouteValues(callInfo.RouteValueDictionary, "term", term);
             GetNamesOverride(callInfo, term);
+            return callInfo;
+        }
+
+        [NonAction]
+        partial void ExportToPDFOverride(T4MVC_System_Web_Mvc_ActionResult callInfo);
+
+        [NonAction]
+        public override System.Web.Mvc.ActionResult ExportToPDF()
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.ExportToPDF);
+            ExportToPDFOverride(callInfo);
+            return callInfo;
+        }
+
+        [NonAction]
+        partial void ExportToXLSOverride(T4MVC_System_Web_Mvc_ActionResult callInfo);
+
+        [NonAction]
+        public override System.Web.Mvc.ActionResult ExportToXLS()
+        {
+            var callInfo = new T4MVC_System_Web_Mvc_ActionResult(Area, Name, ActionNames.ExportToXLS);
+            ExportToXLSOverride(callInfo);
             return callInfo;
         }
 

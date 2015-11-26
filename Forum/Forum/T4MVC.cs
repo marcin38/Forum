@@ -146,6 +146,7 @@ namespace Links
             public static readonly string help_jpg = Url("help.jpg");
             public static readonly string kawa_jpg = Url("kawa.jpg");
             public static readonly string ksiezyc_jpg = Url("ksiezyc.jpg");
+            public static readonly string pdf_eksport_jpg = Url("pdf-eksport.jpg");
             public static readonly string slon_jpg = Url("slon.jpg");
             public static readonly string ui_bg_flat_0_888888_40x100_png = Url("ui-bg_flat_0_888888_40x100.png");
             public static readonly string ui_bg_flat_0_aaaaaa_40x100_png = Url("ui-bg_flat_0_aaaaaa_40x100.png");
@@ -163,6 +164,7 @@ namespace Links
             public static readonly string ui_icons_888888_256x240_png = Url("ui-icons_888888_256x240.png");
             public static readonly string ui_icons_bf3030_256x240_png = Url("ui-icons_bf3030_256x240.png");
             public static readonly string ui_icons_ffffff_256x240_png = Url("ui-icons_ffffff_256x240.png");
+            public static readonly string xls_export_jpg = Url("xls-export.jpg");
         }
     
         public static readonly string jquery_ui_css = T4MVCHelpers.IsProduction() && T4Extensions.FileExists(URLPATH + "/jquery-ui.min.css") ? Url("jquery-ui.min.css") : Url("jquery-ui.css");
