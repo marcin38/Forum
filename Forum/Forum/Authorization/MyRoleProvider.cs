@@ -2,6 +2,7 @@
 using Repositories.Repositories.Interfaces;
 using System;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
 using System.Web.Security;
 
@@ -9,16 +10,7 @@ namespace Forum.Authorization
 {
     public class MyRoleProvider : RoleProvider
     {
-        private IUserRepository userRepository;
-
-        public MyRoleProvider() {
-            userRepository = DependencyResolver.Current.GetService<IUserRepository>();
-        }
-
-        public MyRoleProvider(IUserRepository userRepository)
-        {
-            this.userRepository = userRepository;
-        }
+        public MyRoleProvider() {}
 
         public override bool IsUserInRole(string username, string roleName)
         {
@@ -65,8 +57,13 @@ namespace Forum.Authorization
 
         public override string[] GetRolesForUser(string username)
         {
-
-            return userRepository.GetRolesForUser(username).ToArray();
+                if (MvcApplication.tokenDictionary.ContainsKey(username))
+                {
+                    return MvcApplication.tokenDictionary[username].Roles;                }
+                else
+                {
+                    return new string[]{};
+                }
         }
 
         public override string[] GetUsersInRole(string roleName)

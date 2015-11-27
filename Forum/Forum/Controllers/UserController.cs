@@ -514,7 +514,8 @@ namespace Forum.Controllers
             HttpCookie cookie = new HttpCookie("f_user");
             cookie.Values["Name"] = user.Name;
             cookie.Values["Id"] = user.Id.ToString();
-            cookie.Values["Token"] = MvcApplication.tokenDictionary[user.Id] = GenerateToken(100);
+            cookie.Values["Token"] = GenerateToken(100);
+            MvcApplication.tokenDictionary[user.Name] = new UserHelper { Token = cookie.Values["Token"], Roles = userRepository.GetRolesForUser(user.Name).ToArray() };
             HttpContext.Response.Cookies.Add(cookie);
         }
 

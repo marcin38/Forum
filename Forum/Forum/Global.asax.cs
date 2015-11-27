@@ -13,7 +13,7 @@ namespace Forum
 {
     public class MvcApplication : System.Web.HttpApplication
     {
-        public static Dictionary<int, string> tokenDictionary = new Dictionary<int, string>();
+        public static Dictionary<string, UserHelper> tokenDictionary = new Dictionary<string, UserHelper>();
         protected void Application_Start()
         {
             AreaRegistration.RegisterAllAreas();
@@ -31,7 +31,7 @@ namespace Forum
                 int id = int.Parse(authCookie.Values["Id"]);
                 string name = authCookie.Values["Name"];
                 string token = authCookie.Values["Token"];
-                if (tokenDictionary.ContainsKey(id) && tokenDictionary[id] == token)
+                if (tokenDictionary.ContainsKey(name) && tokenDictionary[name].Token == token)
                 {
                     CustomPrincipal newUser = new CustomPrincipal(id, name, token);
                     HttpContext.Current.User = newUser;
@@ -41,7 +41,6 @@ namespace Forum
                     authCookie.Expires = DateTime.Now.AddDays(-1);
                     Response.Cookies.Add(authCookie);
                 }
-
             }
         }
 
@@ -79,4 +78,9 @@ namespace Forum
         }
     }
 
+    public class UserHelper
+    {
+        public string Token { get; set; }
+        public string[] Roles { get; set; }
+    }
 }
